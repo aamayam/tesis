@@ -1,0 +1,66 @@
+\chapter{Análisis}
+
+En este capítulo se introduce formalmente el problema de control del \emph{pitch angle} en las turbinas eólicas. Se detallan las aproximaciones que ha habido para los distintos tipos de control que se pueden realizar en una turbina eólica (principalmente \emph{pitch control} y \emph{torque control}) a través de los años y los resultados que han tenido (\emph{state of the art}). Además, se enuncian los requerimientos y las restricciones para el diseño del controlador. Por último, se mencionan los estándares que existen tanto a nivel nacional como internacional que estén relacionados o que puedan afectar el diseño del controlador.
+
+\section{Requerimientos}
+{\parindent0pt
+El controlador debe responder adecuadamente ante los cambios en las condiciones del viento. Se debe monitorear (sensar) la velocidad para determinar en qué momento se pasa de una región de operación a otra. El \emph{pitch control} debe responder a la señal del control supervisor cuando la turbina entre en la región 3 de operación y su función es la de disminuir (o aumentar) la potencia recibida del viento. Para esto, cuando el control supervisor determine que la carga mecánica en el rotor es cercana a un valor límite (con una tolerancia para fines de seguridad) el \emph{pitch control} debe abatir las aspas, reduciendo así el ángulo de ataque de estas, y permitiendo que el viento pase por el área de barrido del rotor generando un menor empuje en las aspas. Por el contrario, cuando la velocidad del rotor haya disminuido por debajo de un cierto umbral, las aspas deben girar nuevamente a la posición de máxima extracción de potencia. 
+\\
+
+La tarea de control es permitir que el aerogenerador siga operando por un mayor tiempo durante condiciones climáticas con vientos de alta velocidad antes de tener que ser frenado totalmente para evitar daños. Esto tiene como objetivo aprovechar de manera más eficiente los escenarios con vientos más rápidos para extraer en estos momentos mayor energía que durante la operación del aerogenerador en condiciones normales. Dichas condiciones de viento “extremo” suelen ocurrir con baja frecuencia a lo largo de un cierto periodo de tiempo (por lo general un año), y dependen principalmente de la ubicación geográfica del parque eólico donde esté instalada la turbina. Parte fundamental del desarrollo de este trabajo implica el diseño de un controlador que sea factible de implementar en cualquier ubicación geográfica, pero particularmente en aquellas donde se presentan vientos de alta velocidad con mayor frecuencia a lo largo del año.
+\\
+
+Se requiere, de igual forma, evaluar la conveniencia de la implementación del sistema de control en términos de su gasto energético en comparación con el incremento en la producción debido a su uso. Esto pensando en que el hecho de agregar un grado de libertad a partir de controlar el \emph{pitch angle} debería provocar un incremento en la generación de energía eléctrica mayor a su consumo debido al uso de los actuadores —consumo que debe ser bajo debido a la naturaleza hidráulica del mecanismo—. Sí lo anterior no se cumple, lo cual puede deberse a la baja frecuencia de vientos de alta velocidad o a la ineficiencia del controlador para aprovechar dichos vientos, entonces se concluiría que el grado extra de libertad debido al control del ángulo de las aspas no es adecuado para un aerogenerador con sus condiciones particulares. 
+
+}
+
+\section{Restricciones}
+{\parindent0pt
+Dado que el objetivo de la tesis es el diseño de un controlador (a partir de encontrar la ley de control) para el ángulo de ataque de las aspas de la turbina (\emph{pitch angle}) y debido a lo complicado —o incluso inviable— de ser implementado en un aerogenerador real, el resultado esperado para esta tesis será la simulación de la operación de la turbina bajo diferentes condiciones que permita observar el trabajo de los sistemas de control durante las 3 regiones de operación de la turbina. Para esto la simulación debe permitir variar las condiciones del viento simuladas (velocidad y dirección) a lo largo de un periodo determinado de tiempo y, como resultado, se debe observar el comportamiento esperado de la turbina de acuerdo a la región en la que se encuentre operando. 
+\\
+
+Es de particular interés la región 3 de operación debido a que es donde el viento tiene velocidades más altas e interesa observar el trabajo del controlador para evaluar su eficiencia al momento de reducir la carga mecánica que recibe el rotor debido al viento. Dado que uno de los objetivos de la tesis es extender el tiempo de operación de la turbina en la región 3 (para incrementar la cantidad de energía eléctrica producida) es indispensable que la simulación muestre de manera precisa el rango de tiempo desde que se entra en la región 3 hasta que ocurre el corte por exceso de velocidad (\emph{high speed cut}).
+\\
+
+La simulación se hará en Matlab Simulink y deberá presentar tanto una representación visual de la operación de las turbinas como los datos asociados a dicha operación ya sea en tablas o gráficas, según sea conveniente en cada caso. Para las características de la turbina se seguirán seguirá una línea de diseño de algún aerogenerador ya existente. Obteniendo a partir de este diseño algunos datos relevantes como la medida de las aspas (para el área de barrido del rotor). Así mismo, debido a que las condiciones del viento son diferentes en cada región geográfica, se busca que el comportamiento del viento en la simulación pueda emular con cierto grado de certeza las condiciones de algún lugar real en donde se realice la operación de turbinas eólicas. Un ejemplo de lo anterior es el tramo La Venta-La Ventosa en la región del Istmo de Tehuantepec en el estado de Oaxaca.
+\\
+
+Lo anterior con es principalmente con fines de visualización y de ejemplificación, dado que el diseño del controlador pretende ser general y no estar enfocado a un tipo específico de turbinas o diseñado para trabajar en alguna región con ciertas características climáticas en particular. 
+
+}
+\section{Trabajos relacionados}
+{\parindent0pt 
+El diseño de controladores para turbinas eólicas de velocidad variable se suele realizar desde dos puntos de partida: controladores con un enfoque más teórico que suelen resultar en un control más avanzado y preciso pero que funciona sobre una turbina en la que se han simplificado muchas cosas; y un enfoque más práctico que suele resultar en una turbina mejor modelada y, por lo mismo, con menor precisión al momento de operar \cite{Johnson2004}. Ambas situaciones suelen deberse al hecho de que la mayoría de las investigaciones que derivan en el diseño de controladores de velocidad concluyen en la construcción de simulaciones en las que las leyes de control expuestas funcionan bien, mas no es común que dichos controladores sean probados en turbinas reales.
+\\
+
+Para el \emph{pitch control} ha habido desde aproximaciones clásicas como lo es el uso de controladores PID \cite{Johnson2004}. Investigaciones más recientes han apuntado también al uso de controles adaptativos para el control de velocidad del rotor, aunque no han sido suficientemente probados en campo \cite{Johnson2004}. Algunas otras investigaciones han buscado alternativas a los \emph{pitch actuators} para cambiar la aerodinámica de las aspas, explorando el uso de \emph{micro-tabs} y pequeñas válvulas de aire presurizado que permite un flujo extra de aire en la superficie de las aspas y, de esta forma, cambiar el flujo de aire que cruza el área de barrido del rotor \cite{Pao2009}.
+\\
+
+Una aproximación más actual se hace en \cite{Jie2020} a partir del uso de redes neuronales y modelos predictivos tomando como entradas varios parámetros de medidos por las turbinas. A partir de esto, se utilizan modelos de aprendizaje como ELM (Extreme Learning Machine). Las salidas son tratadas como datos de referencia para el \emph{pitch control}.
+\\
+
+Se ha explorado también el uso de nuevas tecnologías que permitirían nuevas posibilidades en el diseño de controladores. Un ejemplo de esto es el uso de sensores LIDAR (del inglés \emph{Light Detection and Ranging}) para fines de medición del viento. Los sensores \emph{lidar} han sido usados exitosamente con aplicaciones meteorológicas y podrían ser interesantes de aprovechar en el control de granjas eólicas. Igualmente, turbinas más grandes han empezado a incluir actuadores independientes para cada una de las aspas, lo que permite variar el ángulo de cada una de manera independiente. Esto posibilita toda una nueva forma de realizar el control de velocidad del rotor \cite{Pao2009}. 
+
+}
+
+
+\section{Estándares de la industria}
+{\parindent0pt 
+El diseño de estándares para la fabricación de turbinas eólicas comienza en 1986 cuando Germanischer Lloyd publicó un conjunto de regulaciones para la certificación del diseño de turbinas eólicas que, conforme las investigaciones alrededor de este campo fueron aumentando, llevaron a la publicación en 1993 de la \emph{Regulation for the Certification of Wind Energy Conversion Systems}. Similarmente se publicaron estándares de carácter nacional en Países Bajos (NEN 6096) en 1988 y en Dinamarca (DS 472) en 1992 \cite{Burton2011}.
+\\
+
+La primera emisión de normas con un carácter verdaderamente internacional fue llevada a cabo por la \emph{International Electrothecnical Comission (IEC)} en 1988 y culminó con la publicación de las normas \emph{IEC-1400-1 Wind Turbine Generator Systems – Part 1: Safety Requirements}. Posteriores revisiones y ediciones fueron publicadas. Entre ellas la IEC-61400 publicada en 2005 y que continua actualmente en funcionamiento luego de varias revisiones \cite{Burton2011}.
+}
+
+\section{Plan de trabajo}
+
+\textbf{Fechas de entregas:}
+\begin{itemize}
+    \item \emph{Capítulos I y II:} 29 de noviembre, 2023.
+
+    \item \emph{Capitulo III:} 28 de febrero, 2024.
+
+    \item \emph{Capítulo IV:} 01 de abril, 2024.
+
+    \item \emph{Capítulos V y VI:} 15 de mayo, 2024. 
+\end{itemize}

@@ -1,0 +1,112 @@
+%----------------------------------------------------------------------------------------
+% Configuración
+%----------------------------------------------------------------------------------------
+\documentclass[11pt, oneside]{book} %Las tesis se imprimen a una cara, por eso está el "oneside"
+\usepackage[paperwidth=17cm, paperheight=22.5cm, bottom=2.5cm, right=2.5cm]{geometry} % Configuración de la página
+\usepackage{amssymb, amsmath, amsthm} %Paquetes para símbolos matemáticos
+\usepackage[spanish, mexico]{babel} %Para que el texto esté en español
+\usepackage[utf8]{inputenc} %Para acentos y símbolos
+\usepackage{enumerate, enumitem} %Para enumerar páginas
+\usepackage{graphicx, pgfplots, pgfplotstable, filecontents, tikz, listings, color, float} %Para gráficos y figuras
+\usepackage{csquotes, multirow, libertine, adjustbox, threeparttable} % Para citas y tablas
+\usepackage[nottoc]{tocbibind}
+% \usepackage[backend=bibtex, style=authoryear, autocite=inline]{biblatex} % Para otro tipo de citación
+%\usepackage[backend=biber,style=ieee,citestyle=authoryear]{biblatex} % Para citación utilizando APA
+%\DeclareLanguageMapping{spanish}{spanish-ieee}
+\pgfplotsset{compat=newest}
+
+% Para hipervínculos
+ \usepackage{hyperref}
+ \hypersetup{
+     colorlinks=false,
+     linkcolor=black,
+     pdftitle={Tesis},
+     pdfauthor={Alan J. Amaya Martínez},
+     %bookmarks=true,
+     linktocpage=true,
+     urlcolor=black,
+     allbordercolors = {white}
+}
+
+\renewcommand{\lstlistingname}{Algoritmo}
+
+\addto\captionsspanish{
+    \renewcommand{\contentsname}
+    {Tabla de contenido}
+}
+
+\pgfplotsset{compat=newest}
+
+%\addbibresource{FormatoTesis/Referencias/references.bib} %Inserción del archivo de bibliografía
+% \nocite{*}
+
+\graphicspath{{Imagenes/}} %Carpeta donde están las imágenes
+
+% Para eliminar guiones y justificar texto
+\tolerance=1
+\emergencystretch=\maxdimen
+\hyphenpenalty=10000
+\hbadness=10000
+\linespread{1.25} %Para tener interlineado de 1.5 de Word
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+% Portada
+%----------------------------------------------------------------------------------------
+\begin{titlepage}
+\begin{center}
+\textsc{\Large Instituto Tecnológico Autónomo de México}\\[1em]
+
+%Logo ITAM
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.15]{logo-ITAM.png}
+\end{center}
+\end{figure}
+
+\textsc{\huge \textbf{Diseño de un Controlador de Velocidad en un Aerogenerador}}\\[2em]
+
+\textsc{\large Tesis}\\[1em]
+\textsc{\large que para obtener el título de}\\[1em]
+\textsc{\large Ingeniero en Mecatrónica}\\[1em]
+\textsc{\large Presenta}\\[1em]
+\textsc{\Large Alan Josabet Amaya Martínez}\\[1em]
+\textsc{\large Asesor}\\[1em]
+\textsc{\large Dr. Rafael Cisneros Montoya}\\[1em]
+  
+\end{center}
+\vspace*{\fill}
+\textsc{Ciudad de México \hspace*{\fill} 2024}
+\end{titlepage}
+
+\tableofcontents % Tabla de Contenidos
+\mainmatter % Empieza la numeración arábiga de las páginas
+%----------------------------------------------------------------------------------------
+%	Tesis
+%----------------------------------------------------------------------------------------
+\include{Capitulos/Intro}
+\include{Capitulos/Analisis}
+\include{Capitulos/Diseño}
+%\include{Capitulos/Implementación}
+%\include{Capitulos/Pruebas}
+%\include{Capitulos/Conclusiones}
+
+%----------------------------------------------------------------------------------------
+%	Apéndices
+%----------------------------------------------------------------------------------------
+
+\appendix
+%\input{Apendices/Apendices}
+
+
+%----------------------------------------------------------------------------------------
+%	Bibliografía
+%----------------------------------------------------------------------------------------
+%\printbibliography[notcategory=cited, title={Referencias}]
+%\printbibliography[title = {Referencias}]
+\renewcommand\bibname{Referencias}
+\bibliography{Referencias/Documentos/references}
+\bibliographystyle{ieeetr}
+
+\end{document}

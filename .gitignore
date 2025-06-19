@@ -1,0 +1,31 @@
+# LaTeX auxiliary files
+*.aux
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.idx
+*.ind
+*.ilg
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
+
+# LaTeX temp files
+_latexindent_temp.tex
+
+# PDF output
+*.pdf
+
+# macOS files
+.DS_Store

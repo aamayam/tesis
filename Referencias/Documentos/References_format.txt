@@ -1,0 +1,161 @@
+@article{article,
+  author  = {}, 
+  title   = {},
+  journal = {},
+  year    = ,
+  number  = ,
+  pages   = {},
+  month   = ,
+  note    = {}, 
+  volume  = 
+}
+
+@book{book,
+  author    = {}, 
+  title     = {},
+  publisher = {},
+  year      = ,
+  volume    = ,
+  series    = ,
+  address   = {},
+  edition   = ,
+  month     = ,
+  note      = {},
+  isbn      = {}
+}
+
+@booklet{booklet,
+  title        = {},
+  author       = {}, 
+  howpublished = {},
+  address      = {},
+  month        = ,
+  year         = ,
+  note         = {}
+}
+
+@conference{conference,
+  author       = {}, 
+  title        = {},
+  booktitle    = {},
+  year         = ,
+  editor       = {},
+  volume       = ,
+  series       = ,
+  pages        = ,
+  address      = {},
+  month        = ,
+  organization = {},
+  publisher    = {},
+  note         = {}  
+}
+
+@inbook{inbook,
+  author       = {}, 
+  title        = {},
+  chapter      = ,
+  pages        = {},
+  publisher    = {},
+  year         = ,
+  volume       = ,
+  series       = ,
+  address      = {},
+  edition      = ,
+  month        = ,
+  note         = {}
+}
+
+@incollection{incollection,
+  author       = {}, 
+  title        = {},
+  booktitle    = {},
+  publisher    = {},
+  year         = ,
+  editor       = {},
+  volume       = ,
+  series       = ,
+  chapter      = ,
+  pages        = {},
+  address      = {},
+  edition      = ,
+  month        = ,
+  note         = {}
+}
+
+@manual{manual,
+  title        = {},
+  author       = {}, 
+  organization = {},
+  address      = {},
+  edition      = ,
+  month        = ,
+  year         = ,
+  note         = {}
+}
+
+@mastersthesis{mastersthesis,
+  author       = {}, 
+  title        = {},
+  school       = {},
+  year         = ,
+  address      = {},
+  month        = ,
+  note         = {}
+}
+
+@misc{misc,
+  author       = {}, 
+  title        = {},
+  howpublished = {},
+  month        = ,
+  year         = ,
+  note         = {}
+}
+
+@phdthesis{phdthesis,
+  author       = {}, 
+  title        = {},
+  school       = {},
+  year         = ,
+  address      = {},
+  month        = ,
+  note         = {}
+}
+
+@proceedings{proceedings,
+  title        = {},
+  year         = ,
+  editor       = {},
+  volume       = ,
+  series       = ,
+  address      = {},
+  month        = ,
+  organization = {},
+  publisher    = {},
+  note         = {}
+}
+
+@techreport{techreport,
+  author       = {}, 
+  title        = {},
+  institution  = {},
+  year         = ,
+  number       = ,
+  address      = {},
+  month        = ,
+  note         = {}
+}
+
+@unpublished{unpublished,
+  author       = {}, 
+  title        = {},
+  note         = {},
+  month        = ,
+  year         = 
+}
+
+@online{online,
+	author	= {},
+	title	  = {},
+	url		  = {}
+}
