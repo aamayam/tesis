@@ -664,45 +664,46 @@ p_2(s) = s^4 + (281.69k_{P2} + 103.55)s^3 + \\
 
 El polinomio característico tiene la forma:
 \begin{equation}
-p_2(s) = a_3s^4 + a_2s^3 + a_1s^2 + a_0s + a_4 \label{eq:poly_rh}
+p_2(s) = a_4s^4 + a_3s^3 + a_2s^2 + a_1s + a_0 \label{eq:poly_rh}
 \end{equation}
 
 donde:
 \begin{align}
-a_3 &= 1 \label{eq:a3} \\
-a_2 &= 281.69k_{P2} + 103.55 \label{eq:a2} \\
-a_1 &= 281.69k_{I2} + 431.76k_{P2}k_{P3} - 0.0015k_{P2} - 0.0004 \label{eq:a1} \\
-a_0 &= 431.76k_{I2}k_{P3} - 0.0015k_{I2} + 431.76k_{P2}k_{I3} \label{eq:a0} \\
-a_4 &= 431.76k_{I2}k_{I3} \label{eq:a4}
+a_4 &= 1 \label{eq:a4} \\
+a_3 &= 281.69k_{P2} + 103.55 \label{eq:a3} \\
+a_2 &= 281.69k_{I2} + 431.76k_{P2}k_{P3} - 0.0015k_{P2} - 0.0004 \label{eq:a2} \\
+a_1 &= 431.76k_{I2}k_{P3} - 0.0015k_{I2} + 431.76k_{P2}k_{I3} \label{eq:a1} \\
+a_0 &= 431.76k_{I2}k_{I3} \label{eq:a0}
 \end{align}
 
 La tabla de Routh-Hurwitz para un polinomio de cuarto orden requiere que la primera columna tenga todos sus elementos positivos. La tabla tiene la siguiente estructura:
 
-\begin{align}
+\begin{equation}
 \begin{array}{c|ccc}
-s^4 & 1 & a_1 & a_4 \\
-s^3 & a_2 & a_0 & 0 \\
+s^4 & a_4 & a_2 & a_0 \\
+s^3 & a_3 & a_1 & 0 \\
 s^2 & b_1 & b_2 & 0 \\
 s^1 & c_1 & 0 & 0 \\
 s^0 & d_1 & 0 & 0
 \end{array} \label{eq:rh_table}
-\end{align}
+\end{equation}
 
 donde:
 \begin{align}
-b_1 &= \frac{a_2a_1 - a_0}{a_2} \label{eq:b1} \\
-b_2 &= \frac{a_2a_4 - 0}{a_2} = a_4 \label{eq:b2} \\
-c_1 &= \frac{b_1a_0 - a_4}{b_1} \label{eq:c1} \\
-d_1 &= a_4 \label{eq:d1}
+b_1 &= \frac{a_3a_2 - a_4a_1}{a_3} \label{eq:b1} \\
+b_2 &= \frac{a_3a_0 - a_4 \cdot 0}{a_3} = \frac{a_3a_0}{a_3} = a_0 \label{eq:b2} \\
+c_1 &= \frac{b_1a_1 - a_3b_2}{b_1} = \frac{b_1a_1 - a_3a_0}{b_1} \label{eq:c1} \\
+d_1 &= a_0 \label{eq:d1}
 \end{align}
 
 Para garantizar estabilidad, necesitamos:
 
 \begin{align}
-a_2 &> 0 \label{eq:cond1} \\
-a_1 &> 0 \label{eq:cond2} \\
-a_0 &> 0 \label{eq:cond3} \\
-a_4 &> 0 \label{eq:cond4} \\
+a_4 &> 0 \label{eq:cond0} \\
+a_3 &> 0 \label{eq:cond1} \\
+a_2 &> 0 \label{eq:cond2} \\
+a_1 &> 0 \label{eq:cond3} \\
+a_0 &> 0 \label{eq:cond4} \\
 b_1 &> 0 \label{eq:cond5} \\
 c_1 &> 0 \label{eq:cond6}
 \end{align}
@@ -730,7 +731,7 @@ Sustituyendo estos valores en \eqref{eq:cond2} y \eqref{eq:cond3}:
 
 De donde obtenemos:
 \begin{equation}
-k_{P3} > 3.48\times10^{-6} \label{eq:kp3_final_cond}
+k_{P3} > 3.48\times10^{-6} \label{eq:kp3_min}
 \end{equation}
 
 Por lo tanto, un conjunto de valores que garantiza la estabilidad del sistema es:

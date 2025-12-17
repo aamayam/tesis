@@ -29,3 +29,5 @@ _latexindent_temp.tex
 
 # macOS files
 .DS_Store
+
+temp/
