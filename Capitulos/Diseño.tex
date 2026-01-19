@@ -37,13 +37,13 @@ es el par aerodinámico recibido por el viento, $T_g$ es el par eléctrico que r
 Una forma adicional de representar la dinámica del sistema es con la ecuación:
 
 \begin{equation}
-    J \dot{\omega}_m = -f \omega_m + T_m - T_e
+    J \dot{\omega}_m = -f_r \omega_m + T_m - T_e
     \label{eq:torque_balance_simplified}
 \end{equation}
 
-donde $\omega_m$ representa la velocidad angular, $f$ es el coeficiente de fricción viscosa, $T_m$ es el par mecánico 
+donde $\omega_m$ representa la velocidad angular, $f_r$ es el coeficiente de fricción viscosa, $T_m$ es el par mecánico 
 y $T_e$ el par eléctrico. La equivalencia se da al considerar que $T_m = T_r/N_g$, $T_e = T_g$ y que el término 
-$f\omega_m$ modela las pérdidas mecánicas representadas por $T_\ell$ en la ecuación anterior.
+$f_r\omega_m$ modela las pérdidas mecánicas representadas por $T_\ell$ en la ecuación anterior.
 En adelante, se utilizará la versión simplificada del balance de torques (\ref{eq:torque_balance_simplified}) 
 puesto que permite manejar el torque de pérdidas como un valor constante en la dinámica del sistema.
 \\
@@ -172,14 +172,17 @@ $C_P - \lambda$ (vease figura \ref{fig:Cp_vs_lambda}).
 \\
 
 
-Con el objetivo de obtener un valor del coeficiente de potencia ajustado a los parámetros utilizados durante el modelado de la turbina se utilizará una aproximación mediante una función analítica de $c_p$.
-En \cite{man1981} se desarrolla una expresión para el coeficiente de potencia como la siguiente función de la relación de velocidad punta y el angulo de inclinación de las palas:
+Con el objetivo de obtener un valor del coeficiente de potencia ajustado a los parámetros utilizados durante 
+el modelado de la turbina se utilizará una aproximación mediante una función analítica de $c_p$.
+En \cite{man1981} se desarrolla una expresión para el coeficiente de potencia como la siguiente función de 
+la relación de velocidad punta y el angulo de inclinación de las palas:
 
 \begin{align}
     C_p = c_1 \left( c_2 - c_3\vartheta - c_4\vartheta^x - c_5 \right) e^{-c_6(\lambda,\vartheta)}
 \end{align}
 
-Los valores de las constantes cambian según el método y modelo utilizado. A partir del procedimiento en \cite{amlang1992}, los valores de estas constantes se definen como:
+Los valores de las constantes cambian según el método y modelo utilizado. A partir del procedimiento en 
+\cite{amlang1992}, los valores de estas constantes se definen como:
 \begin{align}
     \begin{array}{lll}
         c_1 = 0.5, &c_2 = \frac{116}{\lambda_i}, &c_3 = 0.4,
@@ -199,24 +202,35 @@ $\vartheta$ es el angulo de inclinación (\emph{pitch}) de las palas.
 
 \subsection{Subsistema eléctrico}
 
-La parte eléctrica del modelo está compuesta por: 1) el generador eléctrico (PMSG), 2) la electrónica de potencia y 3) la carga que será alimentada. La elección del generador 
-eléctrico depende de factores como la potencia requerida para ser extraída del viento, la eficiencia requerida, la cantidad de mantenimiento requerida, la fiabilidad y la 
-longevidad del generador en comparación con el resto de los componentes y la vida útil general de la turbina, entre otros. 
+La parte eléctrica del modelo está compuesta por: 1) el generador eléctrico (PMSG), 2) la electrónica 
+de potencia y 3) la carga que será alimentada. La elección del generador 
+eléctrico depende de factores como la potencia requerida para ser extraída del viento, la eficiencia 
+requerida, la cantidad de mantenimiento requerida, la fiabilidad y la 
+longevidad del generador en comparación con el resto de los componentes y la vida útil general de la 
+turbina, entre otros. 
 \\
 
-Dos de los tipos de generadores eléctricos más usados en WECS son los Generadores de Inducción Doblemente Alimentados (DFIG, por sus siglas en inglés: \emph{Doubly-Fed Induction Generator}) 
-y los Generadores Síncronos de Imanes Permanentes (PMSG por sus siglas en inglés: \emph{Permament Magnent Synchronous Generator}). Por un lado, los generadores tipo DFIG, como 
-su nombre lo indica, presentan una doble alimentación de voltaje hacia el rotor y el estator. Este último puede ser 
-conectado directamente a la red y al rotor a través de un convertidor \cite{dahiya2019}. Este tipo de generadores es el más usado en turbinas eólicas de velocidad variable
+Dos de los tipos de generadores eléctricos más usados en WECS son los Generadores de Inducción Doblemente 
+Alimentados (DFIG, por sus siglas en inglés: \emph{Doubly-Fed Induction Generator}) 
+y los Generadores Síncronos de Imanes Permanentes (PMSG por sus siglas en inglés: \emph{Permament Magnent 
+Synchronous Generator}). Por un lado, los generadores tipo DFIG, como 
+su nombre lo indica, presentan una doble alimentación de voltaje hacia el rotor y el estator. Este último 
+puede ser 
+conectado directamente a la red y al rotor a través de un convertidor \cite{dahiya2019}. Este tipo de 
+generadores es el más usado en turbinas eólicas de velocidad variable
 \cite{dahiya2019,soltani2013}.
 Los PMSG, por su parte, tienen la característica de permitir el accionamiento 
-directo (\emph{direct drive}) del generador, lo cual hace posible la eliminación del \emph{gearbox} de la mecánica del sistema. Esto se logra a partir de incluir un alto número 
+directo (\emph{direct drive}) del generador, lo cual hace posible la eliminación del \emph{gearbox} de 
+la mecánica del sistema. Esto se logra a partir de incluir un alto número 
 de polos en el diseño del generador, lo que permite la operación a bajas velocidades del rotor \cite{soltani2013, swibki2020}.
 \\
 
-Dentro de las consideraciones generales de ambos generadores al momento de decidir entre uno u otro se debe mencionar: i) la mayor eficiencia de los PMSG al operar efectivamente 
-en un rango más amplio de condiciones climáticas (los DFIG operan con mayor eficiencia a velocidades altas del viento), ii) los costos de construcción asociados a los PMSG, 
-en particular por los materiales utilizados en su fabricación; y iii) la necesidad de una caja de cambios en los DFIG, lo que incrementa su costo e introduce el problema del 
+Dentro de las consideraciones generales de ambos generadores al momento de decidir entre uno u otro 
+se debe mencionar: i) la mayor eficiencia de los PMSG al operar efectivamente 
+en un rango más amplio de condiciones climáticas (los DFIG operan con mayor eficiencia a velocidades 
+altas del viento), ii) los costos de construcción asociados a los PMSG, 
+en particular por los materiales utilizados en su fabricación; y iii) la necesidad de una caja de 
+cambios en los DFIG, lo que incrementa su costo e introduce el problema del 
 desgaste de estos componentes con el tiempo, así como la necesidad de mantenimiento a los componentes. 
 Ambos tipos de generadores están diseñados  para operar a velocidad variables y permiten el control de 
 la potencia reactiva \cite{dahiya2019, swibki2020,Lei2006,feijoo2000}. 
@@ -329,17 +343,18 @@ obtenemos el modelo dinámico que define el comportamiento del sistema completo 
     \\
     L\frac{di_d}{dt} &= -Ri_q - pLi_d\omega_e + p\phi\omega_e - v_q 
     \\
-    J \dot{\omega}_m &= -f \omega_m + T_m - T_e
+    J \dot{\omega}_m &= -f_r \omega_m + T_m - T_e
     \label{eq:full_system}
 \end{align}
 
 Donde
 \begin{align}
-    T_m &= r\frac{\kappa_1}{v_w} \frac{C_p(\lambda,\beta)}{\lambda}
+    T_m &:=T_m(\lambda,\beta)= r\frac{\kappa_1}{v_w} \frac{C_p(\lambda,\beta)}{\lambda}
     \\
-    T_e &= \frac{3}{2}p\phi i_q
+    T_e  &:= T_e(i_q)= \frac{3}{2}p\phi i_q
     \\
-    \lambda &= \frac{r\omega_m}{v_w}
+    \lambda &:=\lambda(\omega_m)= \frac{r\omega_m}{v_w}
+    \label{eq:definitions}
 \end{align}
 
 Los voltajes $v_d$ y $v_q$ se pueden manipular de forma libre, es decir, corresponden a las variables de control.
@@ -473,32 +488,14 @@ ecuación de \eqref{eq:electrical_subsystem} da lugar a las ecuaciones de $\Sigm
     \dot{\xi_1} &= i_d,
 \end{align}
 
-o, equivalentemente, en representación de estados,
-\begin{align}
+o, equivalentemente, % en representación de estados,
+\begin{align}\label{eq:sigma_1}
     \mathbf{\Sigma_1:}\;\;\: \dot x= & \underbrace{\begin{bmatrix}0&1\\  -\frac{1}{L}k_{I1} & -\frac{1}{L}(R+k_{P1}) 
     \end{bmatrix}}_{A_1}x
  \end{align}
 
- con $x=\mathrm{col}(\xi_1,i_d)$. Claramente este subsistema corresponde a un sistema lineal e invariante en 
- el tiempo, completamente desacoplado de la dinámica de $\omega_m$ e $i_q$. Adicionalmente, el polinomio característico 
- de  $A_1$ es el siguiente:
- \begin{align}\label{p1}
- p_1(s)=s^2 + \frac{k_{P1}+R}{L}s + \frac{k_{I1}}{L}.
- \end{align}
-
- Luego, por el criterio de estabilida de Routh, la condición necesaria y suficiente para que un polinomio de grado 
- dos tenga sus raices en el semiplano izquierdo es que sus coeficientes sean positivos. Por tanto, tomando 
- en cuenta que $L>0$, tenemos las siguientes relaciones
-\begin{align}
-    k_{P1} +R > 0  \Longleftrightarrow k_{P1} &> -R\\
-    k_{I1} &> 0 
-\end{align}
-
-De lo anterior, los valores proporcional e integral $k_{P1} = 0$ y $k_{I1} = -1$ garantizan la estabilidad de $\Sigma_1$.
-\\
-
-Para el segundo subsistema, sustituyendo \eqref{eqnVq}, \eqref{PI2} y \eqref{xi} en la segunda ecuación en 
-\eqref{eq:electrical_subsystem} resulta en la siguiente dinámica
+ con $x=\mathrm{col}(\xi_1,i_d)$. Claramente este subsistema corresponde a un sistema lineal e invariante en el tiempo. \\
+Para el segundo subsistema, sustituyendo \eqref{eqnVq}, \eqref{PI2} y \eqref{xi} en la segunda ecuación de  \eqref{eq:electrical_subsystem}  resulta en la siguiente dinámica
 \begin{align*}
     L\dot{i_q} =& -(R+k_{P2})i_q + k_{P2}i_q^{ref} \\
     =&-(R+k_{P2})i_q  + k_{P2}k_{P3}(\omega_m - \omega_m^\star) + k_{P2}k_{I3}\xi_3 - k_{I2}\xi_2
@@ -506,7 +503,7 @@ Para el segundo subsistema, sustituyendo \eqref{eqnVq}, \eqref{PI2} y \eqref{xi}
 
 Uniendo la ecuación anterior con las de la dinámica de $\xi_2$ y de $\xi_3$ (descritas en  \eqref{PI2} y 
 \eqref{xi}) resulta en la siguiente representación en espacio de estados
-\begin{equation}
+\begin{equation}\label{eq:sigma_2}
 \resizebox{\textwidth}{!}{$
 \mathbf{\Sigma_2:}\;\;\begin{aligned}
 	\dot z=& \begin{bmatrix}
@@ -517,174 +514,233 @@ Uniendo la ecuación anterior con las de la dinámica de $\xi_2$ y de $\xi_3$ (d
     \end{bmatrix} = \begin{bmatrix}
     z_4 - (k_{P3}(z_3 - \omega^*_m) + k_{I3}z_2) \\
     z_3 - \omega^*_m \\
-    -\frac{f}{J}z_3 + \frac{r\kappa_1}{Jv_w}\frac{C_p(\lambda, 0)}{\lambda} - \frac{3}{2J}p\phi z_4 \\
+    -\frac{f_r}{J}z_3 + \frac{r\kappa_1}{Jv_w}\frac{C_{p,0}(\lambda)}{\lambda} - \frac{3}{2J}p\phi z_4 \\
     -\frac{R+k_{P2}}{L}z_4 + \frac{k_{P2}k_{P3}}{L}(z_3 - \omega^*_m) + \frac{k_{P2}k_{I3}}{L}z_2 - \frac{k_{I2}}{L}z_1
     \end{bmatrix}
 \end{aligned}=:f(z)
 $}
 \end{equation}
-donde $z=\mathrm{col}(\xi_2,\xi_3,\omega_m,i_q).$
+donde $z=\mathrm{col}(\xi_2,\xi_3,\omega_m,i_q)$ y $C_{p,0}(\lambda):=C_{p}(\lambda,0)$. Asumiendo la velocidad del 
+viento constante,\footnote{Se aclara al lector que esta suposición se asume solamente para el propósito del control 
+propuesto. Como se verá en las simulaciones, el hacer esto resulta en un control sencillo con un desempeño aceptable 
+cuando el sistema es sometido a perfiles de viento realistas.} el sistema $\Sigma_2$ anterior es un sistema invariante del tiempo. 
+
+% --------------- LEMA ------------------
+La discusión anterior se resume en el siguiente lema.\\
+
+\begin{lemma}
+    Considere el sistema WECS \eqref{eq:full_system}-\eqref{eq:definitions} en lazo cerrado con \eqref{valUd}-\eqref{xi}. El sistema 
+    resultante se compone de dos subsistemas desacoplados, que denominaremos $\Sigma_1$ y $\Sigma_2$, 
+    cuyas ecuaciones son las siguientes:
+    \begin{align*}
+        \Sigma_1: \dot x= & \begin{bmatrix}0&1\\  -\frac{1}{L}k_{I1} & -\frac{1}{L}(R+k_{P1}) 
+            \end{bmatrix}\\
+        \Sigma_2: \dot z=& \begin{bmatrix}
+            z_4 - (k_{P3}(z_3 - \omega^*_m) + k_{I3}z_2) \\
+            z_3 - \omega^*_m \\
+            -\frac{f_r}{J}z_3 + \frac{r\kappa_1}{Jv_w}\frac{C_{p,0}(\lambda)}{\lambda} - \frac{3}{2J}p\phi z_4 \\
+            -\frac{R+k_{P2}}{L}z_4 + \frac{k_{P2}k_{P3}}{L}(z_3 - \omega^*_m) + \frac{k_{P2}k_{I3}}{L}z_2 - \frac{k_{I2}}{L}z_1
+            \end{bmatrix}
+    \end{align*}
+    \hfill{$\triangle\triangle\triangle$}
+\end{lemma}
 
 A continuación, se linealizará el sistema alrededor del punto de equilibrio que cumpla con los objetivos 
 de control. Luego, se obtendrán las condiciones en las ganancias $k_{P}$s y $K_I$s que hacen que esa 
 linealización tenga valores propios en el semiplano complejo izquierdo. De acuerdo con el Método Indirecto 
 de Lyapunov, esto garantiza que el punto de equilibrio deseado sea exponencialmente estable.
 
-\subsection{Cálculo de puntos de equilibrio y linealización del segundo subsistema}
-Para encontrar los puntos de equilibrio, igualamos a cero las ecuaciones del sistema:
+\subsubsection*{Puntos de equilibrio de $\Sigma_1$ y $\Sigma_2$}
 
-\begin{align}
-z_4 - (k_{P3}(z_3 - \omega^*_m) + k_{I3}z_2) &= 0 \label{eq:ss1} \\
-z_3 - \omega^*_m &= 0 \label{eq:ss2} \\
--\frac{f}{J}z_3 + \frac{r\kappa_1}{Jv_w}\frac{C_p(\lambda, 0)}{\lambda} - \frac{3}{2J}p\phi z_4 &= 0 \label{eq:ss3} \\
--\frac{R+k_{P2}}{L}z_4 + \frac{k_{P2}k_{P3}}{L}(z_3 - \omega^*_m) + \frac{k_{P2}k_{I3}}{L}z_2 - \frac{k_{I2}}{L}z_1 &= 0 \label{eq:ss4}
+Como parte del análisis de estabilidad, primero se obtienen los puntos de equilibrio de ambos subsistemas. 
+Estos quedan enunciados en los siguientes lemas.
+
+\begin{lemma}
+    El sistema $\Sigma_1$ tiene un solo punto de equilibrio en $$x=\bar{x}:=0$$.
+    \hfill{$\triangle\triangle\triangle$}
+
+    \begin{proof}
+        Al igualar $\dot x=0$ en (1.37), resulta en la siguientes ecuaciones
+        \begin{align*}
+            x_2=&0\\
+            -(R+k_{P1})x_2-k_{I1}x_1  =&0 	
+        \end{align*}
+        Se concluye que $x_2=0$ es un punto de equibrio. Reemplazando lo anterior en la segunda ecuación queda
+        $$k_{I1}x_1  =0,$$
+        de donde se concluye que  tambien  $x_1=0$ es el valor de equilibrio para $x_1$.
+    \end{proof}
+\end{lemma}
+
+\begin{lemma}
+    El punto $\Sigma_2$ tiene un solo punto de equilibrio en 
+	\begin{align}\label{barz}
+	z=\bar z:=
+		\begin{bmatrix}
+			-\frac{2R}{3p\phi k_{I2}}(T^*_m - f_r\omega^*_m) \\[0.3cm]
+			\frac{2}{3p\phi k_{I3}}(T^*_m - f_r\omega^*_m) \\[0.3cm]
+			\omega^*_m \\[0.3cm]
+			\frac{2}{3p\phi}(T^*_m - f_r\omega^*_m)
+	\end{bmatrix}
+	\end{align}
+    donde $T^*_m := r\frac{\kappa_1 v_w C_{p,0}(\lambda^*)}{\lambda^*}$ es el torque mecánico en el 
+    equilibrio, $\lambda*:=\frac{r\omega_m^\star}{v_w}$  y $\omega_m^\star$ es la referencia de la velocidad 
+    angular  $\omega_m$.
+
+    \hfill{$\triangle\triangle\triangle$}
+
+    \begin{proof}
+        Para encontrar los puntos de equilibrio, hacemos $\dot z=0$ en \eqref{eq:sigma_2}. Esto resulta el siguiente sistema de ecuaciones:
+
+        \begin{align}
+        z_4 - [k_{P3}(z_3 - \omega^*_m) + k_{I3}z_2] &= 0 \label{eq:ss1} \\
+        z_3 - \omega^*_m &= 0 \label{eq:ss2} \\
+        -\frac{f}{J}z_3 + \frac{r\kappa_1}{Jv_w}\frac{C_{p,0}(\lambda)}{\lambda} - \frac{3}{2J}p\phi z_4 &= 0 \label{eq:ss3} \\
+        -\frac{R+k_{P2}}{L}z_4 + \frac{k_{P2}k_{P3}}{L}(z_3 - \omega^*_m) + \frac{k_{P2}k_{I3}}{L}z_2 - \frac{k_{I2}}{L}z_1 &= 0 \label{eq:ss4}
+        \end{align}
+
+        Procedemos a resolver el sistema paso a paso:
+
+        \begin{enumerate}
+        \item De la ecuación \eqref{eq:ss2} obtenemos directamente:
+        \begin{equation}
+        \bar{z}_3 = \omega^*_m \label{eq:eq1}
+        \end{equation}
+
+        \item Sustituyendo \eqref{eq:eq1} en \eqref{eq:ss1}:
+        \begin{align}
+        \bar{z}_4 - k_{I3}\bar{z}_2 &= 0 \label{eq:eq2}
+        \end{align}
+
+        \item De la ecuación \eqref{eq:ss3}, usando \eqref{eq:eq1} y $\lambda^* = \frac{r\omega^*_m}{v_w}$:
+        \begin{equation}
+        \bar{z}_4 = \frac{2}{3p\phi}(T^*_m - f\omega^*_m) \label{eq:eq3}
+        \end{equation}
+        %donde $T^*_m = r\frac{\kappa_1 v_w C_p(\lambda^*, 0)}{\lambda^*}$ es el torque mecánico en el equilibrio y $\omega_m^\star$ es la referencia de la velocidad angular de $\omega_m$.
+
+        \item Usando \eqref{eq:eq2} y \eqref{eq:eq3}:
+        \begin{equation}
+        \bar{z}_2 = \frac{1}{k_{I3}}\bar{z}_4 = \frac{2}{3p\phi k_{I3}}(T^*_m - f\omega^*_m) \label{eq:eq4}
+        \end{equation}
+
+        \item Finalmente, de la ecuación \eqref{eq:ss4}, usando las ecuaciones anteriores:
+        \begin{equation}
+        \bar{z}_1 = -\frac{R}{k_{I2}}\bar{z}_4 = -\frac{2R}{3p\phi k_{I2}}(T^*_m - f\omega^*_m) \label{eq:eq5}
+        \end{equation}
+        \end{enumerate}
+
+        Por lo tanto, el punto de equilibrio es el que se muestra en el enunciado del lema.
+    \end{proof}
+\end{lemma}
+
+\subsection{Análisis de estabilidad de $\Sigma_1$ y $\Sigma_2$ }
+
+
+Una vez que se encuentran los puntos de equilibrio, en esta subsección se analizará la estabilidad de 
+los mismos. Puesto que los subsistemas están desacoplados, la estabilidad de cada uno se puede estudiar 
+por separado.\\
+
+\begin{lemma}
+    Considere el sistema $\Sigma_1$ con $k_{P1}>-R$ y $k_{I1}>0$. Entonces, su punto de equilibrio 
+    $x=\bar x=0$ es exponencialmente, globalmente estable.
+
+    \hfill{$\triangle\triangle\triangle$}
+
+    \begin{proof}
+        El polinomio característico de  $A_1$  en (\ref{eq:sigma_1}) es el siguiente:
+        \begin{align}\label{p1}
+            p_1(s)=s^2 + \frac{k_{P1}+R}{L}s + \frac{k_{I1}}{L}.
+        \end{align}
+
+        Luego, por el criterio de estabilida de Routh, la condición necesaria y suficiente para que un polinomio de grado 
+        dos tenga sus raices en el semiplano izquierdo es que sus coeficientes sean positivos. Por tanto, tomando 
+        en cuenta que $L>0$, tenemos las siguientes relaciones
+        \begin{align}
+            k_{P1} +R > 0  \Longleftrightarrow k_{P1} &> -R\\
+            k_{I1} &> 0 
+        \end{align}
+    \end{proof}
+\end{lemma}
+
+-------------------\\
+De lo anterior, los valores proporcional e integral $k_{P1} = 0$ y $k_{I1} = -1$ garantizan la estabilidad de $\Sigma_1$.\\
+-------------------
+
+Por otro lado, para estudiar la estabilidad del subsistema $\Sigma_2$, se procederá a linealizarlo.
+Para tal motivo se calcula el Jacobiano y se evalúa en  el punto de equilibrio. Esto es, el sistema 
+linealizado tiene la forma:
+\begin{align}\label{dz}
+\Sigma_{2}^\mathrm{lin}:\;\;\;\;\dot{\delta z} =A_2 \delta z
 \end{align}
-
-Procedemos a resolver el sistema paso a paso:
-
-\begin{enumerate}
-\item De la ecuación \eqref{eq:ss2} obtenemos directamente:
-\begin{equation}
-\bar{z}_3 = \omega^*_m \label{eq:eq1}
-\end{equation}
-
-\item Sustituyendo \eqref{eq:eq1} en \eqref{eq:ss1}:
-\begin{align}
-\bar{z}_4 - k_{I3}\bar{z}_2 &= 0 \label{eq:eq2}
-\end{align}
-
-\item De la ecuación \eqref{eq:ss3}, usando \eqref{eq:eq1} y $\lambda^* = \frac{r\omega^*_m}{v_w}$:
-\begin{equation}
-\bar{z}_4 = \frac{2}{3p\phi}(T^*_m - f\omega^*_m) \label{eq:eq3}
-\end{equation}
-donde $T^*_m = r\frac{\kappa_1 v_w C_p(\lambda^*, 0)}{\lambda^*}$ es el torque mecánico en el equilibrio.
-
-\item Usando \eqref{eq:eq2} y \eqref{eq:eq3}:
-\begin{equation}
-\bar{z}_2 = \frac{1}{k_{I3}}\bar{z}_4 = \frac{2}{3p\phi k_{I3}}(T^*_m - f\omega^*_m) \label{eq:eq4}
-\end{equation}
-
-\item Finalmente, de la ecuación \eqref{eq:ss4}, usando las ecuaciones anteriores:
-\begin{equation}
-\bar{z}_1 = -\frac{R}{k_{I2}}\bar{z}_4 = -\frac{2R}{3p\phi k_{I2}}(T^*_m - f\omega^*_m) \label{eq:eq5}
-\end{equation}
-\end{enumerate}
-
-Por lo tanto, el punto de equilibrio es:
-\begin{equation}
-\bar{z} = \begin{bmatrix}
--\frac{2R}{3p\phi k_{I2}}(T^*_m - f\omega^*_m) \\[0.3cm]
-\frac{2}{3p\phi k_{I3}}(T^*_m - f\omega^*_m) \\[0.3cm]
-\omega^*_m \\[0.3cm]
-\frac{2}{3p\phi}(T^*_m - f\omega^*_m)
-\end{bmatrix} \label{eq:eq_point}
-\end{equation}
-
-Para linealizar el sistema alrededor del punto de equilibrio, calculamos el Jacobiano:
-
+donde $\delta z$ representa a la variable del sistema linealealizado,  
 \begin{equation}
 A_2 = \left.\frac{\partial f}{\partial z}\right|_{z=\bar{z}} = \begin{bmatrix}
 0 & -k_{I3} & -k_{P3} & 1 \\
 0 & 0 & 1 & 0 \\
-0 & 0 & -\frac{f}{J} + \gamma & -\frac{3}{2J}p\phi \\
+0 & 0 & -\frac{f_r}{J} + {\gamma \over J} & -\frac{3}{2J}p\phi \\
 -\frac{k_{I2}}{L} & \frac{k_{P2}k_{I3}}{L} & \frac{k_{P2}k_{P3}}{L} & -\frac{R+k_{P2}}{L}
 \end{bmatrix} \label{eq:A2_symbolic}
 \end{equation}
 
-donde:
-\begin{equation}
-\gamma = \frac{r\kappa_1}{Jv_w}\left.\frac{\partial}{\partial \omega_m}\left(\frac{C_p(\lambda, 0)}{\lambda}\right)\right|_{\omega_m=\omega^*_m} \label{eq:gamma}
-\end{equation}
-
-Usando los parámetros del sistema:
-\begin{align*}
-R &= 0.3676 \text{ }\Omega \\
-L &= 3.55\times10^{-3} \text{ H} \\
-p &= 28 \\
-J &= 7.856 \text{ kg}\cdot\text{m}^2 \\
-\phi &= 0.2867 \text{ Wb} \\
-r &= 1.84 \text{ m} \\
-f &= 0.0003035 \\
-\kappa_1 &= 70 \\
-v_w &= 10 \text{ m/s} \\
-\lambda^* &= 7 \\
-\omega^*_m &= \frac{\lambda^* v_w}{r} = 38.0435 \text{ rad/s}.
-\end{align*}
-
-Obteniendo un valor para $c_p$ a partir de estos parámetros:
-
-\begin{equation}
-C_p(\lambda) = 0.5\left(\frac{116}{\lambda} - 0.4\cdot5 - 5\right)e^{-21/\lambda} \label{eq:cp}
-\end{equation}
-
-Para calcular $\gamma$ necesitamos:
+y usando la regla de la cadena:
 \begin{align}
-\frac{\partial}{\partial \omega_m}\left(\frac{C_p(\lambda)}{\lambda}\right) &= \frac{\partial}{\partial \lambda}\left(\frac{C_p(\lambda)}{\lambda}\right)\frac{\partial \lambda}{\partial \omega_m} \label{eq:gamma_chain} \\
-&= \frac{\partial}{\partial \lambda}\left[\frac{0.5}{\lambda}\left(\frac{116}{\lambda} - 2 - 5\right)e^{-21/\lambda}\right]\frac{r}{v_w} \label{eq:gamma_expanded}
+\gamma :=&\left. \frac{r\kappa_1}{v_w} \frac{\partial }{\partial \lambda}\left[\frac{C_{p,0}}{\lambda }\right]\right|_{\omega_m=\omega^*_m,\lambda=\lambda^\star}\nonumber\\
+=&\left. \frac{r\kappa_1}{v_w}\frac{\partial\lambda}{\partial \omega_m}\left[{1\over \lambda}\frac{\partial C_{p,0}}{\partial\lambda\nonumber }-\frac{1}{\lambda^2}C_{p,0}\right]\right|_{\omega_m=\omega^*_m,\lambda=\lambda^\star}\\
+=&  \frac{r^2\kappa_1}{v_w^2}{1\over \lambda^\star}\left[\left.\frac{\partial C_{p,0}}{\partial \lambda}\right|_{\lambda=\lambda^\star}-{1\over \lambda^\star} C_{p,0}(\lambda^\star) \right]\nonumber \\
+=& - \frac{r^2\kappa_1}{v_w^2}{1\over (\lambda^\star)^2}  C_{p,0}(\lambda^\star)
+\label{eq:gamma}
 \end{align}
 
-Desarrollando la derivada:
-\begin{align}
-\frac{\partial}{\partial \lambda}\left(\frac{C_p(\lambda)}{\lambda}\right) &= 0.5e^{-21/\lambda}\left[-\frac{1}{\lambda^2}\left(\frac{116}{\lambda} - 2 - 5\right) + \ldots \right.
-\\ 
-\ldots + &\left.\frac{1}{\lambda}\left(-\frac{116}{\lambda^2}\right) + \frac{21}{\lambda^2}\frac{1}{\lambda}\left(\frac{116}{\lambda} - 2 - 5\right)\right] \label{eq:dcp_dlambda}
-\end{align}
+Puesto que los parámetros son positivos y $C_{p,0}>0$, entonces $\gamma<0$. A partir de lo anterior, 
+es posible enunciar el siguiente lema. Así mismo, es posible concluir que la entrada (3,3) de la 
+matriz $A_2$ toma valores negativos, esto es, $A_{2}^{(3,3)}<0$.\\
 
-Evaluando en $\lambda^* = 7$, un valor común para la relación de la velocidad punta:
-\begin{equation}
-\left.\frac{\partial}{\partial \lambda}\left(\frac{C_p(\lambda)}{\lambda}\right)\right|_{\lambda=7} = -0.0082 \label{eq:dcp_numeric}
+\begin{lemma}
+    Considere el sistema $\Sigma_2^{\mathrm{lin}}$ en \eqref{dz} que consiste en la linealización 
+    de $\Sigma_2$. El punto de equilibrio $z=\bar z$, con la constante $\bar z$  definida en 
+    \eqref{barz}, es exponencialmente estable si y solo si .... 
+
+    \begin{proof}
+        La estabilidad del sistema  \eqref{dz} se puede inferir de la estabilidad de la matriz%\footnote{\textcolor{blue}{Note que la matriz $\bar A_2$ se puede obtener a partir de un cambio de variables de \eqref{barz}. Por ser muy sencillo, el procedimiento se omitirá.}}
+        $$\bar A_2:=\begin{bmatrix}
+            0 & -k_{I3} & -k_{P3} & 1 \\
+            0 & 0 & 1 & 0 \\
+            0 & 0 & -\bar \gamma_1  & -\bar\gamma_2 \\
+            -K_{I2}' & k_{P2}'k_{I3} & k_{P2}'\textcolor{red}{\underbrace{K_{P3}'}_{k_{\text P3} \text ?}}& -(\frac{R}{L}+k_{P2}')
+        \end{bmatrix}$$
+        donde $\bar\gamma_1:=\frac{f_r-\gamma}{J}>0,$ $\bar \gamma_2:=\frac{3}{2J}p\phi>0$, $K_{I2}'=\frac{k_{I2}}{L}$, $K_{P2}'=\frac{K_{P2}}{L}$,  .
+        \textcolor{red}{Comentario: $k_P3$ va sin cambio de variable, cierto?}
+    \end{proof}
+\end{lemma}
+
+El polinomio característico de la matriz $\bar{A_2}$ es 
+
+\begin{equation}\label{eq:poly_sigma_2}
+    \begin{split}
+        p_2(s) =& s^4 + \left(\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'\right)s^3 + \ldots 
+        \\ 
+        &\ldots + \left( \frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} \right)s^2 + \ldots 
+        \\
+        &\ldots + \left( \bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}' \right)s + \ldots
+        \\
+        &\ldots + \left( \bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3} \right)
+    \end{split}
 \end{equation}
 
-Por lo tanto:
-\begin{equation}
-\gamma = -0.0082\cdot\frac{1.84}{10} = -0.0015 \label{eq:gamma_numeric}
+El polinomio característico tiene la forma :
+\begin{equation}\label{eq:poly_sigma_2_form}
+    p_2(s) = a_4s^4 + a_3s^3 +a_2s^2 a_1s + a_0
 \end{equation}
 
-La matriz $A_2$ con los valores numéricos es:
-
-\begin{equation}
-\resizebox{\textwidth}{!}{$
-A_2 = 
-\begin{bmatrix}
-0 & -k_{I3} & -k_{P3} & 1 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & -3.86\times10^{-5} - 0.0015 & -1.5328 \\
--281.69k_{I2} & 281.69k_{P2}k_{I3} & 281.69k_{P2}k_{P3} & -281.69k_{P2} - 103.55
-\end{bmatrix}
-$}
-\label{eq:A2_numeric_final}
-\end{equation}
-
-Y su polinomio característico:
-\begin{multline}
-p_2(s) = s^4 + (281.69k_{P2} + 103.55)s^3 + \\ 
-(281.69k_{I2} + 431.76k_{P2}k_{P3} - 0.0015k_{P2} - 0.0004)s^2 + \\
-(431.76k_{I2}k_{P3} - 0.0015k_{I2} + 431.76k_{P2}k_{I3})s + 431.76k_{I2}k_{I3} \label{eq:char_poly}
-\end{multline}
-
-El polinomio característico tiene la forma:
-\begin{equation}
-p_2(s) = a_4s^4 + a_3s^3 + a_2s^2 + a_1s + a_0 \label{eq:poly_rh}
-\end{equation}
-
-donde:
-\begin{align}
-a_4 &= 1 \label{eq:a4} \\
-a_3 &= 281.69k_{P2} + 103.55 \label{eq:a3} \\
-a_2 &= 281.69k_{I2} + 431.76k_{P2}k_{P3} - 0.0015k_{P2} - 0.0004 \label{eq:a2} \\
-a_1 &= 431.76k_{I2}k_{P3} - 0.0015k_{I2} + 431.76k_{P2}k_{I3} \label{eq:a1} \\
-a_0 &= 431.76k_{I2}k_{I3} \label{eq:a0}
-\end{align}
-
-La tabla de Routh-Hurwitz para un polinomio de cuarto orden requiere que la primera columna tenga todos sus elementos positivos. La tabla tiene la siguiente estructura:
+La tabla de Routh-Hurwitz para un polinomio de cuarto orden requiere que la primera columna tenga 
+todos sus elementos positivos. La tabla tiene la siguiente estructura:
 
 \begin{equation}
 \begin{array}{c|ccc}
 s^4 & a_4 & a_2 & a_0 \\
-s^3 & a_3 & a_1 & 0 \\
-s^2 & b_1 & b_2 & 0 \\
-s^1 & c_1 & 0 & 0 \\
-s^0 & d_1 & 0 & 0
+s^3 & a_3 & a_1 & \textcolor{white}{0} \\
+s^2 & b_1 & b_2 & \textcolor{white}{0} \\
+s^1 & c_1 & \textcolor{white}{0} & \textcolor{white}{0} \\
+s^0 & d_1 & \textcolor{white}{0} & \textcolor{white}{0}
 \end{array} \label{eq:rh_table}
 \end{equation}
 
@@ -696,50 +752,348 @@ c_1 &= \frac{b_1a_1 - a_3b_2}{b_1} = \frac{b_1a_1 - a_3a_0}{b_1} \label{eq:c1} \
 d_1 &= a_0 \label{eq:d1}
 \end{align}
 
-Para garantizar estabilidad, necesitamos:
+Para garantizar estabilidad, necesitamos que todos los coeficientes de $p_2(s)$ sean positivos y que se cumpla:
 
-\begin{align}
-a_4 &> 0 \label{eq:cond0} \\
-a_3 &> 0 \label{eq:cond1} \\
-a_2 &> 0 \label{eq:cond2} \\
-a_1 &> 0 \label{eq:cond3} \\
-a_0 &> 0 \label{eq:cond4} \\
-b_1 &> 0 \label{eq:cond5} \\
-c_1 &> 0 \label{eq:cond6}
-\end{align}
+\begin{align*}
+b_1 &= \frac{a_3a_2 - a_4a_1}{a_3} > 0 \\
+c_1 &= \frac{b_1a_1 - a_3a_0}{b_1} > 0 \\
+\end{align*}
 
-De \eqref{eq:cond1}:
-\begin{equation}
-281.69k_{P2} + 103.55 > 0 \implies k_{P2} > -0.3676 \label{eq:kp2_cond}
-\end{equation}
+\begin{itemize}
+    \item El coefiente $a_4 = 1$ es constante y positivo.
+    \item Para el coeficiente $a_3$ necesitamos que se cumpla:
+    \begin{align*}
+        & \frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}' > 0
+        \\
+        \Longleftrightarrow\;\; & k_{\textrm P2}' > - \left(\frac{R}{L} + \bar{\gamma_1}\right)
+        \\
+        \Longleftrightarrow\;\; & k_{\textrm P2} > -(R + L\bar{\gamma_1}) \text{ sabiendo que } L > 0
+    \end{align*}
 
-De \eqref{eq:cond4}:
-\begin{equation}
-431.76k_{I2}k_{I3} > 0 \implies k_{I2}k_{I3} > 0 \label{eq:ki_cond}
-\end{equation}
+    \item Para el coeficiente $a_2$ la condición es:
+    \begin{align*}
+        & \frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} > 0
+        \\ 
+        \Longleftrightarrow\;\; & k_{\textrm I2}' > 0; k_{\textrm P2}' > 0; k_{\textrm P3} > 0
+    \end{align*}
 
-Para simplificar el análisis, podemos hacer:
-\begin{equation}
-k_{P2} = 0, \quad k_{I2} = 1, \quad k_{I3} = 1 \label{eq:k_values}
-\end{equation}
+    \item Para el coeficiente $a_1$ la condición es:
+    \begin{align*}
+        & \bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}' > 0
+        \\
+        \Longleftrightarrow\;\; & k_{\textrm I2}' > 0; k_{\textrm P2}' > 0; k_{\textrm I3} > 0; k_{\textrm P3} > 0; 
+    \end{align*}
 
-Sustituyendo estos valores en \eqref{eq:cond2} y \eqref{eq:cond3}:
-\begin{align}
-281.69 + 431.76k_{P3} - 0.0004 &> 0 \label{eq:kp3_cond1} \\
-431.76k_{P3} - 0.0015 + 0 &> 0 \label{eq:kp3_cond2}
-\end{align}
+    \item Para el coeficiente $a_0$ la condición es:
+    \begin{align*}
+        & \bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3} > 0
+        \\
+        \Longleftrightarrow\;\; & k_{\textrm I2}' > 0; k_{\textrm I3} > 0
+    \end{align*}
 
-De donde obtenemos:
-\begin{equation}
-k_{P3} > 3.48\times10^{-6} \label{eq:kp3_min}
-\end{equation}
+    \item Para que se cumpla que $b_1 > 0$ necesitamos:
+    \begin{align*}
+        b_1 = \frac{a_3a_2 - a_4a_1}{a_3} > 0
+    \end{align*}
+    Como $a_4 = 1$
+    \begin{align*}
+        \Rightarrow\;\; & b_1 = \frac{a_3a_2 - a_1}{a_3} = a_2 - \frac{a_1}{a_3} > 0
+        \\
+        \Rightarrow\;\; & a_2 > \frac{a_1}{a_3}
+        \\
+        \Rightarrow\;\; & \frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} 
+        > \frac{\bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}'}{\bar{\gamma_1} + k_{\textrm P2}'}
+    \end{align*}
 
-Por lo tanto, un conjunto de valores que garantiza la estabilidad del sistema es:
-\begin{align}
-k_{P2} &= 0 \label{eq:kp2_final} \\
-k_{I2} &= 1 \label{eq:ki2_final} \\
-k_{P3} &= 1 \label{eq:kp3_final} \\
-k_{I3} &= 1 \label{eq:ki3_final}
-\end{align}
+    \item Para que se cumpla que $c_1 > 0$ necesitamos:
+    \begin{align*}
+        & c_1 = \frac{b_1a_1 - a_3b_2}{b_1} = \frac{b_1a_1 - a_3a_0}{b_1} = a_1 - \frac{a_3a_0}{b_1} > 0
+        \\
+        \Rightarrow\;\; &a_1 > \frac{a_0a_3}{b_1}
+        \\
+        \Rightarrow\;\; &\bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}'
+        > \ldots \\
+        \ldots &\frac{\left(\bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3}\right)\left(\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'\right)}{\frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} 
+        - \frac{\bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}'}{\bar{\gamma_1} + k_{\textrm P2}'}}
+    \end{align*}
+\end{itemize}
 
-}
+
+
+%_---------------
+
+% \textcolor{blue}{Comentario: Puedes repetir el análisis de RH con la matriz $\bar A_2$? Las k's, R, fr y $\gamma$ son constantes. No hay por que entrar en detalle en cómo está definida la funcion Cp para realizar este análisis. }
+% \textcolor{blue}{
+% Es decir, realizar lo que tienes en (1.65)-(1.69) pero escribiendo de forma simbóilica los parámetros. En el  polinomio caracteristicco deben aparecer los parámetros anteriores.}
+
+
+% \hfill{$\square$}
+
+% ---------------\\
+% \textcolor{blue}{Comentario: No es necesario definir los valores de los parámetros. Eso se puede hacer después. Tal vez en la parte de simulación.}\\
+% -----------------
+
+% -------------------\\
+
+% La matriz $A_2$ con los valores numéricos es:
+
+% \begin{equation}
+% \resizebox{\textwidth}{!}{$
+% A_2 = 
+% \begin{bmatrix}
+% 0 & -k_{I3} & -k_{P3} & 1 \\
+% 0 & 0 & 1 & 0 \\
+% 0 & 0 & -3.86\times10^{-5} - 0.0015 & -1.5328 \\
+% -281.69k_{I2} & 281.69k_{P2}k_{I3} & 281.69k_{P2}k_{P3} & -281.69k_{P2} - 103.55
+% \end{bmatrix}
+% $}
+% \label{eq:A2_numeric_final}
+% \end{equation}
+
+% Y su polinomio característico:
+% \begin{multline}
+% p_2(s) = s^4 + (281.69k_{P2} + 103.55)s^3 + \\ 
+% (281.69k_{I2} + 431.76k_{P2}k_{P3} - 0.0015k_{P2} - 0.0004)s^2 + \\
+% (431.76k_{I2}k_{P3} - 0.0015k_{I2} + 431.76k_{P2}k_{I3})s + 431.76k_{I2}k_{I3} \label{eq:char_poly}
+% \end{multline}
+
+% El polinomio característico tiene la forma:
+% \begin{equation}
+% p_2(s) = a_3s^4 + a_2s^3 + a_1s^2 + a_0s + a_4 \label{eq:poly_rh}
+% \end{equation}
+
+% donde:
+% \begin{align}
+% a_3 &= 1 \label{eq:a3} \\
+% a_2 &= 281.69k_{P2} + 103.55 \label{eq:a2} \\
+% a_1 &= 281.69k_{I2} + 431.76k_{P2}k_{P3} - 0.0015k_{P2} - 0.0004 \label{eq:a1} \\
+% a_0 &= 431.76k_{I2}k_{P3} - 0.0015k_{I2} + 431.76k_{P2}k_{I3} \label{eq:a0} \\
+% a_4 &= 431.76k_{I2}k_{I3} \label{eq:a4}
+% \end{align}
+
+
+% donde:
+% \begin{align}
+% b_1 &= \frac{a_2a_1 - a_0}{a_2} \label{eq:b1} \\
+% b_2 &= \frac{a_2a_4 - 0}{a_2} = a_4 \label{eq:b2} \\
+% c_1 &= \frac{b_1a_0 - a_4}{b_1} \label{eq:c1} \\
+% d_1 &= a_4 \label{eq:d1}
+% \end{align}
+
+% Para garantizar estabilidad, necesitamos:
+
+% \begin{align}
+% a_2 &> 0 \label{eq:cond1} \\
+% a_1 &> 0 \label{eq:cond2} \\
+% a_0 &> 0 \label{eq:cond3} \\
+% a_4 &> 0 \label{eq:cond4} \\
+% b_1 &> 0 \label{eq:cond5} \\
+% c_1 &> 0 \label{eq:cond6}
+% \end{align}
+
+% De \eqref{eq:cond1}:
+% \begin{equation}
+% 281.69k_{P2} + 103.55 > 0 \implies k_{P2} > -0.3676 \label{eq:kp2_cond}
+% \end{equation}
+
+% De \eqref{eq:cond4}:
+% \begin{equation}
+% 431.76k_{I2}k_{I3} > 0 \implies k_{I2}k_{I3} > 0 \label{eq:ki_cond}
+% \end{equation}
+
+% Para simplificar el análisis, podemos hacer:
+% \begin{equation}
+% k_{P2} = 0, \quad k_{I2} = 1, \quad k_{I3} = 1 \label{eq:k_values}
+% \end{equation}
+
+% Sustituyendo estos valores en \eqref{eq:cond2} y \eqref{eq:cond3}:
+% \begin{align}
+% 281.69 + 431.76k_{P3} - 0.0004 &> 0 \label{eq:kp3_cond1} \\
+% 431.76k_{P3} - 0.0015 + 0 &> 0 \label{eq:kp3_cond2}
+% \end{align}
+
+% De donde obtenemos:
+% \begin{equation}
+% k_{P3} > 3.48\times10^{-6} \label{eq:kp3_final_cond}
+% \end{equation}
+
+% Por lo tanto, un conjunto de valores que garantiza la estabilidad del sistema es:
+% \begin{align}
+% k_{P2} &= 0 \label{eq:kp2_final} \\
+% k_{I2} &= 1 \label{eq:ki2_final} \\
+% k_{P3} &= 1 \label{eq:kp3_final} \\
+% k_{I3} &= 1 \label{eq:ki3_final}
+% \end{align}
+% A_2 = \left.\frac{\partial f}{\partial z}\right|_{z=\bar{z}} = \begin{bmatrix}
+% 0 & -k_{I3} & -k_{P3} & 1 \\
+% 0 & 0 & 1 & 0 \\
+% 0 & 0 & -\frac{f_r}{J} + {\gamma \over J} & -\frac{3}{2J}p\phi \\
+% -\frac{k_{I2}}{L} & \frac{k_{P2}k_{I3}}{L} & \frac{k_{P2}k_{P3}}{L} & -\frac{R+k_{P2}}{L}
+% \end{bmatrix} \label{eq:A2_symbolic}
+% \end{equation}
+
+% y usando la regla de la cadena:
+% \begin{align}
+% \gamma :=&\left. \frac{r\kappa_1}{v_w} \frac{\partial }{\partial \lambda}\left[\frac{C_{p,0}}{\lambda }\right]\right|_{\omega_m=\omega^*_m,\lambda=\lambda^\star}\nonumber\\
+% =&\left. \frac{r\kappa_1}{v_w}\frac{\partial\lambda}{\partial \omega_m}\left[{1\over \lambda}\frac{\partial C_{p,0}}{\partial\lambda\nonumber }-\frac{1}{\lambda^2}C_{p,0}\right]\right|_{\omega_m=\omega^*_m,\lambda=\lambda^\star}\\
+% =&  \frac{r^2\kappa_1}{v_w^2}{1\over \lambda^\star}\left[\left.\frac{\partial C_{p,0}}{\partial \lambda}\right|_{\lambda=\lambda^\star}-{1\over \lambda^\star} C_{p,0}(\lambda^\star) \right]\nonumber \\
+% =& - \frac{r^2\kappa_1}{v_w^2}{1\over (\lambda^\star)^2}  C_{p,0}(\lambda^\star)
+% \label{eq:gamma}
+% \end{align}
+
+% Puesto que los parámetros son positivos y $C_{p,0}>0$, entonces $\gamma<0$. A partir de lo anterior, 
+% es posible enunciar el siguiente lema. Asismismo, es posible conlcuir que la entrada (3,3) de la 
+% matriz $A_2$ toma valores negativos, esto es, $A_{2}^{(3,3)}<0$.\\
+
+% \begin{lemma}
+%     Considere el sistema $\Sigma_2^{\mathrm{lin}}$ en \eqref{dz} que consiste en la linealización 
+%     de $\Sigma_2$. El punto de equilibrio $z=\bar z$, con la constante $\bar z$  definida en 
+%     \eqref{barz}, es exponencialmente estable si y solo si .... 
+
+%     \begin{proof}
+%         La estabilidad del sistema  \eqref{dz} se puede inferir de la estabilidad de la matriz%\footnote{\textcolor{blue}{Note que la matriz $\bar A_2$ se puede obtener a partir de un cambio de variables de \eqref{barz}. Por ser muy sencillo, el procedimiento se omitirá.}}
+%         $$\bar A_2:=\begin{bmatrix}
+%             0 & -k_{I3} & -k_{P3} & 1 \\
+%             0 & 0 & 1 & 0 \\
+%             0 & 0 & -\bar \gamma_1  & -\bar\gamma_2 \\
+%             -K_{I2}' & k_{P2}'k_{I3} & k_{P2}'\textcolor{red}{\underbrace{K_{P3}'}_{k_{\text P3} \text ?}}& -(\frac{R}{L}+k_{P2}')
+%         \end{bmatrix}$$
+%         donde $\bar\gamma_1:=\frac{f_r-\gamma}{J}>0,$ $\bar \gamma_2:=\frac{3}{2J}p\phi>0$, $K_{I2}'=\frac{k_{I2}}{L}$, $K_{P2}'=\frac{K_{P2}}{L}$,  .
+%         \textcolor{red}{Comentario: $k_P3$ va sin cambio de variable, cierto?}
+%     \end{proof}
+% \end{lemma}
+
+% El polinomio característico de la matriz $\bar{A_2}$ es 
+
+% \begin{equation}\label{eq:poly_sigma_2}
+%     \begin{split}
+%         p_2(s) =& s^4 + \left(\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'\right)s^3 + \ldots 
+%         \\ 
+%         &\ldots + \left( \frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} \right)s^2 + \ldots 
+%         \\
+%         &\ldots + \left( \bar{\gamma_1}k_{\textrm I2} + \bar{\gamma_2}k_{\textrm I2}k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2} \right)s + \ldots
+%         \\
+%         &\ldots + \left( \bar{\gamma_2}k_{\textrm I2}k_{\textrm I3} \right)
+%     \end{split}
+% \end{equation}
+
+% El polinomio característico tiene la forma :
+% \begin{equation}\label{eq:poly_sigma_2_form}
+%     p_2(s) = a_4s^4 + a_3s^3 +a_2s^2 a_1s + a_0
+% \end{equation}
+
+% La tabla de Routh-Hurwitz para un polinomio de cuarto orden requiere que la primera columna tenga 
+% todos sus elementos positivos. La tabla tiene la siguiente estructura:
+
+% \begin{equation}
+% \begin{array}{c|ccc}
+% s^4 & a_4 & a_2 & a_0 \\
+% s^3 & a_3 & a_1 & 0 \\
+% s^2 & b_1 & b_2 & 0 \\
+% s^1 & c_1 & 0 & 0 \\
+% s^0 & d_1 & 0 & 0
+% \end{array} \label{eq:rh_table}
+% \end{equation}
+% % \textcolor{blue}{Comentario: Puedes repetir el análisis de RH con la matriz $\bar A_2$? Las k's, R, fr y $\gamma$ son constantes. No hay por que entrar en detalle en cómo está definida la funcion Cp para realizar este análisis. }
+% % \textcolor{blue}{
+% % Es decir, realizar lo que tienes en (1.65)-(1.69) pero escribiendo de forma simbóilica los parámetros. En el  polinomio caracteristicco deben aparecer los parámetros anteriores.}
+
+
+% % \hfill{$\square$}
+
+% % ---------------\\
+% % \textcolor{blue}{Comentario: No es necesario definir los valores de los parámetros. Eso se puede hacer después. Tal vez en la parte de simulación.}\\
+% % -----------------
+
+% % -------------------\\
+
+% La matriz $A_2$ con los valores numéricos es:
+
+% \begin{equation}
+% \resizebox{\textwidth}{!}{$
+% A_2 = 
+% \begin{bmatrix}
+% 0 & -k_{I3} & -k_{P3} & 1 \\
+% 0 & 0 & 1 & 0 \\
+% 0 & 0 & -3.86\times10^{-5} - 0.0015 & -1.5328 \\
+% -281.69k_{I2} & 281.69k_{P2}k_{I3} & 281.69k_{P2}k_{P3} & -281.69k_{P2} - 103.55
+% \end{bmatrix}
+% $}
+% \label{eq:A2_numeric_final}
+% \end{equation}
+
+% Y su polinomio característico:
+% \begin{multline}
+% p_2(s) = s^4 + (281.69k_{P2} + 103.55)s^3 + \\ 
+% (281.69k_{I2} + 431.76k_{P2}k_{P3} - 0.0015k_{P2} - 0.0004)s^2 + \\
+% (431.76k_{I2}k_{P3} - 0.0015k_{I2} + 431.76k_{P2}k_{I3})s + 431.76k_{I2}k_{I3} \label{eq:char_poly}
+% \end{multline}
+
+% El polinomio característico tiene la forma:
+% \begin{equation}
+% p_2(s) = a_3s^4 + a_2s^3 + a_1s^2 + a_0s + a_4 \label{eq:poly_rh}
+% \end{equation}
+
+% donde:
+% \begin{align}
+% a_3 &= 1 \label{eq:a3} \\
+% a_2 &= 281.69k_{P2} + 103.55 \label{eq:a2} \\
+% a_1 &= 281.69k_{I2} + 431.76k_{P2}k_{P3} - 0.0015k_{P2} - 0.0004 \label{eq:a1} \\
+% a_0 &= 431.76k_{I2}k_{P3} - 0.0015k_{I2} + 431.76k_{P2}k_{I3} \label{eq:a0} \\
+% a_4 &= 431.76k_{I2}k_{I3} \label{eq:a4}
+% \end{align}
+
+
+% donde:
+% \begin{align}
+% b_1 &= \frac{a_2a_1 - a_0}{a_2} \label{eq:b1} \\
+% b_2 &= \frac{a_2a_4 - 0}{a_2} = a_4 \label{eq:b2} \\
+% c_1 &= \frac{b_1a_0 - a_4}{b_1} \label{eq:c1} \\
+% d_1 &= a_4 \label{eq:d1}
+% \end{align}
+
+% Para garantizar estabilidad, necesitamos:
+
+% \begin{align}
+% a_2 &> 0 \label{eq:cond1} \\
+% a_1 &> 0 \label{eq:cond2} \\
+% a_0 &> 0 \label{eq:cond3} \\
+% a_4 &> 0 \label{eq:cond4} \\
+% b_1 &> 0 \label{eq:cond5} \\
+% c_1 &> 0 \label{eq:cond6}
+% \end{align}
+
+% De \eqref{eq:cond1}:
+% \begin{equation}
+% 281.69k_{P2} + 103.55 > 0 \implies k_{P2} > -0.3676 \label{eq:kp2_cond}
+% \end{equation}
+
+% De \eqref{eq:cond4}:
+% \begin{equation}
+% 431.76k_{I2}k_{I3} > 0 \implies k_{I2}k_{I3} > 0 \label{eq:ki_cond}
+% \end{equation}
+
+% Para simplificar el análisis, podemos hacer:
+% \begin{equation}
+% k_{P2} = 0, \quad k_{I2} = 1, \quad k_{I3} = 1 \label{eq:k_values}
+% \end{equation}
+
+% Sustituyendo estos valores en \eqref{eq:cond2} y \eqref{eq:cond3}:
+% \begin{align}
+% 281.69 + 431.76k_{P3} - 0.0004 &> 0 \label{eq:kp3_cond1} \\
+% 431.76k_{P3} - 0.0015 + 0 &> 0 \label{eq:kp3_cond2}
+% \end{align}
+
+% De donde obtenemos:
+% \begin{equation}
+% k_{P3} > 3.48\times10^{-6} \label{eq:kp3_final_cond}
+% \end{equation}
+
+% Por lo tanto, un conjunto de valores que garantiza la estabilidad del sistema es:
+% \begin{align}
+% k_{P2} &= 0 \label{eq:kp2_final} \\
+% k_{I2} &= 1 \label{eq:ki2_final} \\
+% k_{P3} &= 1 \label{eq:kp3_final} \\
+% k_{I3} &= 1 \label{eq:ki3_final}
+% \end{align}
+

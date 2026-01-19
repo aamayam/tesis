@@ -11,6 +11,7 @@
 \usepackage{graphicx, pgfplots, pgfplotstable, filecontents, tikz, listings, color, float} %Para gráficos y figuras
 \usepackage{csquotes, multirow, libertine, adjustbox, threeparttable} % Para citas y tablas
 \usepackage[nottoc]{tocbibind}
+\usepackage{mdframed} % marco para teoremas y lemas
 % \usepackage[backend=bibtex, style=authoryear, autocite=inline]{biblatex} % Para otro tipo de citación
 %\usepackage[backend=biber,style=ieee,citestyle=authoryear]{biblatex} % Para citación utilizando APA
 %\DeclareLanguageMapping{spanish}{spanish-ieee}
@@ -50,6 +51,53 @@
 \hbadness=10000
 \linespread{1.25} %Para tener interlineado de 1.5 de Word
 
+% Define el estilo del teorema
+\theoremstyle{definition}
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{lemma}[theorem]{Lema}
+
+% Envuelve en marco
+\surroundwithmdframed[
+  linewidth=0.5pt,
+  linecolor=black,
+  topline=true,
+  bottomline=true,
+  leftline=true,
+  rightline=true,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  innerleftmargin=8pt,
+  innerrightmargin=8pt
+]{theorem}
+
+\surroundwithmdframed[
+  linewidth=0.5pt,
+  linecolor=black,
+  topline=true,
+  bottomline=true,
+  leftline=true,
+  rightline=true,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  innerleftmargin=8pt,
+  innerrightmargin=8pt
+]{lemma}
+
+% ---- Prueba en lema/teorema ----
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{\par
+  \pushQED{\qed}%
+  \normalfont \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \item[\hskip\labelsep
+        \textbf{#1:}]\ignorespaces  % Cambiado a \textbf
+}{%
+  \popQED\endtrivlist\@endpefalse
+}
+\makeatother
+
+
+%---- INICIA EL DOCUMENTO -------
 \begin{document}
 
 %----------------------------------------------------------------------------------------
