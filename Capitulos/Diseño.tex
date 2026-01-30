@@ -760,23 +760,25 @@ c_1 &= \frac{b_1a_1 - a_3a_0}{b_1} > 0 \\
 El coefiente $a_4 = 1$ es constante y positivo.\\ 
 
 Para el coeficiente $a_3$ necesitamos que se cumpla:
-\begin{align*}
+\begin{equation} \label{eq: cond_a3}
+    \begin{split}
     & \frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}' > 0
     \\
     \Longleftrightarrow\;\; & k_{\textrm P2}' > - \left(\frac{R}{L} + \bar{\gamma_1}\right)
     \\
     \Longleftrightarrow\;\; & k_{\textrm P2} > -(R + L\bar{\gamma_1}) \text{ sabiendo que } L > 0
-\end{align*}
+    \end{split}
+\end{equation}
 
 Para el coeficiente $a_2$ la condición es:
-\begin{align*}
+\begin{align} \label{eq: cond_a2}
     & \frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} > 0
-\end{align*}
+\end{align}
 
 Para el coeficiente $a_1$ la condición es:
-\begin{align*}
+\begin{align} \label{eq: cond_a1}
     & \bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}' > 0
-\end{align*}
+\end{align}
 
 Para el coeficiente $a_0$ la condición es:
 \begin{align*}
@@ -808,63 +810,7 @@ Para que se cumpla que $c_1 > 0$ necesitamos:
     - \frac{\bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3}\left(\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'\right)}{\varrho} > 0\label{eq: cond_c1}
 \end{align}
 
-% \begin{itemize}
-%     \item El coefiente $a_4 = 1$ es constante y positivo.
-%     \item Para el coeficiente $a_3$ necesitamos que se cumpla:
-%     \begin{align*}
-%         & \frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}' > 0
-%         \\
-%         \Longleftrightarrow\;\; & k_{\textrm P2}' > - \left(\frac{R}{L} + \bar{\gamma_1}\right)
-%         \\
-%         \Longleftrightarrow\;\; & k_{\textrm P2} > -(R + L\bar{\gamma_1}) \text{ sabiendo que } L > 0
-%     \end{align*}
-
-%     \item Para el coeficiente $a_2$ la condición es:
-%     \begin{align*}
-%         & \frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} > 0
-%         \\ 
-%         \Longleftrightarrow\;\; & k_{\textrm I2}' > 0; k_{\textrm P2}' > 0; k_{\textrm P3} > 0
-%     \end{align*}
-
-%     \item Para el coeficiente $a_1$ la condición es:
-%     \begin{align*}
-%         & \bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}' > 0
-%         \\
-%         \Longleftrightarrow\;\; & k_{\textrm I2}' > 0; k_{\textrm P2}' > 0; k_{\textrm I3} > 0; k_{\textrm P3} > 0; 
-%     \end{align*}
-
-%     \item Para el coeficiente $a_0$ la condición es:
-%     \begin{align*}
-%         & \bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3} > 0
-%         \\
-%         \Longleftrightarrow\;\; & k_{\textrm I2}' > 0; k_{\textrm I3} > 0
-%     \end{align*}
-
-%     \item Para que se cumpla que $b_1 > 0$ necesitamos:
-%     \begin{align*}
-%         b_1 = \frac{a_3a_2 - a_4a_1}{a_3} > 0
-%     \end{align*}
-%     Como $a_4 = 1$
-%     \begin{align}
-%         \Rightarrow\;\; & b_1 = \frac{a_3a_2 - a_1}{a_3} = a_2 - \frac{a_1}{a_3} > 0 \Rightarrow\;\; \varrho > 0 \label{eq: cond_b1}
-%     \end{align}
-
-%     con 
-%     \begin{equation*}
-%         \varrho := k_{\textrm P2}' \left[\bar{\gamma_1} + \bar{\gamma_2}k_{\textrm P3}\right] + \frac{R}{L}\bar{\gamma_1} + k_{\textrm I2}' 
-%         - \frac{k_{\textrm I2}'\left[\bar{\gamma_1} + \bar{\gamma_2}k_{\textrm P3}\right] + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}'}{\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'}
-%     \end{equation*}
-
-%     \item Para que se cumpla que $c_1 > 0$ necesitamos:
-%     \begin{align}
-%         & c_1 = \frac{b_1a_1 - a_3b_2}{b_1} = \frac{b_1a_1 - a_3a_0}{b_1} = a_1 - \frac{a_3a_0}{b_1} > 0
-%         \\
-%         \Rightarrow\;\; & \bar{\gamma_2}\left[k_{\textrm I2}'k_{\textrm P3} + k_{\textrm I3}k_{\textrm P2}'\right] + \bar{\gamma_1}k_{\textrm I2}'
-%         - \frac{\bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3}\left(\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'\right)}{\varrho} > 0\label{eq: cond_c1}
-%     \end{align}
-% \end{itemize}
-
-El siguiente sencillo algoritmo sirve como pauta para encontrar un conjunto de ganancias que satisfagan las condiciones.\\
+El siguiente sencillo algoritmo sirve como pauta para encontrar un conjunto de ganancias que satisfagan las condiciones \eqref{eq: cond_a3} - \eqref{eq: cond_c1}.\\
 
 \begin{tabular}{l}
 \hline
@@ -874,6 +820,26 @@ El siguiente sencillo algoritmo sirve como pauta para encontrar un conjunto de g
 \textbf{Paso 2}. Fijar $k_{I2}'=1/k_{P2}'$\\
 \textbf{Paso 3.} Encontrar $k_{P2}'>0$ suficientemente grande tal que satisfaga $b_1$ y $c_1$\\\hline
 \end{tabular}
+\vspace{1em}
+
+Note que, de acuerdo con el Paso 1 y Paso 2,   haciendo $k_{P3}=\bar{k}_{P3}>0$, $k_{I3}=\bar{k}_{I3}>0$ y $k_{I2}'=\frac{1}{k_{P2}'}$, la desigualdad \eqref{eq: cond_b1} es equivalente a:
+\begin{align*}
+&\varrho (k_{P2}',\bar k_{P3},\frac{1}{k_{P2}'},\bar k_{I3}) = \ldots \\
+&\ldots k_{P2}'\big [ \bar\gamma_1 + \bar\gamma_2 \bar{k}_{P3} \big ]+\frac{R}{L}\bar\gamma_1  + \frac{1}{k_{P2}'} - \frac{\frac{1}{k_{P2}'^2}\big [ \bar\gamma_2\bar{k}_{P3}+\bar\gamma_1 \big] + \bar\gamma_2 \bar{k}_{I3}}{1+\frac{1}{L}\frac{R}{k_{P2}'}+\frac{\bar\gamma_1}{k_{P2}'}}>0
+\end{align*}
+
+%\textcolor{red}{Podrías expandir la desigualdad anterior y ponerla como polinomio de $k_{p2}$?}
+
+Note de la ecuación anterior que a medida que $k_{P2}$ toma valores más grandes, la parte positiva domina por o que \eqref{eq: cond_b1} se satisface. Entre más grande es $k_{p2}$, más grande es $\varrho$. Esto implica que la cuarta condición \eqref{eq: cond_c1}:
+\begin{align}
+\bar\gamma_2 \big[  \frac{1}{k_{P2}'}\bar{k}_{P3} + \bar{k}_{I3}k_{P2}'\big] + \frac{\bar\gamma_1}{k_{P2}'}- \frac{\frac{1}{k_{P2}'}(\frac{R}{L}+k_{P2}'+\bar\gamma_1)\bar\gamma_2\bar{k}_{I3}}{\varrho (k_{P2}',\bar k_{P3},\frac{1}{k_{P2}'},\bar k_{I3}) }>&0
+\end{align}
+
+toma valores positivos cada vez mayores, a medida que crece $k_{P2}$. Esto es, existe un valor de $k_{P2}$ suficientemente grande que garantiza que las condiciones de Routh-Hurwitz se satisfagan. De la discusión anterior se puede afirmar  la existencia de solución siguiente.\\
+
+\begin{lemma}
+    La condiciones \eqref{eq: cond_a3}-\eqref{eq: cond_c1} tienen solución. 
+\end{lemma}
 
 
 
