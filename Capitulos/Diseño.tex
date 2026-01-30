@@ -178,7 +178,7 @@ En \cite{man1981} se desarrolla una expresión para el coeficiente de potencia c
 la relación de velocidad punta y el angulo de inclinación de las palas:
 
 \begin{align}
-    C_p = c_1 \left( c_2 - c_3\vartheta - c_4\vartheta^x - c_5 \right) e^{-c_6(\lambda,\vartheta)}
+    C_p = c_1 \left( c_2 - c_3\beta - c_4\beta^x - c_5 \right) e^{-c_6(\lambda,\beta)}
 \end{align}
 
 Los valores de las constantes cambian según el método y modelo utilizado. A partir del procedimiento en 
@@ -193,12 +193,10 @@ Los valores de las constantes cambian según el método y modelo utilizado. A pa
 
 y
 \begin{align}
-    \frac{1}{\lambda_i} = \frac{1}{\lambda + 0.08\vartheta} - \frac{0.035}{\vartheta^3 + 1}
+    \frac{1}{\lambda_i} = \frac{1}{\lambda + 0.08\beta} - \frac{0.035}{\beta^3 + 1}
 \end{align}
 
-$\vartheta$ es el angulo de inclinación (\emph{pitch}) de las palas.
-
-\emph{TODO: agregar el valor de x según lo que se haya usado en la simulación.}
+$\beta$ es el angulo de inclinación (\emph{pitch}) de las palas.
 
 \subsection{Subsistema eléctrico}
 
@@ -295,7 +293,7 @@ Por su parte, los \textbf{elementos inductivos} siguen la ley de inducción elec
 donde $\lambda_{abc}$ son los enlaces de flujo, los cuales a su vez representan el 
 flujo magnético total que atraviesa un embobinado y que, en el caso de un PMSG, recibe dos aportaciones principalmente:
 el flujo magnético generado en los devanados del estator y el flujo producido en los imanes permanentes en el rotor.
-Al transformar coordenadas \emph{dq} obtenemos:
+Al transformar a coordenadas \emph{dq} obtenemos:
 \begin{align}
     v_{dq} = \omega\lambda_{dq} + \frac{d}{dt}\lambda_{dq}
 \end{align}
@@ -661,9 +659,9 @@ por separado.\\
     \end{proof}
 \end{lemma}
 
--------------------\\
-De lo anterior, los valores proporcional e integral $k_{P1} = 0$ y $k_{I1} = -1$ garantizan la estabilidad de $\Sigma_1$.\\
--------------------
+% -------------------\\
+% De lo anterior, los valores proporcional e integral $k_{P1} = 0$ y $k_{I1} = -1$ garantizan la estabilidad de $\Sigma_1$.\\
+% -------------------
 
 Por otro lado, para estudiar la estabilidad del subsistema $\Sigma_2$, se procederá a linealizarlo.
 Para tal motivo se calcula el Jacobiano y se evalúa en  el punto de equilibrio. Esto es, el sistema 
@@ -705,10 +703,9 @@ matriz $A_2$ toma valores negativos, esto es, $A_{2}^{(3,3)}<0$.\\
             0 & -k_{I3} & -k_{P3} & 1 \\
             0 & 0 & 1 & 0 \\
             0 & 0 & -\bar \gamma_1  & -\bar\gamma_2 \\
-            -K_{I2}' & k_{P2}'k_{I3} & k_{P2}'\textcolor{red}{\underbrace{K_{P3}'}_{k_{\text P3} \text ?}}& -(\frac{R}{L}+k_{P2}')
+            -K_{I2}' & k_{P2}'k_{I3} & k_{P2}'k_{\text P3}& -(\frac{R}{L}+k_{P2}')
         \end{bmatrix}$$
-        donde $\bar\gamma_1:=\frac{f_r-\gamma}{J}>0,$ $\bar \gamma_2:=\frac{3}{2J}p\phi>0$, $K_{I2}'=\frac{k_{I2}}{L}$, $K_{P2}'=\frac{K_{P2}}{L}$,  .
-        \textcolor{red}{Comentario: $k_P3$ va sin cambio de variable, cierto?}
+        donde $\bar\gamma_1:=\frac{f_r-\gamma}{J}>0,$ $\bar \gamma_2:=\frac{3}{2J}p\phi>0$, $K_{I2}'=\frac{k_{I2}}{L}$, $K_{P2}'=\frac{K_{P2}}{L}$.
     \end{proof}
 \end{lemma}
 
@@ -759,64 +756,124 @@ b_1 &= \frac{a_3a_2 - a_4a_1}{a_3} > 0 \\
 c_1 &= \frac{b_1a_1 - a_3a_0}{b_1} > 0 \\
 \end{align*}
 
-\begin{itemize}
-    \item El coefiente $a_4 = 1$ es constante y positivo.
-    \item Para el coeficiente $a_3$ necesitamos que se cumpla:
-    \begin{align*}
-        & \frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}' > 0
-        \\
-        \Longleftrightarrow\;\; & k_{\textrm P2}' > - \left(\frac{R}{L} + \bar{\gamma_1}\right)
-        \\
-        \Longleftrightarrow\;\; & k_{\textrm P2} > -(R + L\bar{\gamma_1}) \text{ sabiendo que } L > 0
-    \end{align*}
 
-    \item Para el coeficiente $a_2$ la condición es:
-    \begin{align*}
-        & \frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} > 0
-        \\ 
-        \Longleftrightarrow\;\; & k_{\textrm I2}' > 0; k_{\textrm P2}' > 0; k_{\textrm P3} > 0
-    \end{align*}
+El coefiente $a_4 = 1$ es constante y positivo.\\ 
 
-    \item Para el coeficiente $a_1$ la condición es:
-    \begin{align*}
-        & \bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}' > 0
-        \\
-        \Longleftrightarrow\;\; & k_{\textrm I2}' > 0; k_{\textrm P2}' > 0; k_{\textrm I3} > 0; k_{\textrm P3} > 0; 
-    \end{align*}
+Para el coeficiente $a_3$ necesitamos que se cumpla:
+\begin{align*}
+    & \frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}' > 0
+    \\
+    \Longleftrightarrow\;\; & k_{\textrm P2}' > - \left(\frac{R}{L} + \bar{\gamma_1}\right)
+    \\
+    \Longleftrightarrow\;\; & k_{\textrm P2} > -(R + L\bar{\gamma_1}) \text{ sabiendo que } L > 0
+\end{align*}
 
-    \item Para el coeficiente $a_0$ la condición es:
-    \begin{align*}
-        & \bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3} > 0
-        \\
-        \Longleftrightarrow\;\; & k_{\textrm I2}' > 0; k_{\textrm I3} > 0
-    \end{align*}
+Para el coeficiente $a_2$ la condición es:
+\begin{align*}
+    & \frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} > 0
+\end{align*}
 
-    \item Para que se cumpla que $b_1 > 0$ necesitamos:
-    \begin{align*}
-        b_1 = \frac{a_3a_2 - a_4a_1}{a_3} > 0
-    \end{align*}
-    Como $a_4 = 1$
-    \begin{align*}
-        \Rightarrow\;\; & b_1 = \frac{a_3a_2 - a_1}{a_3} = a_2 - \frac{a_1}{a_3} > 0
-        \\
-        \Rightarrow\;\; & a_2 > \frac{a_1}{a_3}
-        \\
-        \Rightarrow\;\; & \frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} 
-        > \frac{\bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}'}{\bar{\gamma_1} + k_{\textrm P2}'}
-    \end{align*}
+Para el coeficiente $a_1$ la condición es:
+\begin{align*}
+    & \bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}' > 0
+\end{align*}
 
-    \item Para que se cumpla que $c_1 > 0$ necesitamos:
-    \begin{align*}
-        & c_1 = \frac{b_1a_1 - a_3b_2}{b_1} = \frac{b_1a_1 - a_3a_0}{b_1} = a_1 - \frac{a_3a_0}{b_1} > 0
-        \\
-        \Rightarrow\;\; &a_1 > \frac{a_0a_3}{b_1}
-        \\
-        \Rightarrow\;\; &\bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}'
-        > \ldots \\
-        \ldots &\frac{\left(\bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3}\right)\left(\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'\right)}{\frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} 
-        - \frac{\bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}'}{\bar{\gamma_1} + k_{\textrm P2}'}}
-    \end{align*}
-\end{itemize}
+Para el coeficiente $a_0$ la condición es:
+\begin{align*}
+    & \bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3} > 0
+    \\
+    \Longleftrightarrow\;\; & k_{\textrm I2}' > 0; k_{\textrm I3} > 0
+\end{align*}
+
+Para que se cumpla que $b_1 > 0$ necesitamos:
+\begin{align*}
+    b_1 = \frac{a_3a_2 - a_4a_1}{a_3} > 0
+\end{align*}
+Como $a_4 = 1$
+\begin{align}
+    \Rightarrow\;\; & b_1 = \frac{a_3a_2 - a_1}{a_3} = a_2 - \frac{a_1}{a_3} > 0 \Rightarrow\;\; \varrho > 0 \label{eq: cond_b1}
+\end{align}
+
+con 
+\begin{equation*}
+    \varrho := k_{\textrm P2}' \left[\bar{\gamma_1} + \bar{\gamma_2}k_{\textrm P3}\right] + \frac{R}{L}\bar{\gamma_1} + k_{\textrm I2}' 
+    - \frac{k_{\textrm I2}'\left[\bar{\gamma_1} + \bar{\gamma_2}k_{\textrm P3}\right] + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}'}{\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'}
+\end{equation*}
+
+Para que se cumpla que $c_1 > 0$ necesitamos:
+\begin{align}
+    & c_1 = \frac{b_1a_1 - a_3b_2}{b_1} = \frac{b_1a_1 - a_3a_0}{b_1} = a_1 - \frac{a_3a_0}{b_1} > 0
+    \\
+    \Rightarrow\;\; & \bar{\gamma_2}\left[k_{\textrm I2}'k_{\textrm P3} + k_{\textrm I3}k_{\textrm P2}'\right] + \bar{\gamma_1}k_{\textrm I2}'
+    - \frac{\bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3}\left(\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'\right)}{\varrho} > 0\label{eq: cond_c1}
+\end{align}
+
+% \begin{itemize}
+%     \item El coefiente $a_4 = 1$ es constante y positivo.
+%     \item Para el coeficiente $a_3$ necesitamos que se cumpla:
+%     \begin{align*}
+%         & \frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}' > 0
+%         \\
+%         \Longleftrightarrow\;\; & k_{\textrm P2}' > - \left(\frac{R}{L} + \bar{\gamma_1}\right)
+%         \\
+%         \Longleftrightarrow\;\; & k_{\textrm P2} > -(R + L\bar{\gamma_1}) \text{ sabiendo que } L > 0
+%     \end{align*}
+
+%     \item Para el coeficiente $a_2$ la condición es:
+%     \begin{align*}
+%         & \frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} > 0
+%         \\ 
+%         \Longleftrightarrow\;\; & k_{\textrm I2}' > 0; k_{\textrm P2}' > 0; k_{\textrm P3} > 0
+%     \end{align*}
+
+%     \item Para el coeficiente $a_1$ la condición es:
+%     \begin{align*}
+%         & \bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}' > 0
+%         \\
+%         \Longleftrightarrow\;\; & k_{\textrm I2}' > 0; k_{\textrm P2}' > 0; k_{\textrm I3} > 0; k_{\textrm P3} > 0; 
+%     \end{align*}
+
+%     \item Para el coeficiente $a_0$ la condición es:
+%     \begin{align*}
+%         & \bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3} > 0
+%         \\
+%         \Longleftrightarrow\;\; & k_{\textrm I2}' > 0; k_{\textrm I3} > 0
+%     \end{align*}
+
+%     \item Para que se cumpla que $b_1 > 0$ necesitamos:
+%     \begin{align*}
+%         b_1 = \frac{a_3a_2 - a_4a_1}{a_3} > 0
+%     \end{align*}
+%     Como $a_4 = 1$
+%     \begin{align}
+%         \Rightarrow\;\; & b_1 = \frac{a_3a_2 - a_1}{a_3} = a_2 - \frac{a_1}{a_3} > 0 \Rightarrow\;\; \varrho > 0 \label{eq: cond_b1}
+%     \end{align}
+
+%     con 
+%     \begin{equation*}
+%         \varrho := k_{\textrm P2}' \left[\bar{\gamma_1} + \bar{\gamma_2}k_{\textrm P3}\right] + \frac{R}{L}\bar{\gamma_1} + k_{\textrm I2}' 
+%         - \frac{k_{\textrm I2}'\left[\bar{\gamma_1} + \bar{\gamma_2}k_{\textrm P3}\right] + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}'}{\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'}
+%     \end{equation*}
+
+%     \item Para que se cumpla que $c_1 > 0$ necesitamos:
+%     \begin{align}
+%         & c_1 = \frac{b_1a_1 - a_3b_2}{b_1} = \frac{b_1a_1 - a_3a_0}{b_1} = a_1 - \frac{a_3a_0}{b_1} > 0
+%         \\
+%         \Rightarrow\;\; & \bar{\gamma_2}\left[k_{\textrm I2}'k_{\textrm P3} + k_{\textrm I3}k_{\textrm P2}'\right] + \bar{\gamma_1}k_{\textrm I2}'
+%         - \frac{\bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3}\left(\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'\right)}{\varrho} > 0\label{eq: cond_c1}
+%     \end{align}
+% \end{itemize}
+
+El siguiente sencillo algoritmo sirve como pauta para encontrar un conjunto de ganancias que satisfagan las condiciones.\\
+
+\begin{tabular}{l}
+\hline
+\textbf{Algoritmo.} Encontrar encontrar ganancias $k_{P2}',k_{P3},k_{I2}',k_{i3}$\\
+\hline
+\textbf{Paso 1}. Asignar valores positivos a $k_{P3},k_{I3}$.\\
+\textbf{Paso 2}. Fijar $k_{I2}'=1/k_{P2}'$\\
+\textbf{Paso 3.} Encontrar $k_{P2}'>0$ suficientemente grande tal que satisfaga $b_1$ y $c_1$\\\hline
+\end{tabular}
 
 
 
