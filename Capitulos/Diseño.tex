@@ -525,7 +525,7 @@ cuando el sistema es sometido a perfiles de viento realistas.} el sistema $\Sigm
 
 % --------------- LEMA ------------------
 La discusión anterior se resume en el siguiente lema.\\
-
+\textcolor{blue}{COMENTARIO: No es necesario encerrar en un recuadro la prueba de los lemas. Si te estorban los recuadros, quítalos.}
 \begin{lemma}
     Considere el sistema WECS \eqref{eq:full_system}-\eqref{eq:definitions} en lazo cerrado con \eqref{valUd}-\eqref{xi}. El sistema 
     resultante se compone de dos subsistemas desacoplados, que denominaremos $\Sigma_1$ y $\Sigma_2$, 
@@ -669,7 +669,7 @@ linealizado tiene la forma:
 \begin{align}\label{dz}
 \Sigma_{2}^\mathrm{lin}:\;\;\;\;\dot{\delta z} =A_2 \delta z
 \end{align}
-donde $\delta z$ representa a la variable del sistema linealealizado,  
+donde $\delta z$ representa al estado del sistema linealealizado,  
 \begin{equation}
 A_2 = \left.\frac{\partial f}{\partial z}\right|_{z=\bar{z}} = \begin{bmatrix}
 0 & -k_{I3} & -k_{P3} & 1 \\
@@ -679,14 +679,22 @@ A_2 = \left.\frac{\partial f}{\partial z}\right|_{z=\bar{z}} = \begin{bmatrix}
 \end{bmatrix} \label{eq:A2_symbolic}
 \end{equation}
 
-y usando la regla de la cadena:
-\begin{align}
-\gamma :=&\left. \frac{r\kappa_1}{v_w} \frac{\partial }{\partial \lambda}\left[\frac{C_{p,0}}{\lambda }\right]\right|_{\omega_m=\omega^*_m,\lambda=\lambda^\star}\nonumber\\
-=&\left. \frac{r\kappa_1}{v_w}\frac{\partial\lambda}{\partial \omega_m}\left[{1\over \lambda}\frac{\partial C_{p,0}}{\partial\lambda\nonumber }-\frac{1}{\lambda^2}C_{p,0}\right]\right|_{\omega_m=\omega^*_m,\lambda=\lambda^\star}\\
-=&  \frac{r^2\kappa_1}{v_w^2}{1\over \lambda^\star}\left[\left.\frac{\partial C_{p,0}}{\partial \lambda}\right|_{\lambda=\lambda^\star}-{1\over \lambda^\star} C_{p,0}(\lambda^\star) \right]\nonumber \\
-=& - \frac{r^2\kappa_1}{v_w^2}{1\over (\lambda^\star)^2}  C_{p,0}(\lambda^\star)
-\label{eq:gamma}
+donde $\gamma$ está definida como la siguiente derivada evaluada en el punto $\lambda=\lambda_\star$
+\begin{align}\nonumber
+	\gamma:= \frac{r\kappa_1}{Jv_w}\left.\frac{\partial}{\partial \lambda}\left(\frac{C_{p,0}(\lambda)}{\lambda}\right)\right|_{\lambda=\lambda_\star}.
 \end{align}
+Desarrollando la derivada, la contante $\gamma$ se reduce a la expresión
+\begin{align}
+	\gamma=&\left.\frac{r\kappa_1}{Jv_w} \left[\frac{1}{\lambda}\frac{\partial }{\partial \lambda}C_{p,0}(\lambda)-\frac{1}{\lambda^2}C_{p,0}(\lambda)\right]\right|_{\lambda=\lambda_\star}\nonumber\\
+	=& - \frac{1}{\lambda_\star^2}\frac{r\kappa_1}{Jv_w} C_{p,0}(\lambda_\star) \label{eq:gamma}
+	\end{align}
+%\begin{align}
+%\gamma :=&\left. \frac{r\kappa_1}{v_w} \frac{\partial }{\partial \lambda}\left[\frac{C_{p,0}}{\lambda }\right]\right|_{\omega_m=\omega^*_m,\lambda=\lambda^\star}\nonumber\\
+%=&\left. \frac{r\kappa_1}{v_w}\frac{\partial\lambda}{\partial \omega_m}\left[{1\over \lambda}\frac{\partial C_{p,0}}{\partial\lambda\nonumber }-\frac{1}{\lambda^2}C_{p,0}\right]\right|_{\omega_m=\omega^*_m,\lambda=\lambda^\star}\\
+%=&  \frac{r^2\kappa_1}{v_w^2}{1\over \lambda^\star}\left[\left.\frac{\partial C_{p,0}}{\partial \lambda}\right|_{\lambda=\lambda^\star}-{1\over \lambda^\star} C_{p,0}(\lambda^\star) \right]\nonumber \\
+%=& - \frac{r^2\kappa_1}{v_w^2}{1\over (\lambda^\star)^2}  C_{p,0}(\lambda^\star)
+%\label{eq:gamma}
+%\end{align}
 
 Puesto que los parámetros son positivos y $C_{p,0}>0$, entonces $\gamma<0$. A partir de lo anterior, 
 es posible enunciar el siguiente lema. Así mismo, es posible concluir que la entrada (3,3) de la 
@@ -695,20 +703,29 @@ matriz $A_2$ toma valores negativos, esto es, $A_{2}^{(3,3)}<0$.\\
 \begin{lemma}
     Considere el sistema $\Sigma_2^{\mathrm{lin}}$ en \eqref{dz} que consiste en la linealización 
     de $\Sigma_2$. El punto de equilibrio $z=\bar z$, con la constante $\bar z$  definida en 
-    \eqref{barz}, es exponencialmente estable si y solo si .... 
+    \eqref{barz}, es exponencialmente estable si y solo si \\
+    
+    \textcolor{blue}{Poner aquí las condiciones de ROuth Hurwitz}\\
+    
+    \textcolor{blue}{donde $k_{P2}':=\frac{k_{P2}}{L}$, $k_{I2}':=\frac{k_{I2}}{L}$  $\bar{\gamma}_1:=\frac{f_r}{J}-\frac{\gamma}{J}>0 $ y $\bar{\gamma}_2:=\frac{3}{2J}p\phi>0$.}
 
-    \begin{proof}
-        La estabilidad del sistema  \eqref{dz} se puede inferir de la estabilidad de la matriz%\footnote{\textcolor{blue}{Note que la matriz $\bar A_2$ se puede obtener a partir de un cambio de variables de \eqref{barz}. Por ser muy sencillo, el procedimiento se omitirá.}}
-        $$\bar A_2:=\begin{bmatrix}
-            0 & -k_{I3} & -k_{P3} & 1 \\
-            0 & 0 & 1 & 0 \\
-            0 & 0 & -\bar \gamma_1  & -\bar\gamma_2 \\
-            -K_{I2}' & k_{P2}'k_{I3} & k_{P2}'k_{\text P3}& -(\frac{R}{L}+k_{P2}')
-        \end{bmatrix}$$
-        donde $\bar\gamma_1:=\frac{f_r-\gamma}{J}>0,$ $\bar \gamma_2:=\frac{3}{2J}p\phi>0$, $K_{I2}'=\frac{k_{I2}}{L}$, $K_{P2}'=\frac{K_{P2}}{L}$.
-    \end{proof}
+    %\begin{proof}
+        
+    %\end{proof}
 \end{lemma}
-
+\textcolor{blue}{Demostración:}\textcolor{blue}{ Bajo las definiciones de $k_{I2}'$, $k_{P2}'$, $\bar{\gamma}_1$ y $\bar{\gamma}_2$ que se muestran en el enunciado del lemma, la matriz $A_2$ de $\Sigma_2^{\mathrm{lin}}$ es
+		$$\bar A_2:=\begin{bmatrix}
+			0 & -k_{I3} & -k_{P3} & 1 \\
+			0 & 0 & 1 & 0 \\
+			0 & 0 & -\bar \gamma_1  & -\bar\gamma_2 \\
+			-k_{I2}' & k_{P2}'k_{I3} & k_{P2}'k_{P3}& -(\frac{R}{L}+k_{P2}')
+		\end{bmatrix}$$
+	}
+	%	donde $\bar\gamma_1:=\frac{f_r-\gamma}{J}>0,$ $\bar \gamma_2:=\frac{3}{2J}p\phi>0$, $k_{I2}'=\frac{k_{I2}}{L}$, $k_{P2}'=\frac{k_{P2}}{L}$.}
+	
+	\textcolor{blue}{ COMENTARIO: poner aquí enseguida el polinomio característico. Luego decir que se utilizó matlab para obtener loas condiciones. El desarrollo que tienes abajo te lleva a las condiciones que obtuviste en MATLAB? Si es así, olvida lo de mencionar matlab y deja el desarrollo.}
+	
+	
 El polinomio característico de la matriz $\bar{A_2}$ es 
 
 \begin{equation}\label{eq:poly_sigma_2}
@@ -809,16 +826,18 @@ Para que se cumpla que $c_1 > 0$ necesitamos:
     \Rightarrow\;\; & \bar{\gamma_2}\left[k_{\textrm I2}'k_{\textrm P3} + k_{\textrm I3}k_{\textrm P2}'\right] + \bar{\gamma_1}k_{\textrm I2}'
     - \frac{\bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3}\left(\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'\right)}{\varrho} > 0\label{eq: cond_c1}
 \end{align}
+\textcolor{blue}{Poner $\square$ o $\blacksquare$ cuando finalice una prueba. Escoge pf alguno de los dos y siempre usarlo }
+\subsection*{Algoritmo para encontrar las ganancias}
 
 El siguiente sencillo algoritmo sirve como pauta para encontrar un conjunto de ganancias que satisfagan las condiciones \eqref{eq: cond_a3} - \eqref{eq: cond_c1}.\\
 
 \begin{tabular}{l}
 \hline
-\textbf{Algoritmo.} Encontrar encontrar ganancias $k_{P2}',k_{P3},k_{I2}',k_{i3}$\\
+\textbf{Algoritmo.} Encontrar encontrar ganancias $k_{P2}',k_{P3},k_{I2}',k_{I3}$\\
 \hline
 \textbf{Paso 1}. Asignar valores positivos a $k_{P3},k_{I3}$.\\
 \textbf{Paso 2}. Fijar $k_{I2}'=1/k_{P2}'$\\
-\textbf{Paso 3.} Encontrar $k_{P2}'>0$ suficientemente grande tal que satisfaga $b_1$ y $c_1$\\\hline
+\textbf{Paso 3.} Encontrar $k_{P2}'>0$ suficientemente grande tal que satisfaga $b_1$ y $c_1$\\\textcolor{blue}{Ponerlo en términos de condiciones que dependan de las ganancias}\\\hline
 \end{tabular}
 \vspace{1em}
 
@@ -830,7 +849,7 @@ Note que, de acuerdo con el Paso 1 y Paso 2,   haciendo $k_{P3}=\bar{k}_{P3}>0$,
 
 %\textcolor{red}{Podrías expandir la desigualdad anterior y ponerla como polinomio de $k_{p2}$?}
 
-Note de la ecuación anterior que a medida que $k_{P2}$ toma valores más grandes, la parte positiva domina por o que \eqref{eq: cond_b1} se satisface. Entre más grande es $k_{p2}$, más grande es $\varrho$. Esto implica que la cuarta condición \eqref{eq: cond_c1}:
+Note de la ecuación anterior que a medida que $k_{P2}$ toma valores más grandes, la parte positiva domina por lo que \eqref{eq: cond_b1} se satisface. Entre más grande es $k_{p2}$, más grande es $\varrho$. Esto implica que la cuarta condición \eqref{eq: cond_c1}:
 \begin{align}
 \bar\gamma_2 \big[  \frac{1}{k_{P2}'}\bar{k}_{P3} + \bar{k}_{I3}k_{P2}'\big] + \frac{\bar\gamma_1}{k_{P2}'}- \frac{\frac{1}{k_{P2}'}(\frac{R}{L}+k_{P2}'+\bar\gamma_1)\bar\gamma_2\bar{k}_{I3}}{\varrho (k_{P2}',\bar k_{P3},\frac{1}{k_{P2}'},\bar k_{I3}) }>&0
 \end{align}
@@ -841,7 +860,7 @@ toma valores positivos cada vez mayores, a medida que crece $k_{P2}$. Esto es, e
     La condiciones \eqref{eq: cond_a3}-\eqref{eq: cond_c1} tienen solución. 
 \end{lemma}
 
-
+\textcolor{blue}{COMENTARIO: Una vez que encuentres las ganancias verificar que la $\bar{A}_2$, con esas ganancias, es Hurwitz.}
 
 %_---------------
 
