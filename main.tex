@@ -56,32 +56,11 @@
 \newtheorem{theorem}{Teorema}[section]
 \newtheorem{lemma}[theorem]{Lema}
 
-% Envuelve en marco
-\surroundwithmdframed[
-  linewidth=0.5pt,
-  linecolor=black,
-  topline=true,
-  bottomline=true,
-  leftline=true,
-  rightline=true,
-  innertopmargin=8pt,
-  innerbottommargin=8pt,
-  innerleftmargin=8pt,
-  innerrightmargin=8pt
-]{theorem}
+% Definir el símbolo de final de lema
+\newcommand{\tripletriang}{\hfill{$\triangle\triangle\triangle$}}
 
-\surroundwithmdframed[
-  linewidth=0.5pt,
-  linecolor=black,
-  topline=true,
-  bottomline=true,
-  leftline=true,
-  rightline=true,
-  innertopmargin=8pt,
-  innerbottommargin=8pt,
-  innerleftmargin=8pt,
-  innerrightmargin=8pt
-]{lemma}
+% Cambiar el símbolo QED a cuadro relleno
+\renewcommand{\qedsymbol}{$\blacksquare$}
 
 % ---- Prueba en lema/teorema ----
 \makeatletter
@@ -90,7 +69,7 @@
   \normalfont \topsep6\p@\@plus6\p@\relax
   \trivlist
   \item[\hskip\labelsep
-        \textbf{#1:}]\ignorespaces  % Cambiado a \textbf
+        \textbf{#1:}]\ignorespaces
 }{%
   \popQED\endtrivlist\@endpefalse
 }

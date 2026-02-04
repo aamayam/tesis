@@ -525,7 +525,7 @@ cuando el sistema es sometido a perfiles de viento realistas.} el sistema $\Sigm
 
 % --------------- LEMA ------------------
 La discusión anterior se resume en el siguiente lema.\\
-\textcolor{blue}{COMENTARIO: No es necesario encerrar en un recuadro la prueba de los lemas. Si te estorban los recuadros, quítalos.}
+
 \begin{lemma}
     Considere el sistema WECS \eqref{eq:full_system}-\eqref{eq:definitions} en lazo cerrado con \eqref{valUd}-\eqref{xi}. El sistema 
     resultante se compone de dos subsistemas desacoplados, que denominaremos $\Sigma_1$ y $\Sigma_2$, 
@@ -540,7 +540,7 @@ La discusión anterior se resume en el siguiente lema.\\
             -\frac{R+k_{P2}}{L}z_4 + \frac{k_{P2}k_{P3}}{L}(z_3 - \omega^*_m) + \frac{k_{P2}k_{I3}}{L}z_2 - \frac{k_{I2}}{L}z_1
             \end{bmatrix}
     \end{align*}
-    \hfill{$\triangle\triangle\triangle$}
+    \tripletriang
 \end{lemma}
 
 A continuación, se linealizará el sistema alrededor del punto de equilibrio que cumpla con los objetivos 
@@ -555,7 +555,7 @@ Estos quedan enunciados en los siguientes lemas.
 
 \begin{lemma}
     El sistema $\Sigma_1$ tiene un solo punto de equilibrio en $$x=\bar{x}:=0$$.
-    \hfill{$\triangle\triangle\triangle$}
+    \tripletriang
 
     \begin{proof}
         Al igualar $\dot x=0$ en (1.37), resulta en la siguientes ecuaciones
@@ -570,63 +570,58 @@ Estos quedan enunciados en los siguientes lemas.
 \end{lemma}
 
 \begin{lemma}
-    El punto $\Sigma_2$ tiene un solo punto de equilibrio en 
+    El sistema $\Sigma_2$ tiene un único punto de equilibrio dado por
 	\begin{align}\label{barz}
-	z=\bar z:=
+	\bar{z} :=
 		\begin{bmatrix}
-			-\frac{2R}{3p\phi k_{I2}}(T^*_m - f_r\omega^*_m) \\[0.3cm]
-			\frac{2}{3p\phi k_{I3}}(T^*_m - f_r\omega^*_m) \\[0.3cm]
+			-\frac{2R}{3p\phi k_{\textrm{I2}}}(T^*_m - f_r\omega^*_m) \\[0.3cm]
+			\frac{2}{3p\phi k_{\textrm{I3}}}(T^*_m - f_r\omega^*_m) \\[0.3cm]
 			\omega^*_m \\[0.3cm]
 			\frac{2}{3p\phi}(T^*_m - f_r\omega^*_m)
 	\end{bmatrix}
 	\end{align}
     donde $T^*_m := r\frac{\kappa_1 v_w C_{p,0}(\lambda^*)}{\lambda^*}$ es el torque mecánico en el 
-    equilibrio, $\lambda*:=\frac{r\omega_m^\star}{v_w}$  y $\omega_m^\star$ es la referencia de la velocidad 
-    angular  $\omega_m$.
+    equilibrio, $\lambda^* := \frac{r\omega_m^*}{v_w}$ y $\omega_m^*$ es la referencia de velocidad 
+    angular.
 
-    \hfill{$\triangle\triangle\triangle$}
+    \tripletriang
 
     \begin{proof}
-        Para encontrar los puntos de equilibrio, hacemos $\dot z=0$ en \eqref{eq:sigma_2}. Esto resulta el siguiente sistema de ecuaciones:
+        Los puntos de equilibrio se obtienen al igualar a cero las ecuaciones del sistema \eqref{eq:sigma_2}, esto es, resolviendo $\dot{z} = 0$:
 
         \begin{align}
-        z_4 - [k_{P3}(z_3 - \omega^*_m) + k_{I3}z_2] &= 0 \label{eq:ss1} \\
+        z_4 - [k_{\textrm{P3}}(z_3 - \omega^*_m) + k_{\textrm{I3}}z_2] &= 0 \label{eq:ss1} \\
         z_3 - \omega^*_m &= 0 \label{eq:ss2} \\
-        -\frac{f}{J}z_3 + \frac{r\kappa_1}{Jv_w}\frac{C_{p,0}(\lambda)}{\lambda} - \frac{3}{2J}p\phi z_4 &= 0 \label{eq:ss3} \\
-        -\frac{R+k_{P2}}{L}z_4 + \frac{k_{P2}k_{P3}}{L}(z_3 - \omega^*_m) + \frac{k_{P2}k_{I3}}{L}z_2 - \frac{k_{I2}}{L}z_1 &= 0 \label{eq:ss4}
+        -\frac{f_r}{J}z_3 + \frac{r\kappa_1}{Jv_w}\frac{C_{p,0}(\lambda)}{\lambda} - \frac{3}{2J}p\phi z_4 &= 0 \label{eq:ss3} \\
+        -\frac{R+k_{\textrm{P2}}}{L}z_4 + \frac{k_{\textrm{P2}}k_{\textrm{P3}}}{L}(z_3 - \omega^*_m) + \frac{k_{\textrm{P2}}k_{\textrm{I3}}}{L}z_2 - \frac{k_{\textrm{I2}}}{L}z_1 &= 0 \label{eq:ss4}
         \end{align}
 
-        Procedemos a resolver el sistema paso a paso:
-
-        \begin{enumerate}
-        \item De la ecuación \eqref{eq:ss2} obtenemos directamente:
+        De la ecuación \eqref{eq:ss2} se obtiene directamente que:
         \begin{equation}
         \bar{z}_3 = \omega^*_m \label{eq:eq1}
         \end{equation}
 
-        \item Sustituyendo \eqref{eq:eq1} en \eqref{eq:ss1}:
+        Sustituyendo \eqref{eq:eq1} en \eqref{eq:ss1}, se tiene:
         \begin{align}
-        \bar{z}_4 - k_{I3}\bar{z}_2 &= 0 \label{eq:eq2}
+        \bar{z}_4 - k_{\textrm{I3}}\bar{z}_2 = 0 \label{eq:eq2}
         \end{align}
 
-        \item De la ecuación \eqref{eq:ss3}, usando \eqref{eq:eq1} y $\lambda^* = \frac{r\omega^*_m}{v_w}$:
+        Por otro lado, de la ecuación \eqref{eq:ss3}, usando \eqref{eq:eq1} y $\lambda^* = \frac{r\omega^*_m}{v_w}$, se obtiene:
         \begin{equation}
-        \bar{z}_4 = \frac{2}{3p\phi}(T^*_m - f\omega^*_m) \label{eq:eq3}
-        \end{equation}
-        %donde $T^*_m = r\frac{\kappa_1 v_w C_p(\lambda^*, 0)}{\lambda^*}$ es el torque mecánico en el equilibrio y $\omega_m^\star$ es la referencia de la velocidad angular de $\omega_m$.
-
-        \item Usando \eqref{eq:eq2} y \eqref{eq:eq3}:
-        \begin{equation}
-        \bar{z}_2 = \frac{1}{k_{I3}}\bar{z}_4 = \frac{2}{3p\phi k_{I3}}(T^*_m - f\omega^*_m) \label{eq:eq4}
+        \bar{z}_4 = \frac{2}{3p\phi}(T^*_m - f_r\omega^*_m) \label{eq:eq3}
         \end{equation}
 
-        \item Finalmente, de la ecuación \eqref{eq:ss4}, usando las ecuaciones anteriores:
+        Combinando \eqref{eq:eq2} y \eqref{eq:eq3}:
         \begin{equation}
-        \bar{z}_1 = -\frac{R}{k_{I2}}\bar{z}_4 = -\frac{2R}{3p\phi k_{I2}}(T^*_m - f\omega^*_m) \label{eq:eq5}
+        \bar{z}_2 = \frac{1}{k_{\textrm{I3}}}\bar{z}_4 = \frac{2}{3p\phi k_{\textrm{I3}}}(T^*_m - f_r\omega^*_m) \label{eq:eq4}
         \end{equation}
-        \end{enumerate}
 
-        Por lo tanto, el punto de equilibrio es el que se muestra en el enunciado del lema.
+        Finalmente, sustituyendo $\bar{z}_3 = \omega^*_m$ y \eqref{eq:eq3} en \eqref{eq:ss4}:
+        \begin{equation}
+        \bar{z}_1 = -\frac{R}{k_{\textrm{I2}}}\bar{z}_4 = -\frac{2R}{3p\phi k_{\textrm{I2}}}(T^*_m - f_r\omega^*_m) \label{eq:eq5}
+        \end{equation}
+
+        Así, el punto de equilibrio queda determinado por \eqref{barz}.
     \end{proof}
 \end{lemma}
 
@@ -641,7 +636,7 @@ por separado.\\
     Considere el sistema $\Sigma_1$ con $k_{P1}>-R$ y $k_{I1}>0$. Entonces, su punto de equilibrio 
     $x=\bar x=0$ es exponencialmente, globalmente estable.
 
-    \hfill{$\triangle\triangle\triangle$}
+    \tripletriang
 
     \begin{proof}
         El polinomio característico de  $A_1$  en (\ref{eq:sigma_1}) es el siguiente:
@@ -702,440 +697,184 @@ matriz $A_2$ toma valores negativos, esto es, $A_{2}^{(3,3)}<0$.\\
 
 \begin{lemma}
     Considere el sistema $\Sigma_2^{\mathrm{lin}}$ en \eqref{dz} que consiste en la linealización 
-    de $\Sigma_2$. El punto de equilibrio $z=\bar z$, con la constante $\bar z$  definida en 
-    \eqref{barz}, es exponencialmente estable si y solo si \\
+    de $\Sigma_2$. El punto de equilibrio $z=\bar{z}$, con la constante $\bar{z}$ definida en 
+    \eqref{barz}, es exponencialmente estable si y solo si se cumplen las siguientes condiciones:
+    \begin{align}
+        & \frac{R}{L} + \bar{\gamma_1} + k_{\textrm{P2}}' > 0 \label{eq:cond1}
+        \\
+        & \bar{\gamma_2}k_{\textrm{I2}}'k_{\textrm{I3}} > 0 \label{eq:cond2}
+        \\
+        & \varrho > 0 \label{eq:cond3}
+        \\
+        & \bar{\gamma_2}\left[k_{\textrm{I2}}'k_{\textrm{P3}} + k_{\textrm{I3}}k_{\textrm{P2}}'\right] + \bar{\gamma_1}k_{\textrm{I2}}'
+    - \frac{\bar{\gamma_2}k_{\textrm{I2}}'k_{\textrm{I3}}\left(\frac{R}{L} + \bar{\gamma_1} + k_{\textrm{P2}}'\right)}{\varrho} > 0 \label{eq:cond4}
+    \end{align}
     
-    \textcolor{blue}{Poner aquí las condiciones de ROuth Hurwitz}\\
+    donde 
+    \begin{align*}
+        \varrho := k_{\textrm{P2}}' \left[\bar{\gamma_1} + \bar{\gamma_2}k_{\textrm{P3}}\right] + \frac{R}{L}\bar{\gamma_1} + k_{\textrm{I2}}' 
+    - \frac{k_{\textrm{I2}}'\left[\bar{\gamma_1} + \bar{\gamma_2}k_{\textrm{P3}}\right] + \bar{\gamma_2}k_{\textrm{I3}}k_{\textrm{P2}}'}{\frac{R}{L} + \bar{\gamma_1} + k_{\textrm{P2}}'}
+    \end{align*}
     
-    \textcolor{blue}{donde $k_{P2}':=\frac{k_{P2}}{L}$, $k_{I2}':=\frac{k_{I2}}{L}$  $\bar{\gamma}_1:=\frac{f_r}{J}-\frac{\gamma}{J}>0 $ y $\bar{\gamma}_2:=\frac{3}{2J}p\phi>0$.}
+    con $k_{\textrm{P2}}' := \frac{k_{\textrm{P2}}}{L}$, $k_{\textrm{I2}}' := \frac{k_{\textrm{I2}}}{L}$, $\bar{\gamma}_1 := \frac{f_r}{J} - \frac{\gamma}{J} > 0$ y $\bar{\gamma}_2 := \frac{3}{2J}p\phi > 0$.
 
-    %\begin{proof}
-        
-    %\end{proof}
+    \tripletriang
+    \begin{proof}
+        Bajo las definiciones de $k_{\textrm{I2}}'$, $k_{\textrm{P2}}'$, $\bar{\gamma}_1$ y $\bar{\gamma}_2$ que se muestran en el enunciado del lema, la matriz $A_2$ de $\Sigma_2^{\mathrm{lin}}$ es
+        $$\bar{A}_2 := \begin{bmatrix}
+            0 & -k_{\textrm{I3}} & -k_{\textrm{P3}} & 1 \\
+            0 & 0 & 1 & 0 \\
+            0 & 0 & -\bar{\gamma}_1  & -\bar{\gamma}_2 \\
+            -k_{\textrm{I2}}' & k_{\textrm{P2}}'k_{\textrm{I3}} & k_{\textrm{P2}}'k_{\textrm{P3}} & -\left(\frac{R}{L}+k_{\textrm{P2}}'\right)
+        \end{bmatrix}$$
+
+        El polinomio característico de la matriz $\bar{A}_2$, calculado mediante MATLAB, es:
+
+        \begin{equation}\label{eq:poly_sigma_2}
+            \begin{split}
+                p_2(s) =& s^4 + \left(\frac{R}{L} + \bar{\gamma_1} + k_{\textrm{P2}}'\right)s^3 + \ldots 
+                \\ 
+                &\ldots + \left( \frac{R\bar{\gamma_1}}{L} + k_{\textrm{I2}}' + \bar{\gamma_1}k_{\textrm{P2}}' + \bar{\gamma_2}k_{\textrm{P2}}'k_{\textrm{P3}} \right)s^2 + \ldots 
+                \\
+                &\ldots + \left( \bar{\gamma_1}k_{\textrm{I2}}' + \bar{\gamma_2}k_{\textrm{I2}}'k_{\textrm{P3}} + \bar{\gamma_2}k_{\textrm{I3}}k_{\textrm{P2}}' \right)s + \ldots
+                \\
+                &\ldots + \bar{\gamma_2}k_{\textrm{I2}}'k_{\textrm{I3}}
+            \end{split}
+        \end{equation}
+
+        que tiene la forma general:
+        \begin{equation}\label{eq:poly_sigma_2_form}
+            p_2(s) = a_4s^4 + a_3s^3 + a_2s^2 + a_1s + a_0
+        \end{equation}
+
+        donde $a_4 = 1$ y los demás coeficientes se identifican por comparación con \eqref{eq:poly_sigma_2}.
+
+        Por el criterio de Routh-Hurwitz, el sistema es estable si y solo si todos los elementos de la primera columna de la tabla de Routh son positivos. La tabla de Routh-Hurwitz tiene la siguiente estructura:
+
+        \begin{equation}
+        \begin{array}{c|ccc}
+        s^4 & a_4 & a_2 & a_0 \\
+        s^3 & a_3 & a_1 & \textcolor{white}{0} \\
+        s^2 & b_1 & b_2 & \textcolor{white}{0} \\
+        s^1 & c_1 & \textcolor{white}{0} & \textcolor{white}{0} \\
+        s^0 & d_1 & \textcolor{white}{0} & \textcolor{white}{0}
+        \end{array} \label{eq:rh_table}
+        \end{equation}
+
+        donde los elementos de la primera columna se calculan como:
+        \begin{align}
+        b_1 &= \frac{a_3a_2 - a_4a_1}{a_3} \label{eq:b1} \\
+        c_1 &= \frac{b_1a_1 - a_3b_2}{b_1} \label{eq:c1} \\
+        d_1 &= b_2 = a_0 \label{eq:d1}
+        \end{align}
+
+        Las condiciones de estabilidad requieren que:
+        \begin{equation}\label{eq:routh_conditions}
+            a_4 > 0, \quad a_3 > 0, \quad b_1 > 0, \quad c_1 > 0, \quad d_1 > 0
+        \end{equation}
+
+        Dado que $a_4 = 1$, esta condición se satisface automáticamente.
+
+        La condición $a_3 > 0$ conduce directamente a \eqref{eq:cond1}:
+        \begin{equation*}
+            \frac{R}{L} + \bar{\gamma_1} + k_{\textrm{P2}}' > 0
+        \end{equation*}
+
+        La condición $d_1 = a_0 > 0$ resulta en \eqref{eq:cond2}. Dado que $\bar{\gamma}_2 > 0$ por definición, se requiere:
+        \begin{equation*}
+            k_{\textrm{I2}}'k_{\textrm{I3}} > 0
+        \end{equation*}
+
+        Para la condición $b_1 > 0$, sustituyendo $a_4 = 1$ en \eqref{eq:b1}:
+        \begin{equation*}
+            b_1 = \frac{a_3a_2 - a_1}{a_3} = a_2 - \frac{a_1}{a_3} > 0
+        \end{equation*}
+
+        Desarrollando esta expresión con los valores explícitos de $a_1$, $a_2$ y $a_3$ se obtiene la condición \eqref{eq:cond3}: $\varrho > 0$.
+
+        Finalmente, para la condición $c_1 > 0$, notando que $b_2 = a_0$:
+        \begin{equation*}
+            c_1 = \frac{b_1a_1 - a_3a_0}{b_1} = a_1 - \frac{a_3a_0}{b_1} > 0
+        \end{equation*}
+
+        Sustituyendo los valores de $a_0$, $a_1$ y $a_3$, y usando la expresión de $b_1$ en términos de $\varrho$, se obtiene la condición \eqref{eq:cond4}.
+    \end{proof}
 \end{lemma}
-\textcolor{blue}{Demostración:}\textcolor{blue}{ Bajo las definiciones de $k_{I2}'$, $k_{P2}'$, $\bar{\gamma}_1$ y $\bar{\gamma}_2$ que se muestran en el enunciado del lemma, la matriz $A_2$ de $\Sigma_2^{\mathrm{lin}}$ es
-		$$\bar A_2:=\begin{bmatrix}
-			0 & -k_{I3} & -k_{P3} & 1 \\
-			0 & 0 & 1 & 0 \\
-			0 & 0 & -\bar \gamma_1  & -\bar\gamma_2 \\
-			-k_{I2}' & k_{P2}'k_{I3} & k_{P2}'k_{P3}& -(\frac{R}{L}+k_{P2}')
-		\end{bmatrix}$$
-	}
-	%	donde $\bar\gamma_1:=\frac{f_r-\gamma}{J}>0,$ $\bar \gamma_2:=\frac{3}{2J}p\phi>0$, $k_{I2}'=\frac{k_{I2}}{L}$, $k_{P2}'=\frac{k_{P2}}{L}$.}
-	
-	\textcolor{blue}{ COMENTARIO: poner aquí enseguida el polinomio característico. Luego decir que se utilizó matlab para obtener loas condiciones. El desarrollo que tienes abajo te lleva a las condiciones que obtuviste en MATLAB? Si es así, olvida lo de mencionar matlab y deja el desarrollo.}
-	
-	
-El polinomio característico de la matriz $\bar{A_2}$ es 
 
-\begin{equation}\label{eq:poly_sigma_2}
-    \begin{split}
-        p_2(s) =& s^4 + \left(\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'\right)s^3 + \ldots 
-        \\ 
-        &\ldots + \left( \frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} \right)s^2 + \ldots 
-        \\
-        &\ldots + \left( \bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}' \right)s + \ldots
-        \\
-        &\ldots + \left( \bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3} \right)
-    \end{split}
-\end{equation}
-
-El polinomio característico tiene la forma :
-\begin{equation}\label{eq:poly_sigma_2_form}
-    p_2(s) = a_4s^4 + a_3s^3 +a_2s^2 a_1s + a_0
-\end{equation}
-
-La tabla de Routh-Hurwitz para un polinomio de cuarto orden requiere que la primera columna tenga 
-todos sus elementos positivos. La tabla tiene la siguiente estructura:
-
-\begin{equation}
-\begin{array}{c|ccc}
-s^4 & a_4 & a_2 & a_0 \\
-s^3 & a_3 & a_1 & \textcolor{white}{0} \\
-s^2 & b_1 & b_2 & \textcolor{white}{0} \\
-s^1 & c_1 & \textcolor{white}{0} & \textcolor{white}{0} \\
-s^0 & d_1 & \textcolor{white}{0} & \textcolor{white}{0}
-\end{array} \label{eq:rh_table}
-\end{equation}
-
-donde:
-\begin{align}
-b_1 &= \frac{a_3a_2 - a_4a_1}{a_3} \label{eq:b1} \\
-b_2 &= \frac{a_3a_0 - a_4 \cdot 0}{a_3} = \frac{a_3a_0}{a_3} = a_0 \label{eq:b2} \\
-c_1 &= \frac{b_1a_1 - a_3b_2}{b_1} = \frac{b_1a_1 - a_3a_0}{b_1} \label{eq:c1} \\
-d_1 &= a_0 \label{eq:d1}
-\end{align}
-
-Para garantizar estabilidad, necesitamos que todos los coeficientes de $p_2(s)$ sean positivos y que se cumpla:
-
-\begin{align*}
-b_1 &= \frac{a_3a_2 - a_4a_1}{a_3} > 0 \\
-c_1 &= \frac{b_1a_1 - a_3a_0}{b_1} > 0 \\
-\end{align*}
-
-
-El coefiente $a_4 = 1$ es constante y positivo.\\ 
-
-Para el coeficiente $a_3$ necesitamos que se cumpla:
-\begin{equation} \label{eq: cond_a3}
-    \begin{split}
-    & \frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}' > 0
-    \\
-    \Longleftrightarrow\;\; & k_{\textrm P2}' > - \left(\frac{R}{L} + \bar{\gamma_1}\right)
-    \\
-    \Longleftrightarrow\;\; & k_{\textrm P2} > -(R + L\bar{\gamma_1}) \text{ sabiendo que } L > 0
-    \end{split}
-\end{equation}
-
-Para el coeficiente $a_2$ la condición es:
-\begin{align} \label{eq: cond_a2}
-    & \frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} > 0
-\end{align}
-
-Para el coeficiente $a_1$ la condición es:
-\begin{align} \label{eq: cond_a1}
-    & \bar{\gamma_1}k_{\textrm I2}' + \bar{\gamma_2}k_{\textrm I2}'k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}' > 0
-\end{align}
-
-Para el coeficiente $a_0$ la condición es:
-\begin{align*}
-    & \bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3} > 0
-    \\
-    \Longleftrightarrow\;\; & k_{\textrm I2}' > 0; k_{\textrm I3} > 0
-\end{align*}
-
-Para que se cumpla que $b_1 > 0$ necesitamos:
-\begin{align*}
-    b_1 = \frac{a_3a_2 - a_4a_1}{a_3} > 0
-\end{align*}
-Como $a_4 = 1$
-\begin{align}
-    \Rightarrow\;\; & b_1 = \frac{a_3a_2 - a_1}{a_3} = a_2 - \frac{a_1}{a_3} > 0 \Rightarrow\;\; \varrho > 0 \label{eq: cond_b1}
-\end{align}
-
-con 
-\begin{equation*}
-    \varrho := k_{\textrm P2}' \left[\bar{\gamma_1} + \bar{\gamma_2}k_{\textrm P3}\right] + \frac{R}{L}\bar{\gamma_1} + k_{\textrm I2}' 
-    - \frac{k_{\textrm I2}'\left[\bar{\gamma_1} + \bar{\gamma_2}k_{\textrm P3}\right] + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2}'}{\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'}
-\end{equation*}
-
-Para que se cumpla que $c_1 > 0$ necesitamos:
-\begin{align}
-    & c_1 = \frac{b_1a_1 - a_3b_2}{b_1} = \frac{b_1a_1 - a_3a_0}{b_1} = a_1 - \frac{a_3a_0}{b_1} > 0
-    \\
-    \Rightarrow\;\; & \bar{\gamma_2}\left[k_{\textrm I2}'k_{\textrm P3} + k_{\textrm I3}k_{\textrm P2}'\right] + \bar{\gamma_1}k_{\textrm I2}'
-    - \frac{\bar{\gamma_2}k_{\textrm I2}'k_{\textrm I3}\left(\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'\right)}{\varrho} > 0\label{eq: cond_c1}
-\end{align}
-\textcolor{blue}{Poner $\square$ o $\blacksquare$ cuando finalice una prueba. Escoge pf alguno de los dos y siempre usarlo }
 \subsection*{Algoritmo para encontrar las ganancias}
 
-El siguiente sencillo algoritmo sirve como pauta para encontrar un conjunto de ganancias que satisfagan las condiciones \eqref{eq: cond_a3} - \eqref{eq: cond_c1}.\\
+El siguiente algoritmo proporciona un procedimiento sistemático para encontrar un conjunto de ganancias que satisfagan las condiciones \eqref{eq:cond1}--\eqref{eq:cond4}.
 
 \begin{tabular}{l}
 \hline
-\textbf{Algoritmo.} Encontrar encontrar ganancias $k_{P2}',k_{P3},k_{I2}',k_{I3}$\\
+\textbf{Algoritmo.} Encontrar ganancias $k_{\textrm{P2}}',k_{\textrm{P3}},k_{\textrm{I2}}',k_{\textrm{I3}}$\\
 \hline
-\textbf{Paso 1}. Asignar valores positivos a $k_{P3},k_{I3}$.\\
-\textbf{Paso 2}. Fijar $k_{I2}'=1/k_{P2}'$\\
-\textbf{Paso 3.} Encontrar $k_{P2}'>0$ suficientemente grande tal que satisfaga $b_1$ y $c_1$\\\textcolor{blue}{Ponerlo en términos de condiciones que dependan de las ganancias}\\\hline
+\textbf{Paso 1}. Asignar valores positivos a $k_{\textrm{P3}},k_{\textrm{I3}}$.\\
+\textbf{Paso 2}. Fijar $k_{\textrm{I2}}' = 1/k_{\textrm{P2}}'$\\
+\textbf{Paso 3.} Encontrar $k_{\textrm{P2}}' > 0$ suficientemente grande tal que se satisfagan \\
+\quad\quad\quad\quad las condiciones \eqref{eq:cond3} y \eqref{eq:cond4}\\\hline
 \end{tabular}
 \vspace{1em}
 
-Note que, de acuerdo con el Paso 1 y Paso 2,   haciendo $k_{P3}=\bar{k}_{P3}>0$, $k_{I3}=\bar{k}_{I3}>0$ y $k_{I2}'=\frac{1}{k_{P2}'}$, la desigualdad \eqref{eq: cond_b1} es equivalente a:
+Obsérvese que, de acuerdo con el Paso 1 y Paso 2, al hacer $k_{\textrm{P3}} = \bar{k}_{\textrm{P3}} > 0$, $k_{\textrm{I3}} = \bar{k}_{\textrm{I3}} > 0$ y $k_{\textrm{I2}}' = \frac{1}{k_{\textrm{P2}}'}$, la condición \eqref{eq:cond1} se satisface automáticamente para $k_{\textrm{P2}}' > 0$ suficientemente grande. Asimismo, la condición \eqref{eq:cond2} se cumple por la elección de ganancias positivas. Por lo tanto, solo resta verificar las condiciones \eqref{eq:cond3} y \eqref{eq:cond4}.
+
+Sustituyendo estos valores en \eqref{eq:cond3}, la desigualdad se reduce a:
 \begin{align*}
-&\varrho (k_{P2}',\bar k_{P3},\frac{1}{k_{P2}'},\bar k_{I3}) = \ldots \\
-&\ldots k_{P2}'\big [ \bar\gamma_1 + \bar\gamma_2 \bar{k}_{P3} \big ]+\frac{R}{L}\bar\gamma_1  + \frac{1}{k_{P2}'} - \frac{\frac{1}{k_{P2}'^2}\big [ \bar\gamma_2\bar{k}_{P3}+\bar\gamma_1 \big] + \bar\gamma_2 \bar{k}_{I3}}{1+\frac{1}{L}\frac{R}{k_{P2}'}+\frac{\bar\gamma_1}{k_{P2}'}}>0
+&\varrho\left(k_{\textrm{P2}}',\bar{k}_{\textrm{P3}},\frac{1}{k_{\textrm{P2}}'},\bar{k}_{\textrm{I3}}\right) = \\
+&\quad k_{\textrm{P2}}'\left[\bar{\gamma}_1 + \bar{\gamma}_2 \bar{k}_{\textrm{P3}}\right] + \frac{R}{L}\bar{\gamma}_1  + \frac{1}{k_{\textrm{P2}}'} - \frac{\frac{1}{k_{\textrm{P2}}'^2}\left[\bar{\gamma}_2\bar{k}_{\textrm{P3}} + \bar{\gamma}_1\right] + \bar{\gamma}_2 \bar{k}_{\textrm{I3}}}{1 + \frac{1}{L}\frac{R}{k_{\textrm{P2}}'} + \frac{\bar{\gamma}_1}{k_{\textrm{P2}}'}} > 0
 \end{align*}
 
-%\textcolor{red}{Podrías expandir la desigualdad anterior y ponerla como polinomio de $k_{p2}$?}
-
-Note de la ecuación anterior que a medida que $k_{P2}$ toma valores más grandes, la parte positiva domina por lo que \eqref{eq: cond_b1} se satisface. Entre más grande es $k_{p2}$, más grande es $\varrho$. Esto implica que la cuarta condición \eqref{eq: cond_c1}:
+A medida que $k_{\textrm{P2}}'$ toma valores más grandes, el término dominante $k_{\textrm{P2}}'\left[\bar{\gamma}_1 + \bar{\gamma}_2 \bar{k}_{\textrm{P3}}\right]$ garantiza que \eqref{eq:cond3} se satisface. Además, un valor creciente de $k_{\textrm{P2}}'$ implica un valor creciente de $\varrho$, lo cual facilita el cumplimiento de la condición \eqref{eq:cond4}:
 \begin{align}
-\bar\gamma_2 \big[  \frac{1}{k_{P2}'}\bar{k}_{P3} + \bar{k}_{I3}k_{P2}'\big] + \frac{\bar\gamma_1}{k_{P2}'}- \frac{\frac{1}{k_{P2}'}(\frac{R}{L}+k_{P2}'+\bar\gamma_1)\bar\gamma_2\bar{k}_{I3}}{\varrho (k_{P2}',\bar k_{P3},\frac{1}{k_{P2}'},\bar k_{I3}) }>&0
+\bar{\gamma}_2 \left[\frac{1}{k_{\textrm{P2}}'}\bar{k}_{\textrm{P3}} + \bar{k}_{\textrm{I3}}k_{\textrm{P2}}'\right] + \frac{\bar{\gamma}_1}{k_{\textrm{P2}}'} - \frac{\frac{1}{k_{\textrm{P2}}'}\left(\frac{R}{L} + k_{\textrm{P2}}' + \bar{\gamma}_1\right)\bar{\gamma}_2\bar{k}_{\textrm{I3}}}{\varrho\left(k_{\textrm{P2}}',\bar{k}_{\textrm{P3}},\frac{1}{k_{\textrm{P2}}'},\bar{k}_{\textrm{I3}}\right)} > 0
 \end{align}
 
-toma valores positivos cada vez mayores, a medida que crece $k_{P2}$. Esto es, existe un valor de $k_{P2}$ suficientemente grande que garantiza que las condiciones de Routh-Hurwitz se satisfagan. De la discusión anterior se puede afirmar  la existencia de solución siguiente.\\
+ya que el término $\bar{k}_{\textrm{I3}}k_{\textrm{P2}}'$ crece linealmente mientras que el término del denominador decrece. Por lo tanto, existe un valor de $k_{\textrm{P2}}'$ suficientemente grande que garantiza que las condiciones de Routh-Hurwitz se satisfagan.
 
 \begin{lemma}
-    La condiciones \eqref{eq: cond_a3}-\eqref{eq: cond_c1} tienen solución. 
+    Las condiciones \eqref{eq:cond1}--\eqref{eq:cond4} admiten solución. \tripletriang
+    
+    \begin{proof}
+        Para demostrar la existencia de solución, se aplicó el algoritmo presentado anteriormente 
+        con los parámetros del sistema dados en \textcolor{blue}{[referencia a tabla/sección de 
+        parámetros]}. Los valores numéricos relevantes son $\frac{R}{L} = 103.5493$, 
+        $\bar{\gamma}_1 = 0.000117$ y $\bar{\gamma}_2 = 1.5328$.
+        
+        Siguiendo el Paso 1 del algoritmo, se fijaron las ganancias del lazo externo como:
+        \begin{equation}
+            k_{\textrm{P3}} = 50, \quad k_{\textrm{I3}} = 50
+        \end{equation}
+        
+        Conforme al Paso 2, se estableció la relación $k_{\textrm{I2}}' = \frac{1}{k_{\textrm{P2}}'}$.
+        
+        Para el Paso 3, se realizó una búsqueda incremental de $k_{\textrm{P2}}'$ hasta encontrar 
+        un valor que satisficiera las condiciones \eqref{eq:cond3} y \eqref{eq:cond4}. El valor 
+        $k_{\textrm{P2}}' = 10$ resultó en el siguiente conjunto de ganancias normalizadas:
+        \begin{equation}
+            k_{\textrm{P2}}' = 10, \quad k_{\textrm{I2}}' = 0.1
+        \end{equation}
+        
+        que corresponde a las ganancias originales:
+        \begin{equation}\label{eq:gains_solution}
+            k_{\textrm{P2}} = 0.0355, \quad k_{\textrm{I2}} = 0.000355, \quad 
+            k_{\textrm{P3}} = 50, \quad k_{\textrm{I3}} = 50
+        \end{equation}
+        
+        La verificación numérica confirmó que todas las condiciones de Routh-Hurwitz se satisfacen:
+        \begin{align*}
+            a_3 &= 113.55 > 0 \quad \checkmark \\
+            a_0 &= 7.66 > 0 \quad \checkmark \\
+            b_1 &= 759.68 > 0 \quad \checkmark \\
+            c_1 &= 772.90 > 0 \quad \checkmark
+        \end{align*}
+        
+        Adicionalmente, se verificó que la matriz $\bar{A}_2$ con estas ganancias es Hurwitz. 
+        Los valores propios de $\bar{A}_2$ son:
+        \begin{equation}
+            \lambda_1 = -106.41, \quad \lambda_2 = -5.90, \quad \lambda_3 = -1.22, \quad \lambda_4 = -0.01
+        \end{equation}
+        
+        Como todos los valores propios tienen parte real negativa, se confirma que $\bar{A}_2$ es 
+        Hurwitz y, por lo tanto, el punto de equilibrio $\bar{z}$ es exponencialmente estable.
+    \end{proof}
 \end{lemma}
-
-\textcolor{blue}{COMENTARIO: Una vez que encuentres las ganancias verificar que la $\bar{A}_2$, con esas ganancias, es Hurwitz.}
-
-%_---------------
-
-% \textcolor{blue}{Comentario: Puedes repetir el análisis de RH con la matriz $\bar A_2$? Las k's, R, fr y $\gamma$ son constantes. No hay por que entrar en detalle en cómo está definida la funcion Cp para realizar este análisis. }
-% \textcolor{blue}{
-% Es decir, realizar lo que tienes en (1.65)-(1.69) pero escribiendo de forma simbóilica los parámetros. En el  polinomio caracteristicco deben aparecer los parámetros anteriores.}
-
-
-% \hfill{$\square$}
-
-% ---------------\\
-% \textcolor{blue}{Comentario: No es necesario definir los valores de los parámetros. Eso se puede hacer después. Tal vez en la parte de simulación.}\\
-% -----------------
-
-% -------------------\\
-
-% La matriz $A_2$ con los valores numéricos es:
-
-% \begin{equation}
-% \resizebox{\textwidth}{!}{$
-% A_2 = 
-% \begin{bmatrix}
-% 0 & -k_{I3} & -k_{P3} & 1 \\
-% 0 & 0 & 1 & 0 \\
-% 0 & 0 & -3.86\times10^{-5} - 0.0015 & -1.5328 \\
-% -281.69k_{I2} & 281.69k_{P2}k_{I3} & 281.69k_{P2}k_{P3} & -281.69k_{P2} - 103.55
-% \end{bmatrix}
-% $}
-% \label{eq:A2_numeric_final}
-% \end{equation}
-
-% Y su polinomio característico:
-% \begin{multline}
-% p_2(s) = s^4 + (281.69k_{P2} + 103.55)s^3 + \\ 
-% (281.69k_{I2} + 431.76k_{P2}k_{P3} - 0.0015k_{P2} - 0.0004)s^2 + \\
-% (431.76k_{I2}k_{P3} - 0.0015k_{I2} + 431.76k_{P2}k_{I3})s + 431.76k_{I2}k_{I3} \label{eq:char_poly}
-% \end{multline}
-
-% El polinomio característico tiene la forma:
-% \begin{equation}
-% p_2(s) = a_3s^4 + a_2s^3 + a_1s^2 + a_0s + a_4 \label{eq:poly_rh}
-% \end{equation}
-
-% donde:
-% \begin{align}
-% a_3 &= 1 \label{eq:a3} \\
-% a_2 &= 281.69k_{P2} + 103.55 \label{eq:a2} \\
-% a_1 &= 281.69k_{I2} + 431.76k_{P2}k_{P3} - 0.0015k_{P2} - 0.0004 \label{eq:a1} \\
-% a_0 &= 431.76k_{I2}k_{P3} - 0.0015k_{I2} + 431.76k_{P2}k_{I3} \label{eq:a0} \\
-% a_4 &= 431.76k_{I2}k_{I3} \label{eq:a4}
-% \end{align}
-
-
-% donde:
-% \begin{align}
-% b_1 &= \frac{a_2a_1 - a_0}{a_2} \label{eq:b1} \\
-% b_2 &= \frac{a_2a_4 - 0}{a_2} = a_4 \label{eq:b2} \\
-% c_1 &= \frac{b_1a_0 - a_4}{b_1} \label{eq:c1} \\
-% d_1 &= a_4 \label{eq:d1}
-% \end{align}
-
-% Para garantizar estabilidad, necesitamos:
-
-% \begin{align}
-% a_2 &> 0 \label{eq:cond1} \\
-% a_1 &> 0 \label{eq:cond2} \\
-% a_0 &> 0 \label{eq:cond3} \\
-% a_4 &> 0 \label{eq:cond4} \\
-% b_1 &> 0 \label{eq:cond5} \\
-% c_1 &> 0 \label{eq:cond6}
-% \end{align}
-
-% De \eqref{eq:cond1}:
-% \begin{equation}
-% 281.69k_{P2} + 103.55 > 0 \implies k_{P2} > -0.3676 \label{eq:kp2_cond}
-% \end{equation}
-
-% De \eqref{eq:cond4}:
-% \begin{equation}
-% 431.76k_{I2}k_{I3} > 0 \implies k_{I2}k_{I3} > 0 \label{eq:ki_cond}
-% \end{equation}
-
-% Para simplificar el análisis, podemos hacer:
-% \begin{equation}
-% k_{P2} = 0, \quad k_{I2} = 1, \quad k_{I3} = 1 \label{eq:k_values}
-% \end{equation}
-
-% Sustituyendo estos valores en \eqref{eq:cond2} y \eqref{eq:cond3}:
-% \begin{align}
-% 281.69 + 431.76k_{P3} - 0.0004 &> 0 \label{eq:kp3_cond1} \\
-% 431.76k_{P3} - 0.0015 + 0 &> 0 \label{eq:kp3_cond2}
-% \end{align}
-
-% De donde obtenemos:
-% \begin{equation}
-% k_{P3} > 3.48\times10^{-6} \label{eq:kp3_final_cond}
-% \end{equation}
-
-% Por lo tanto, un conjunto de valores que garantiza la estabilidad del sistema es:
-% \begin{align}
-% k_{P2} &= 0 \label{eq:kp2_final} \\
-% k_{I2} &= 1 \label{eq:ki2_final} \\
-% k_{P3} &= 1 \label{eq:kp3_final} \\
-% k_{I3} &= 1 \label{eq:ki3_final}
-% \end{align}
-% A_2 = \left.\frac{\partial f}{\partial z}\right|_{z=\bar{z}} = \begin{bmatrix}
-% 0 & -k_{I3} & -k_{P3} & 1 \\
-% 0 & 0 & 1 & 0 \\
-% 0 & 0 & -\frac{f_r}{J} + {\gamma \over J} & -\frac{3}{2J}p\phi \\
-% -\frac{k_{I2}}{L} & \frac{k_{P2}k_{I3}}{L} & \frac{k_{P2}k_{P3}}{L} & -\frac{R+k_{P2}}{L}
-% \end{bmatrix} \label{eq:A2_symbolic}
-% \end{equation}
-
-% y usando la regla de la cadena:
-% \begin{align}
-% \gamma :=&\left. \frac{r\kappa_1}{v_w} \frac{\partial }{\partial \lambda}\left[\frac{C_{p,0}}{\lambda }\right]\right|_{\omega_m=\omega^*_m,\lambda=\lambda^\star}\nonumber\\
-% =&\left. \frac{r\kappa_1}{v_w}\frac{\partial\lambda}{\partial \omega_m}\left[{1\over \lambda}\frac{\partial C_{p,0}}{\partial\lambda\nonumber }-\frac{1}{\lambda^2}C_{p,0}\right]\right|_{\omega_m=\omega^*_m,\lambda=\lambda^\star}\\
-% =&  \frac{r^2\kappa_1}{v_w^2}{1\over \lambda^\star}\left[\left.\frac{\partial C_{p,0}}{\partial \lambda}\right|_{\lambda=\lambda^\star}-{1\over \lambda^\star} C_{p,0}(\lambda^\star) \right]\nonumber \\
-% =& - \frac{r^2\kappa_1}{v_w^2}{1\over (\lambda^\star)^2}  C_{p,0}(\lambda^\star)
-% \label{eq:gamma}
-% \end{align}
-
-% Puesto que los parámetros son positivos y $C_{p,0}>0$, entonces $\gamma<0$. A partir de lo anterior, 
-% es posible enunciar el siguiente lema. Asismismo, es posible conlcuir que la entrada (3,3) de la 
-% matriz $A_2$ toma valores negativos, esto es, $A_{2}^{(3,3)}<0$.\\
-
-% \begin{lemma}
-%     Considere el sistema $\Sigma_2^{\mathrm{lin}}$ en \eqref{dz} que consiste en la linealización 
-%     de $\Sigma_2$. El punto de equilibrio $z=\bar z$, con la constante $\bar z$  definida en 
-%     \eqref{barz}, es exponencialmente estable si y solo si .... 
-
-%     \begin{proof}
-%         La estabilidad del sistema  \eqref{dz} se puede inferir de la estabilidad de la matriz%\footnote{\textcolor{blue}{Note que la matriz $\bar A_2$ se puede obtener a partir de un cambio de variables de \eqref{barz}. Por ser muy sencillo, el procedimiento se omitirá.}}
-%         $$\bar A_2:=\begin{bmatrix}
-%             0 & -k_{I3} & -k_{P3} & 1 \\
-%             0 & 0 & 1 & 0 \\
-%             0 & 0 & -\bar \gamma_1  & -\bar\gamma_2 \\
-%             -K_{I2}' & k_{P2}'k_{I3} & k_{P2}'\textcolor{red}{\underbrace{K_{P3}'}_{k_{\text P3} \text ?}}& -(\frac{R}{L}+k_{P2}')
-%         \end{bmatrix}$$
-%         donde $\bar\gamma_1:=\frac{f_r-\gamma}{J}>0,$ $\bar \gamma_2:=\frac{3}{2J}p\phi>0$, $K_{I2}'=\frac{k_{I2}}{L}$, $K_{P2}'=\frac{K_{P2}}{L}$,  .
-%         \textcolor{red}{Comentario: $k_P3$ va sin cambio de variable, cierto?}
-%     \end{proof}
-% \end{lemma}
-
-% El polinomio característico de la matriz $\bar{A_2}$ es 
-
-% \begin{equation}\label{eq:poly_sigma_2}
-%     \begin{split}
-%         p_2(s) =& s^4 + \left(\frac{R}{L} + \bar{\gamma_1} + k_{\textrm P2}'\right)s^3 + \ldots 
-%         \\ 
-%         &\ldots + \left( \frac{R\bar{\gamma_1}}{L} + k_{\textrm I2}' + \bar{\gamma_1}k_{\textrm P2}' + \bar{\gamma_2}k_{\textrm P2}'k_{\textrm P3} \right)s^2 + \ldots 
-%         \\
-%         &\ldots + \left( \bar{\gamma_1}k_{\textrm I2} + \bar{\gamma_2}k_{\textrm I2}k_{\textrm P3} + \bar{\gamma_2}k_{\textrm I3}k_{\textrm P2} \right)s + \ldots
-%         \\
-%         &\ldots + \left( \bar{\gamma_2}k_{\textrm I2}k_{\textrm I3} \right)
-%     \end{split}
-% \end{equation}
-
-% El polinomio característico tiene la forma :
-% \begin{equation}\label{eq:poly_sigma_2_form}
-%     p_2(s) = a_4s^4 + a_3s^3 +a_2s^2 a_1s + a_0
-% \end{equation}
-
-% La tabla de Routh-Hurwitz para un polinomio de cuarto orden requiere que la primera columna tenga 
-% todos sus elementos positivos. La tabla tiene la siguiente estructura:
-
-% \begin{equation}
-% \begin{array}{c|ccc}
-% s^4 & a_4 & a_2 & a_0 \\
-% s^3 & a_3 & a_1 & 0 \\
-% s^2 & b_1 & b_2 & 0 \\
-% s^1 & c_1 & 0 & 0 \\
-% s^0 & d_1 & 0 & 0
-% \end{array} \label{eq:rh_table}
-% \end{equation}
-% % \textcolor{blue}{Comentario: Puedes repetir el análisis de RH con la matriz $\bar A_2$? Las k's, R, fr y $\gamma$ son constantes. No hay por que entrar en detalle en cómo está definida la funcion Cp para realizar este análisis. }
-% % \textcolor{blue}{
-% % Es decir, realizar lo que tienes en (1.65)-(1.69) pero escribiendo de forma simbóilica los parámetros. En el  polinomio caracteristicco deben aparecer los parámetros anteriores.}
-
-
-% % \hfill{$\square$}
-
-% % ---------------\\
-% % \textcolor{blue}{Comentario: No es necesario definir los valores de los parámetros. Eso se puede hacer después. Tal vez en la parte de simulación.}\\
-% % -----------------
-
-% % -------------------\\
-
-% La matriz $A_2$ con los valores numéricos es:
-
-% \begin{equation}
-% \resizebox{\textwidth}{!}{$
-% A_2 = 
-% \begin{bmatrix}
-% 0 & -k_{I3} & -k_{P3} & 1 \\
-% 0 & 0 & 1 & 0 \\
-% 0 & 0 & -3.86\times10^{-5} - 0.0015 & -1.5328 \\
-% -281.69k_{I2} & 281.69k_{P2}k_{I3} & 281.69k_{P2}k_{P3} & -281.69k_{P2} - 103.55
-% \end{bmatrix}
-% $}
-% \label{eq:A2_numeric_final}
-% \end{equation}
-
-% Y su polinomio característico:
-% \begin{multline}
-% p_2(s) = s^4 + (281.69k_{P2} + 103.55)s^3 + \\ 
-% (281.69k_{I2} + 431.76k_{P2}k_{P3} - 0.0015k_{P2} - 0.0004)s^2 + \\
-% (431.76k_{I2}k_{P3} - 0.0015k_{I2} + 431.76k_{P2}k_{I3})s + 431.76k_{I2}k_{I3} \label{eq:char_poly}
-% \end{multline}
-
-% El polinomio característico tiene la forma:
-% \begin{equation}
-% p_2(s) = a_3s^4 + a_2s^3 + a_1s^2 + a_0s + a_4 \label{eq:poly_rh}
-% \end{equation}
-
-% donde:
-% \begin{align}
-% a_3 &= 1 \label{eq:a3} \\
-% a_2 &= 281.69k_{P2} + 103.55 \label{eq:a2} \\
-% a_1 &= 281.69k_{I2} + 431.76k_{P2}k_{P3} - 0.0015k_{P2} - 0.0004 \label{eq:a1} \\
-% a_0 &= 431.76k_{I2}k_{P3} - 0.0015k_{I2} + 431.76k_{P2}k_{I3} \label{eq:a0} \\
-% a_4 &= 431.76k_{I2}k_{I3} \label{eq:a4}
-% \end{align}
-
-
-% donde:
-% \begin{align}
-% b_1 &= \frac{a_2a_1 - a_0}{a_2} \label{eq:b1} \\
-% b_2 &= \frac{a_2a_4 - 0}{a_2} = a_4 \label{eq:b2} \\
-% c_1 &= \frac{b_1a_0 - a_4}{b_1} \label{eq:c1} \\
-% d_1 &= a_4 \label{eq:d1}
-% \end{align}
-
-% Para garantizar estabilidad, necesitamos:
-
-% \begin{align}
-% a_2 &> 0 \label{eq:cond1} \\
-% a_1 &> 0 \label{eq:cond2} \\
-% a_0 &> 0 \label{eq:cond3} \\
-% a_4 &> 0 \label{eq:cond4} \\
-% b_1 &> 0 \label{eq:cond5} \\
-% c_1 &> 0 \label{eq:cond6}
-% \end{align}
-
-% De \eqref{eq:cond1}:
-% \begin{equation}
-% 281.69k_{P2} + 103.55 > 0 \implies k_{P2} > -0.3676 \label{eq:kp2_cond}
-% \end{equation}
-
-% De \eqref{eq:cond4}:
-% \begin{equation}
-% 431.76k_{I2}k_{I3} > 0 \implies k_{I2}k_{I3} > 0 \label{eq:ki_cond}
-% \end{equation}
-
-% Para simplificar el análisis, podemos hacer:
-% \begin{equation}
-% k_{P2} = 0, \quad k_{I2} = 1, \quad k_{I3} = 1 \label{eq:k_values}
-% \end{equation}
-
-% Sustituyendo estos valores en \eqref{eq:cond2} y \eqref{eq:cond3}:
-% \begin{align}
-% 281.69 + 431.76k_{P3} - 0.0004 &> 0 \label{eq:kp3_cond1} \\
-% 431.76k_{P3} - 0.0015 + 0 &> 0 \label{eq:kp3_cond2}
-% \end{align}
-
-% De donde obtenemos:
-% \begin{equation}
-% k_{P3} > 3.48\times10^{-6} \label{eq:kp3_final_cond}
-% \end{equation}
-
-% Por lo tanto, un conjunto de valores que garantiza la estabilidad del sistema es:
-% \begin{align}
-% k_{P2} &= 0 \label{eq:kp2_final} \\
-% k_{I2} &= 1 \label{eq:ki2_final} \\
-% k_{P3} &= 1 \label{eq:kp3_final} \\
-% k_{I3} &= 1 \label{eq:ki3_final}
-% \end{align}
-
