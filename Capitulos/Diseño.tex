@@ -137,40 +137,8 @@ método \emph{blade element} en \cite{heier2014}).
 
 Un punto importante a notar es que, de acuerdo con \cite{Burton2011}, en turbinas modernas de tres palas 
 el valor máximo de $C_P$ es de solo 0.47, lo cual se aleja considerablemente del límite teórico de Betz, 
-y se logra con un valor de la 
-relación de velocidad punta de $\lambda^\star \approx 7$. Esto se puede ver más fácilmente en las curvas 
-$C_P - \lambda$ (vease figura \ref{fig:Cp_vs_lambda}). 
-\begin{figure}
-    \begin{tikzpicture}
-    \begin{axis}[
-        title={Coeficiente de Potencia ($C_p$) vs Relación de Velocidad de Punta ($\lambda$)},
-        xlabel={$\lambda$},
-        ylabel={$C_p$},
-        xmin=0, xmax=15,
-        ymin=0, ymax=0.5,
-        %xtick={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15},
-        xtick={0,5,10,15},
-        ytick={0,0.1,0.2,0.3,0.4,0.5},
-        grid=both,
-        minor grid style={gray!25},
-        major grid style={gray!50},
-        width=12cm,
-        height=8cm,
-        every axis plot/.append style={very thick}
-    ]
-    
-    % Definir la curva ajustada para alcanzar el máximo en lambda=7, Cp=0.47
-    \addplot[smooth, domain=1:15, samples=200] {
-        0.47 * (1/(1 + exp(-3*(x-3)))) * (1/(1 + 0.15*exp(0.3*(x-8)))) * (1-0.01*(x-8)^2) + 0.04
-    };
-    
-    \end{axis}
-    \end{tikzpicture}
-    \caption{Curva de $\lambda$ vs $C_p$. Adaptada de \cite{Burton2011}}
-    \label{fig:Cp_vs_lambda}
-\end{figure}
+y se logra con un valor de la relación de velocidad punta de $\lambda^\star \approx 7$. 
 \\
-
 
 Con el objetivo de obtener un valor del coeficiente de potencia ajustado a los parámetros utilizados durante 
 el modelado de la turbina se utilizará una aproximación mediante una función analítica de $c_p$.
@@ -197,6 +165,21 @@ y
 \end{align}
 
 $\beta$ es el angulo de inclinación (\emph{pitch}) de las palas.
+\\ 
+
+Utilizando estos parámetros y asumiendo $\beta = 0$ (sin control de \textit{pitch}), 
+se calculó numéricamente mediante MATLAB el punto de máxima extracción de potencia, 
+obteniéndose $\lambda^* = 7.96$ y $C_p^{\text{max}} = 0.411$. La figura \ref{fig:cp_lambda} 
+muestra la curva característica $C_p$ vs $\lambda$ para estos parámetros.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{Cp_vs_lambda.pdf}
+\caption{Curva de $\lambda$ vs $C_p$ calculada con los parámetros del sistema. 
+El punto óptimo $\lambda^* = 7.96$ corresponde al máximo coeficiente de potencia 
+$C_p^{\text{max}} = 0.411$.}
+\label{fig:cp_lambda}
+\end{figure}
 
 \subsection{Subsistema eléctrico}
 
@@ -669,7 +652,7 @@ donde $\delta z$ representa al estado del sistema linealealizado,
 A_2 = \left.\frac{\partial f}{\partial z}\right|_{z=\bar{z}} = \begin{bmatrix}
 0 & -k_{I3} & -k_{P3} & 1 \\
 0 & 0 & 1 & 0 \\
-0 & 0 & -\frac{f_r}{J} + {\gamma \over J} & -\frac{3}{2J}p\phi \\
+0 & 0 & -\frac{f_r}{J} + \gamma & -\frac{3}{2J}p\phi \\
 -\frac{k_{I2}}{L} & \frac{k_{P2}k_{I3}}{L} & \frac{k_{P2}k_{P3}}{L} & -\frac{R+k_{P2}}{L}
 \end{bmatrix} \label{eq:A2_symbolic}
 \end{equation}
@@ -678,7 +661,7 @@ donde $\gamma$ está definida como la siguiente derivada evaluada en el punto $\
 \begin{align}\nonumber
 	\gamma:= \frac{r\kappa_1}{Jv_w}\left.\frac{\partial}{\partial \lambda}\left(\frac{C_{p,0}(\lambda)}{\lambda}\right)\right|_{\lambda=\lambda_\star}.
 \end{align}
-Desarrollando la derivada, la contante $\gamma$ se reduce a la expresión
+Desarrollando la derivada, la constante $\gamma$ se reduce a la expresión
 \begin{align}
 	\gamma=&\left.\frac{r\kappa_1}{Jv_w} \left[\frac{1}{\lambda}\frac{\partial }{\partial \lambda}C_{p,0}(\lambda)-\frac{1}{\lambda^2}C_{p,0}(\lambda)\right]\right|_{\lambda=\lambda_\star}\nonumber\\
 	=& - \frac{1}{\lambda_\star^2}\frac{r\kappa_1}{Jv_w} C_{p,0}(\lambda_\star) \label{eq:gamma}
