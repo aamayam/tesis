@@ -81,6 +81,13 @@ En esta ecuación se define cada torque como sigue:
     \label{eq:electrical_torque}
 \end{equation}
 
+con 
+
+\begin{equation}
+    \lambda = \frac{r\omega_m}{v_w}
+    \label{eq:lambda}
+\end{equation}
+
 Estas ecuaciones introducen las variables $\kappa_1$, la cual es un parámetro de diseño y un valor 
 constante en la simulación, el flujo eléctrico en el generador ($\phi$) y la corriente en el eje de 
 cuadratura del generador ($i_q$). Estas últimas dos variables serán tratadas
@@ -825,7 +832,7 @@ ya que el término $\bar{k}_{\textrm{I3}}k_{\textrm{P2}}'$ crece linealmente mie
         
         Siguiendo el Paso 1 del algoritmo, se fijaron las ganancias del lazo externo como:
         \begin{equation}
-            k_{\textrm{P3}} = 50, \quad k_{\textrm{I3}} = 50
+            k_{\textrm{P3}} = 10, \quad k_{\textrm{I3}} = 10
         \end{equation}
         
         Conforme al Paso 2, se estableció la relación $k_{\textrm{I2}}' = \frac{1}{k_{\textrm{P2}}'}$.
@@ -840,24 +847,74 @@ ya que el término $\bar{k}_{\textrm{I3}}k_{\textrm{P2}}'$ crece linealmente mie
         que corresponde a las ganancias originales:
         \begin{equation}\label{eq:gains_solution}
             k_{\textrm{P2}} = 0.0355, \quad k_{\textrm{I2}} = 0.000355, \quad 
-            k_{\textrm{P3}} = 50, \quad k_{\textrm{I3}} = 50
+            k_{\textrm{P3}} = 10, \quad k_{\textrm{I3}} = 10
         \end{equation}
         
         La verificación numérica confirmó que todas las condiciones de Routh-Hurwitz se satisfacen:
         \begin{align*}
-            a_3 &= 113.55 > 0 \quad \checkmark \\
-            a_0 &= 7.66 > 0 \quad \checkmark \\
-            b_1 &= 759.68 > 0 \quad \checkmark \\
-            c_1 &= 772.90 > 0 \quad \checkmark
+            a_3 &= 113.67 > 0 \quad \checkmark \\
+            a_0 &= 1.53 > 0 \quad \checkmark \\
+            b_1 &= 166.34 > 0 \quad \checkmark \\
+            c_1 &= 153.77 > 0 \quad \checkmark
         \end{align*}
         
         Adicionalmente, se verificó que la matriz $\bar{A}_2$ con estas ganancias es Hurwitz. 
         Los valores propios de $\bar{A}_2$ son:
-        \begin{equation}
-            \lambda_1 = -106.41, \quad \lambda_2 = -5.90, \quad \lambda_3 = -1.22, \quad \lambda_4 = -0.01
+        \begin{equation} \label{eq:eigenvalues}
+            \lambda_1 = -112.193, \quad \lambda_2 = -0.736 + 0.907i, \quad \lambda_3 = -0.736 - 0.907i, \quad \lambda_4 = -0.010008
         \end{equation}
         
         Como todos los valores propios tienen parte real negativa, se confirma que $\bar{A}_2$ es 
         Hurwitz y, por lo tanto, el punto de equilibrio $\bar{z}$ es exponencialmente estable.
     \end{proof}
 \end{lemma}
+
+\subsection{Análisis del lugar geométrico de las raíces}
+
+Con el objetivo de complementar el análisis de estabilidad presentado en la
+sección anterior y visualizar el efecto de la ganancia $k'_{P2}$ sobre la
+ubicación de los valores propios del sistema linealizado $\Sigma_2^{\text{lin}}$,
+se construyó el lugar geométrico de las raíces (LGR) de la matriz $\bar{A}_2$
+en función del parámetro $k'_{P2}$, manteniendo fijas las ganancias del lazo
+externo $k_{P3} = 10$, $k_{I3} = 10$ y la relación $k'_{I2} = 1/k'_{P2}$
+establecida en el Paso~2 del algoritmo de sintonización.
+\\ 
+
+La figura \ref{fig:root_locus} muestra el LGR completo junto con un detalle
+ampliado de los valores propios $\lambda_3$ y $\lambda_4$, que son los de
+mayor relevancia dinámica para el análisis de estabilidad de $\Sigma_2$.
+Los valores propios $\lambda_1$ y $\lambda_2$, asociados al lazo de corriente
+del eje directo $\Sigma_1$, permanecen esencialmente invariantes ante
+variaciones de $k'_{P2}$ y se ubican consistentemente en el semiplano
+izquierdo lejano al eje imaginario, lo cual es consistente con la estabilidad
+incondicional de $\Sigma_1$ demostrada en el Lema 3.2.4.
+\\ 
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{root_locus.pdf}
+    \caption{Lugar geométrico de las raíces de $\bar{A}_2$ en función de
+    $k'_{P2} \in [0.1,\, 10^4]$. Panel izquierdo: LGR completo mostrando
+    los cuatro valores propios. Panel derecho: detalle de $\lambda_3$ y
+    $\lambda_4$, donde se aprecia la migración desde el semiplano derecho
+    hacia el semiplano izquierdo conforme $k'_{P2}$ aumenta.}
+    \label{fig:root_locus}
+\end{figure} 
+
+El comportamiento observado en el panel derecho de la
+figura \ref{fig:root_locus} es coherente con las condiciones de
+Routh-Hurwitz establecidas en el Lema 3.2.5. Para valores pequeños de
+$k'_{P2}$, las condiciones \eqref{eq:cond3} y \eqref{eq:cond4} no se
+satisfacen, lo que se manifiesta en la presencia de valores propios con
+parte real positiva. A medida que $k'_{P2}$ crece, los polos $\lambda_3$ y
+$\lambda_4$ migran hacia el semiplano izquierdo, cruzando el eje imaginario
+para un valor umbral de $k'_{P2}$ que puede identificarse visualmente en el
+zoom. Este comportamiento valida geométricamente la existencia del umbral
+mínimo de ganancia establecido analíticamente en el Lema 3.2.6.
+\\ 
+
+Para el valor seleccionado $k'_{P2} = 10$ — marcado con un cuadro en la
+figura — los cuatro valores propios presentan parte real estrictamente
+negativa, confirmando que $\bar{A}_2$ es Hurwitz y que el punto de
+equilibrio $\bar{z}$ definido en \eqref{eq:sigma_2} es exponencialmente
+estable, en concordancia con los valores numéricos reportados en \eqref{eq:eigenvalues}.
