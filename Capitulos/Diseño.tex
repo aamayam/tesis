@@ -350,6 +350,7 @@ Los voltajes $v_d$ y $v_q$ se pueden manipular de forma libre, es decir, corresp
 \section{Diseño del control de torque}
 
 \subsection{Objetivos de control}
+\label{sec:objetivos_de_control}
 
 En turbinas éolicas de velocidad variable obtenemos una mayor eficiencia del sistema al reducir las pérdidas
 del generador para una carga dada. Dentro del marco de referencia \emph{dq} la corriente $i_q$ se emplea para
@@ -516,7 +517,7 @@ cuando el sistema es sometido a perfiles de viento realistas.} el sistema $\Sigm
 % --------------- LEMA ------------------
 La discusión anterior se resume en el siguiente lema.\\
 
-\begin{lemma}
+\begin{lemma}\label{lem:wecs}
     Considere el sistema WECS \eqref{eq:full_system}-\eqref{eq:definitions} en lazo cerrado con \eqref{valUd}-\eqref{xi}. El sistema 
     resultante se compone de dos subsistemas desacoplados, que denominaremos $\Sigma_1$ y $\Sigma_2$, 
     cuyas ecuaciones son las siguientes:
@@ -615,14 +616,14 @@ Estos quedan enunciados en los siguientes lemas.
     \end{proof}
 \end{lemma}
 
-\subsection{Análisis de estabilidad de $\Sigma_1$ y $\Sigma_2$ }
-
+\subsection{Análisis de estabilidad de \texorpdfstring{$\Sigma_1$ y $\Sigma_2$}{Sigma 1 y Sigma 1}}
+\label{sec:analisis_sigmas}
 
 Una vez que se encuentran los puntos de equilibrio, en esta subsección se analizará la estabilidad de 
 los mismos. Puesto que los subsistemas están desacoplados, la estabilidad de cada uno se puede estudiar 
 por separado.\\
 
-\begin{lemma}
+\begin{lemma}\label{lem:sigma_1}
     Considere el sistema $\Sigma_1$ con $k_{P1}>-R$ y $k_{I1}>0$. Entonces, su punto de equilibrio 
     $x=\bar x=0$ es exponencialmente, globalmente estable.
 
@@ -673,19 +674,12 @@ Desarrollando la derivada, la constante $\gamma$ se reduce a la expresión
 	\gamma=&\left.\frac{r\kappa_1}{Jv_w} \left[\frac{1}{\lambda}\frac{\partial }{\partial \lambda}C_{p,0}(\lambda)-\frac{1}{\lambda^2}C_{p,0}(\lambda)\right]\right|_{\lambda=\lambda_\star}\nonumber\\
 	=& - \frac{1}{\lambda_\star^2}\frac{r\kappa_1}{Jv_w} C_{p,0}(\lambda_\star) \label{eq:gamma}
 	\end{align}
-%\begin{align}
-%\gamma :=&\left. \frac{r\kappa_1}{v_w} \frac{\partial }{\partial \lambda}\left[\frac{C_{p,0}}{\lambda }\right]\right|_{\omega_m=\omega^*_m,\lambda=\lambda^\star}\nonumber\\
-%=&\left. \frac{r\kappa_1}{v_w}\frac{\partial\lambda}{\partial \omega_m}\left[{1\over \lambda}\frac{\partial C_{p,0}}{\partial\lambda\nonumber }-\frac{1}{\lambda^2}C_{p,0}\right]\right|_{\omega_m=\omega^*_m,\lambda=\lambda^\star}\\
-%=&  \frac{r^2\kappa_1}{v_w^2}{1\over \lambda^\star}\left[\left.\frac{\partial C_{p,0}}{\partial \lambda}\right|_{\lambda=\lambda^\star}-{1\over \lambda^\star} C_{p,0}(\lambda^\star) \right]\nonumber \\
-%=& - \frac{r^2\kappa_1}{v_w^2}{1\over (\lambda^\star)^2}  C_{p,0}(\lambda^\star)
-%\label{eq:gamma}
-%\end{align}
 
 Puesto que los parámetros son positivos y $C_{p,0}>0$, entonces $\gamma<0$. A partir de lo anterior, 
 es posible enunciar el siguiente lema. Así mismo, es posible concluir que la entrada (3,3) de la 
 matriz $A_2$ toma valores negativos, esto es, $A_{2}^{(3,3)}<0$.\\
 
-\begin{lemma}
+\begin{lemma}\label{lem:sigma_2}
     Considere el sistema $\Sigma_2^{\mathrm{lin}}$ en \eqref{dz} que consiste en la linealización 
     de $\Sigma_2$. El punto de equilibrio $z=\bar{z}$, con la constante $\bar{z}$ definida en 
     \eqref{barz}, es exponencialmente estable si y solo si se cumplen las siguientes condiciones:
@@ -821,13 +815,12 @@ A medida que $k_{\textrm{P2}}'$ toma valores más grandes, el término dominante
 
 ya que el término $\bar{k}_{\textrm{I3}}k_{\textrm{P2}}'$ crece linealmente mientras que el término del denominador decrece. Por lo tanto, existe un valor de $k_{\textrm{P2}}'$ suficientemente grande que garantiza que las condiciones de Routh-Hurwitz se satisfagan.
 
-\begin{lemma}
+\begin{lemma}\label{lem:conds}
     Las condiciones \eqref{eq:cond1}--\eqref{eq:cond4} admiten solución. \tripletriang
     
     \begin{proof}
         Para demostrar la existencia de solución, se aplicó el algoritmo presentado anteriormente 
-        con los parámetros del sistema dados en \textcolor{blue}{[referencia a tabla/sección de 
-        parámetros]}. Los valores numéricos relevantes son $\frac{R}{L} = 103.5493$, 
+        con los parámetros del sistema dados en la \autoref{tab:parametros_sim} . Los valores numéricos relevantes son $\frac{R}{L} = 103.5493$, 
         $\bar{\gamma}_1 = 0.000117$ y $\bar{\gamma}_2 = 1.5328$.
         
         Siguiendo el Paso 1 del algoritmo, se fijaron las ganancias del lazo externo como:
@@ -861,7 +854,10 @@ ya que el término $\bar{k}_{\textrm{I3}}k_{\textrm{P2}}'$ crece linealmente mie
         Adicionalmente, se verificó que la matriz $\bar{A}_2$ con estas ganancias es Hurwitz. 
         Los valores propios de $\bar{A}_2$ son:
         \begin{equation} \label{eq:eigenvalues}
-            \lambda_1 = -112.193, \quad \lambda_2 = -0.736 + 0.907i, \quad \lambda_3 = -0.736 - 0.907i, \quad \lambda_4 = -0.010008
+            \begin{aligned}
+                &\lambda_1 = -112.193, \quad \lambda_2 = -0.736 + 0.907i, \quad \lambda_3 = -0.736 - 0.907i,\\
+                &\lambda_4 = -0.010008
+            \end{aligned}
         \end{equation}
         
         Como todos los valores propios tienen parte real negativa, se confirma que $\bar{A}_2$ es 
@@ -877,7 +873,7 @@ ubicación de los valores propios del sistema linealizado $\Sigma_2^{\text{lin}}
 se construyó el lugar geométrico de las raíces (LGR) de la matriz $\bar{A}_2$
 en función del parámetro $k'_{P2}$, manteniendo fijas las ganancias del lazo
 externo $k_{P3} = 10$, $k_{I3} = 10$ y la relación $k'_{I2} = 1/k'_{P2}$
-establecida en el Paso~2 del algoritmo de sintonización.
+establecida en el Paso 2 del algoritmo de sintonización.
 \\ 
 
 La figura \ref{fig:root_locus} muestra el LGR completo junto con un detalle
@@ -887,7 +883,7 @@ Los valores propios $\lambda_1$ y $\lambda_2$, asociados al lazo de corriente
 del eje directo $\Sigma_1$, permanecen esencialmente invariantes ante
 variaciones de $k'_{P2}$ y se ubican consistentemente en el semiplano
 izquierdo lejano al eje imaginario, lo cual es consistente con la estabilidad
-incondicional de $\Sigma_1$ demostrada en el Lema 3.2.4.
+incondicional de $\Sigma_1$ demostrada en el Lema \ref{lem:sigma_1}.
 \\ 
 
 \begin{figure}[ht]
@@ -903,14 +899,14 @@ incondicional de $\Sigma_1$ demostrada en el Lema 3.2.4.
 
 El comportamiento observado en el panel derecho de la
 figura \ref{fig:root_locus} es coherente con las condiciones de
-Routh-Hurwitz establecidas en el Lema 3.2.5. Para valores pequeños de
+Routh-Hurwitz establecidas en el Lema \ref{lem:sigma_2}. Para valores pequeños de
 $k'_{P2}$, las condiciones \eqref{eq:cond3} y \eqref{eq:cond4} no se
 satisfacen, lo que se manifiesta en la presencia de valores propios con
 parte real positiva. A medida que $k'_{P2}$ crece, los polos $\lambda_3$ y
 $\lambda_4$ migran hacia el semiplano izquierdo, cruzando el eje imaginario
 para un valor umbral de $k'_{P2}$ que puede identificarse visualmente en el
 zoom. Este comportamiento valida geométricamente la existencia del umbral
-mínimo de ganancia establecido analíticamente en el Lema 3.2.6.
+mínimo de ganancia establecido analíticamente en el Lema \ref{lem:conds}.
 \\ 
 
 Para el valor seleccionado $k'_{P2} = 10$ — marcado con un cuadro en la

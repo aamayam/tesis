@@ -1,0 +1,267 @@
+%!TEX root = ../main.tex
+\chapter{Simulación}
+
+En este capítulo se presenta la validación numérica del sistema de control
+diseñado en el Capítulo 3 mediante simulaciones en MATLAB/Simulink. El objetivo
+es verificar que el controlador propuesto cumple con los objetivos de control
+establecidos en la \autoref{sec:objetivos_de_control}, a saber: mantener $i_d = 0$ para minimizar
+pérdidas y regular $\omega_m$ hacia la referencia óptima generada por el
+algoritmo MPPT, con el fin de maximizar la extracción de potencia del viento.
+\\ 
+
+Las simulaciones se organizan en dos escenarios: primero se evalúa la respuesta
+del sistema ante una entrada escalón en la velocidad del viento para analizar
+el comportamiento transitorio en condiciones ideales (viento constante); posteriormente, se somete
+al sistema a un perfil de viento turbulento para evaluar su desempeño en
+condiciones más representativas de operación real.
+
+\section{Estructura de la simulación}
+
+La figura \ref{fig:diag_alto_nivel} muestra la arquitectura de control de alto
+nivel implementada en Simulink. El modelo se compone de tres bloques principales:
+la planta (WECS), el controlador y el algoritmo MPPT. La planta implementa las
+ecuaciones dinámicas del sistema acoplado \eqref{eq:full_system}, incluyendo
+la dinámica mecánica del rotor y las ecuaciones eléctricas del PMSG en coordenadas
+$dq$. El bloque de control implementa los controladores PI de los subsistemas 
+$\Sigma_1$ y $\Sigma_2$ descritos en el lema \ref{lem:wecs}, cuya estructura en 
+cascada se detalla en la figura \ref{fig:diag_lazos}.
+\\
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\textwidth]{block_diagram.pdf}
+\caption{Arquitectura de control de alto nivel del sistema WECS. El bloque MPPT genera
+la referencia de velocidad $\omega_m^*$ a partir de la potencia medida $P$ y la velocidad
+del viento $v_w$. El controlador implementa los subsistemas $\Sigma_1$ y $\Sigma_2$
+descritos en el Capítulo 3.}
+\label{fig:diag_alto_nivel}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\textwidth]{PI_strct.pdf}
+\caption{Estructura de control PI con tres lazos mostrando los dos subsistemas controlados. 
+El lazo externo del subsistema $\Sigma_2$ regula la velocidad angular $\omega_m$ y genera 
+la referencia $i_q^\star$, el lazo interno controla $i_q$ y el lazo independiente en el 
+subsistema $\Sigma_1$ controla $i_d$. Los términos de compensación no lineal corresponden 
+a las expresiones \eqref{valUd} y \eqref{eqnVq}.}
+\label{fig:diag_lazos}
+\end{figure}
+
+El algoritmo MPPT sigue una estrategia de perturbación y observación (P\&O),
+descrita en la \autoref{sec:objetivos_de_control}. En cada paso de muestreo, el algoritmo 
+compara la potencia actual $P(k)$ con la potencia del paso anterior $P(k-1)$ e incrementa
+o decrementa la referencia de velocidad $\omega_m^*$ en un paso fijo $\Delta\omega$
+según el signo de $\Delta P = P(k) - P(k-1)$. Para evitar que las perturbaciones
+del algoritmo P\&O exciten el lazo de velocidad con variaciones abruptas, la señal
+$\omega_m^*$ es filtrada mediante un filtro paso-bajas de primer orden antes de
+ser enviada al controlador.
+
+\subsection{Diseño del filtro pasabajas para la referencia de velocidad}
+
+El algoritmo MPPT (P\&O) genera inherentemente oscilaciones en 
+la señal de referencia $\omega_m^\star$ debido a sus perturbaciones periódicas. 
+Para suavizar estas oscilaciones sin comprometer el desempeño del lazo de control 
+de velocidad, se implementó un filtro pasabajas de primer orden:
+
+\begin{equation}
+H(s) = \frac{\omega_c}{s + \omega_c}
+\end{equation}
+
+La selección de la frecuencia de corte $\omega_c$ requiere un compromiso entre 
+dos objetivos contrapuestos:
+
+\begin{itemize}
+\item Atenuar suficientemente las oscilaciones del MPPT
+\item Mantener una respuesta dinámica adecuada ante cambios en la velocidad del viento
+\item Preservar la separación de escalas de tiempo entre los lazos de control cascada
+\end{itemize}
+
+A partir del análisis de la respuesta del sistema en lazo cerrado, se observó 
+que las oscilaciones en estado estable de $\omega_m^\star$ presentan un período 
+de aproximadamente $T = 4$ s, correspondiente a una frecuencia de 
+$f = 0.25$ Hz ($\omega_{osc} \approx 1.57$ rad/s).
+\\
+
+La frecuencia de corte óptima se determinó mediante un proceso iterativo:
+
+\begin{enumerate}
+\item Se estableció un rango inicial basado en la frecuencia de oscilación observada
+\item Se evaluaron múltiples valores de $\omega_c$ mediante simulación
+\item Se analizó el compromiso entre suavizado de la señal y preservación de la dinámica
+\item Se verificó que la frecuencia seleccionada no comprometiera la estabilidad 
+de los lazos internos de corriente
+\end{enumerate}
+
+Se encontró que valores de $\omega_c \geq 5$ rad/s resultan insuficientes para 
+atenuar las oscilaciones (siendo significativamente mayores a $\omega_{osc}$), 
+mientras que valores de $\omega_c \leq 0.2$ rad/s introducen dinámicas tan lentas 
+que causan acoplamiento indeseado con los lazos de corriente, manifestándose en 
+oscilaciones de $\pm 40$ A en $i_d$.
+\\
+
+El valor seleccionado de $\omega_c = 1$ rad/s, ligeramente menor que la frecuencia 
+de oscilación observada, proporciona un balance adecuado entre atenuación de las 
+perturbaciones del MPPT y preservación de la dinámica del sistema.
+
+\section{Parámetros de simulación}
+
+Las simulaciones se realizaron con los parámetros del sistema listados en la
+Tabla \ref{tab:parametros_sim} y las ganancias del controlador obtenidas en la
+\autoref{sec:analisis_sigmas}, resumidas en la Tabla \ref{tab:ganancias}.
+\\
+
+% ── Tabla de parámetros ──────────────────────────────────────────────────────
+\begin{table}[ht]
+\centering
+\caption{Parámetros del sistema utilizados en la simulación.}
+\label{tab:parametros_sim}
+\begin{tabular}{llll}
+\hline
+Parámetro & Símbolo & Valor & Unidades \\ \hline
+Densidad del aire        & $\rho$  & $1.225$  & kg/m$^3$ \\
+Radio del rotor          & $r$     & $1.84$ & m        \\
+Momento de inercia       & $J$     & $7.856$ & kg$\cdot$m$^2$ \\
+Coeficiente de fricción  & $f_r$   & $0.0003035$ & N$\cdot$m$\cdot$s \\
+Resistencia del estator  & $R$     & $0.3676$ & $\Omega$ \\
+Inductancia              & $L$     & $3.55\times 10^{-3}$ & H        \\
+Flujo magnético          & $\varphi$ & $0.2867$ & Wb     \\
+Número de pares de polos & $p$     & $28$ & ---      \\ \hline
+\end{tabular}
+\end{table}
+
+% ── Tabla de ganancias ───────────────────────────────────────────────────────
+\begin{table}[ht]
+\centering
+\caption{Ganancias del controlador PI en cascada.}
+\label{tab:ganancias}
+\begin{tabular}{lll}
+\hline
+Ganancia & Valor & Lazo \\ \hline
+$k_{P1}$ & $0.5$ & Corriente $i_d$ ($\Sigma_1$) \\
+$k_{I1}$ & $5$ & Corriente $i_d$ ($\Sigma_1$) \\
+$k_{P2}$ & $0.0355$         & Corriente $i_q$ ($\Sigma_2$) \\
+$k_{I2}$ & $3.55\times10^{-4}$ & Corriente $i_q$ ($\Sigma_2$) \\
+$k_{P3}$ & $50$             & Velocidad $\omega_m$ ($\Sigma_2$) \\
+$k_{I3}$ & $50$             & Velocidad $\omega_m$ ($\Sigma_2$) \\ \hline
+\end{tabular}
+\end{table}
+
+\section{Respuesta ante entrada escalón}
+
+Con el objetivo de caracterizar el comportamiento transitorio del sistema en
+condiciones ideales, se simuló la respuesta ante una velocidad de viento
+constante de $v_w = 11$ m/s. Este escenario equivale a una entrada escalón
+en el torque mecánico  y permite evaluar métricas clásicas de
+desempeño del controlador de forma aislada de las perturbaciones del viento.
+\\
+
+La figura \ref{fig:omega_step} muestra la respuesta de la velocidad angular
+$\omega_m$ y su referencia $\omega_m^*$ generada por el MPPT. El sistema alcanza
+el estado estable en aproximadamente $t \approx 30$ s, con un
+sobrepico de $\approx 6$ [rad/s]. La figura \ref{fig:corrientes_step} muestra las
+corrientes $i_d$ e $i_q$: la corriente $i_d$ se regula en torno a cero durante
+todo el transitorio, confirmando el correcto funcionamiento del subsistema $\Sigma_1$, mientras
+que $i_q$ evoluciona para suministrar el torque eléctrico necesario para acelerar
+el rotor hasta $\omega_m^*$.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.85\textwidth]{omega_step.pdf}
+    \caption{Respuesta de la velocidad angular $\omega_m$ ante entrada escalón
+    ($v_w = 11$ m/s constante). La línea discontinua corresponde a la referencia
+    $\omega_m^*$ generada por el MPPT.}
+    \label{fig:omega_step}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.85\textwidth]{corrientes_step.pdf}
+    \caption{Corrientes $i_d$ e $i_q$ durante la respuesta al escalón.
+    La corriente $i_d$ se mantiene en torno a cero en todo momento,
+    validando el objetivo de minimización de pérdidas del lazo $\Sigma_1$.}
+    \label{fig:corrientes_step}
+\end{figure}
+
+\section{Respuesta ante perfil de viento turbulento}
+
+Para evaluar la robustez del sistema ante condiciones de operación más realistas,
+se simuló el sistema con el perfil de viento turbulento mostrado en la
+figura \ref{fig:viento}. El perfil consiste en una fase inicial de viento constante
+a $v_w = 11$ m/s durante los primeros $40$ s, seguida de variaciones estocásticas
+con velocidades entre aproximadamente $9.8$ m/s y $16$ m/s.
+\\
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.85\textwidth]{viento.pdf}
+    \caption{Perfil de velocidad del viento utilizado en la simulación. La fase
+    inicial de viento constante permite al MPPT converger antes de la aplicación
+    del perfil turbulento.}
+    \label{fig:viento}
+\end{figure}
+
+La figura \ref{fig:omega} muestra la velocidad angular $\omega_m$ junto con la
+referencia $\omega_m^*$. Durante la fase de viento constante, el sistema exhibe
+una respuesta transitoria coherente con la observada en el escenario de escalón,
+convergiendo a la velocidad óptima en régimen permanente. Ante las variaciones
+del perfil turbulento, $\omega_m$ sigue con fidelidad las variaciones de
+$\omega_m^*$, demostrando que el lazo de velocidad mantiene su desempeño ante
+perturbaciones realistas.
+\\
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.85\textwidth]{omega.pdf}
+    \caption{Velocidad angular $\omega_m$ y referencia $\omega_m^*$ ante el
+    perfil de viento turbulento. Las oscilaciones en $\omega_m^*$ corresponden
+    a las perturbaciones del algoritmo P\&O y son atenuadas por el filtro
+    paso-bajas.}
+    \label{fig:omega}
+\end{figure}
+
+Las corrientes $i_d$ e $i_q$ se muestran en la figura \ref{fig:corrientes}.
+La corriente $i_d$ permanece en cero durante toda la simulación,
+confirmando que $\Sigma_1$ opera correctamente incluso bajo el perfil de
+viento variable. La corriente $i_q$ refleja las variaciones del torque
+eléctrico requerido para seguir las fluctuaciones de $\omega_m^*$.
+\\
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.85\textwidth]{corrientes.pdf}
+    \caption{Corrientes $i_d$ (panel superior) e $i_q$ (panel inferior) ante
+    el perfil de viento turbulento.}
+    \label{fig:corrientes}
+\end{figure}
+
+Finalmente, la figura \ref{fig:potencia} muestra la potencia extraída $P$
+comparada con la potencia máxima teórica $P_{\max}$, calculada como:
+
+\begin{equation}
+    P_{\max}(t) = \frac{1}{2}\rho\pi r^2 v_w^3(t)\, C_p^{\max}
+    \label{eq:pmax}
+\end{equation}
+
+donde $C_p^{\max} = 0.411$ es el coeficiente de potencia máximo del sistema,
+obtenido en la Sección 3.1.2. Durante la fase de viento constante, $P$ converge
+a $P_{\max}$ conforme el MPPT alcanza el punto de operación óptimo. En el
+régimen turbulento, $P$ sigue de cerca las variaciones de $P_{\max}$, con
+una brecha sistemática reducida atribuible al retardo inherente del algoritmo
+P\&O y a la dinámica del lazo de velocidad. La eficiencia media de extracción
+de potencia, calculada sobre el intervalo $t \geq 20$ s, es:
+
+\begin{equation}
+    \eta_{\text{avg}} = \frac{\overline{P}}{\overline{P}_{\max}}
+    \times 100 = 99.8\%
+    \label{eq:eficiencia}
+\end{equation}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.85\textwidth]{potencia.pdf}
+    \caption{Potencia extraída $P$ comparada con la potencia máxima teórica
+    $P_{\max}$ ante el perfil de viento turbulento. La línea continua
+    corresponde a $P_{\max}$ y la línea discontinua a $P$.}
+    \label{fig:potencia}
+\end{figure}
