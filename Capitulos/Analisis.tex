@@ -1,67 +1,265 @@
 %!TEX root = ../main.tex
 \chapter{Análisis}
 
-En este capítulo se introduce formalmente el problema de control del \emph{pitch angle} en las turbinas eólicas. Se detallan las aproximaciones que ha habido para los distintos tipos de control que se pueden realizar en una turbina eólica (principalmente \emph{pitch control} y \emph{torque control}) a través de los años y los resultados que han tenido (\emph{state of the art}). Además, se enuncian los requerimientos y las restricciones para el diseño del controlador. Por último, se mencionan los estándares que existen tanto a nivel nacional como internacional que estén relacionados o que puedan afectar el diseño del controlador.
+En este capítulo se introduce formalmente el problema del control de la velocidad 
+del rotor en turbinas eólicas de velocidad variable mediante la regulación del par 
+eléctrico del generador (\emph{torque control}). Se presenta una revisión de las 
+principales estrategias de control que se han desarrollado para este fin, con 
+énfasis en aquellas basadas en el seguimiento del punto de máxima potencia 
+(\emph{Maximum Power Point Tracking}, MPPT). Además, se enuncian los 
+requerimientos y las restricciones para el diseño del controlador. Por último, 
+se mencionan los estándares que existen tanto a nivel nacional como internacional 
+que estén relacionados o que puedan afectar el diseño del sistema de control.
 
 \section{Requerimientos}
-{\parindent0pt
-El controlador debe responder adecuadamente ante los cambios en las condiciones del viento. Se debe monitorear (sensar) la velocidad para determinar en qué momento se pasa de una región de operación a otra. El \emph{pitch control} debe responder a la señal del control supervisor cuando la turbina entre en la región 3 de operación y su función es la de disminuir (o aumentar) la potencia recibida del viento. Para esto, cuando el control supervisor determine que la carga mecánica en el rotor es cercana a un valor límite (con una tolerancia para fines de seguridad) el \emph{pitch control} debe abatir las aspas, reduciendo así el ángulo de ataque de estas, y permitiendo que el viento pase por el área de barrido del rotor generando un menor empuje en las aspas. Por el contrario, cuando la velocidad del rotor haya disminuido por debajo de un cierto umbral, las aspas deben girar nuevamente a la posición de máxima extracción de potencia. 
+
+El sistema de control debe permitir la operación del aerogenerador en la región 2, 
+donde el objetivo principal es maximizar la extracción de potencia del viento. Para 
+esto, el controlador debe regular la velocidad angular del rotor $\omega_m$ hacia 
+el valor óptimo determinado por un algoritmo de seguimiento del punto de máxima 
+potencia (\emph{Maximum Power Point Tracking}, MPPT). Dicho valor óptimo varía en 
+función de las condiciones del viento, por lo que el controlador debe ser capaz de 
+responder adecuadamente ante cambios en la velocidad del viento dentro del rango 
+de operación de la región 2.
 \\
 
-La tarea de control es permitir que el aerogenerador siga operando por un mayor tiempo durante condiciones climáticas con vientos de alta velocidad antes de tener que ser frenado totalmente para evitar daños. Esto tiene como objetivo aprovechar de manera más eficiente los escenarios con vientos más rápidos para extraer en estos momentos mayor energía que durante la operación del aerogenerador en condiciones normales. Dichas condiciones de viento “extremo” suelen ocurrir con baja frecuencia a lo largo de un cierto periodo de tiempo (por lo general un año), y dependen principalmente de la ubicación geográfica del parque eólico donde esté instalada la turbina. Parte fundamental del desarrollo de este trabajo implica el diseño de un controlador que sea factible de implementar en cualquier ubicación geográfica, pero particularmente en aquellas donde se presentan vientos de alta velocidad con mayor frecuencia a lo largo del año.
+La regulación de la velocidad del rotor se realiza mediante el control del par 
+eléctrico del generador $T_e$. Dado que el generador opera en coordenadas $dq$, 
+los requerimientos de control se traducen en dos objetivos sobre las corrientes del 
+generador: mantener la corriente del eje directo en $i_d = 0$ para minimizar las 
+pérdidas eléctricas en el generador, y regular la corriente del eje de cuadratura 
+$i_q$ de tal forma que el par eléctrico producido conduzca al rotor hacia la 
+velocidad angular óptima. Lo anterior implica una estructura de control en cascada 
+en la que un lazo externo de velocidad genera la referencia de corriente $i_q^{\text{ref}}$ 
+y lazos internos de corriente regulan las variables eléctricas del generador.
 \\
 
-Se requiere, de igual forma, evaluar la conveniencia de la implementación del sistema de control en términos de su gasto energético en comparación con el incremento en la producción debido a su uso. Esto pensando en que el hecho de agregar un grado de libertad a partir de controlar el \emph{pitch angle} debería provocar un incremento en la generación de energía eléctrica mayor a su consumo debido al uso de los actuadores —consumo que debe ser bajo debido a la naturaleza hidráulica del mecanismo—. Sí lo anterior no se cumple, lo cual puede deberse a la baja frecuencia de vientos de alta velocidad o a la ineficiencia del controlador para aprovechar dichos vientos, entonces se concluiría que el grado extra de libertad debido al control del ángulo de las aspas no es adecuado para un aerogenerador con sus condiciones particulares. 
+Se requiere, de igual forma, evaluar el desempeño del sistema de control en 
+términos de su capacidad para extraer la mayor cantidad de potencia disponible 
+en el viento. Para esto se utilizará como métrica la eficiencia de extracción de 
+potencia, definida como el cociente entre la potencia efectivamente extraída por 
+la turbina y la potencia máxima teórica que se podría extraer dado el coeficiente 
+de potencia óptimo del sistema. Una eficiencia cercana al 100\,\% indicaría que 
+el algoritmo MPPT y el controlador de torque operan de manera adecuada, 
+manteniendo al rotor cerca del punto óptimo de operación a pesar de las 
+variaciones en la velocidad del viento.
 
-}
 
 \section{Restricciones}
-{\parindent0pt
-Dado que el objetivo de la tesis es el diseño de un controlador (a partir de encontrar la ley de control) para el ángulo de ataque de las aspas de la turbina (\emph{pitch angle}) y debido a lo complicado —o incluso inviable— de ser implementado en un aerogenerador real, el resultado esperado para esta tesis será la simulación de la operación de la turbina bajo diferentes condiciones que permita observar el trabajo de los sistemas de control durante las 3 regiones de operación de la turbina. Para esto la simulación debe permitir variar las condiciones del viento simuladas (velocidad y dirección) a lo largo de un periodo determinado de tiempo y, como resultado, se debe observar el comportamiento esperado de la turbina de acuerdo a la región en la que se encuentre operando. 
+
+Dado que el objetivo de la tesis es el diseño de un controlador para la regulación 
+del par eléctrico del generador mediante las corrientes en coordenadas $dq$, y 
+debido a lo complicado ---o incluso inviable--- de ser implementado en un 
+aerogenerador real, el resultado esperado para esta tesis será la simulación de la 
+operación de la turbina en la región 2 bajo diferentes condiciones de viento. La 
+simulación debe permitir variar la velocidad del viento a lo largo de un periodo 
+determinado de tiempo y, como resultado, se debe observar el comportamiento del 
+sistema de control al regular la velocidad del rotor hacia el punto de máxima 
+extracción de potencia.
 \\
 
-Es de particular interés la región 3 de operación debido a que es donde el viento tiene velocidades más altas e interesa observar el trabajo del controlador para evaluar su eficiencia al momento de reducir la carga mecánica que recibe el rotor debido al viento. Dado que uno de los objetivos de la tesis es extender el tiempo de operación de la turbina en la región 3 (para incrementar la cantidad de energía eléctrica producida) es indispensable que la simulación muestre de manera precisa el rango de tiempo desde que se entra en la región 3 hasta que ocurre el corte por exceso de velocidad (\emph{high speed cut}).
+La simulación se realizará en Matlab Simulink y deberá presentar tanto los datos 
+de las variables de interés del sistema (velocidad angular, corrientes $i_d$ e $i_q$, 
+potencia extraída) como su comparación con los valores de referencia y los límites 
+teóricos correspondientes. Para las características de la turbina se seguirá una 
+línea de diseño de algún aerogenerador ya existente, obteniendo a partir de este 
+diseño los parámetros relevantes del modelo tales como las dimensiones del rotor, 
+los parámetros eléctricos del generador y las constantes mecánicas del sistema. 
+Así mismo, se busca que el perfil de viento utilizado en la simulación incluya 
+tanto condiciones de viento constante, para evaluar el comportamiento transitorio 
+del controlador, como condiciones de viento turbulento que permitan evaluar su 
+desempeño ante variaciones realistas de la velocidad del viento.
 \\
 
-La simulación se hará en Matlab Simulink y deberá presentar tanto una representación visual de la operación de las turbinas como los datos asociados a dicha operación ya sea en tablas o gráficas, según sea conveniente en cada caso. Para las características de la turbina se seguirán seguirá una línea de diseño de algún aerogenerador ya existente. Obteniendo a partir de este diseño algunos datos relevantes como la medida de las aspas (para el área de barrido del rotor). Así mismo, debido a que las condiciones del viento son diferentes en cada región geográfica, se busca que el comportamiento del viento en la simulación pueda emular con cierto grado de certeza las condiciones de algún lugar real en donde se realice la operación de turbinas eólicas. Un ejemplo de lo anterior es el tramo La Venta-La Ventosa en la región del Istmo de Tehuantepec en el estado de Oaxaca.
-\\
+El alcance del controlador diseñado se limita a la operación en la región 2, es 
+decir, al rango de velocidades de viento en el que se busca maximizar la extracción 
+de potencia. No se considera en este trabajo el diseño de controladores para la 
+región 3 (limitación de potencia mediante \emph{pitch control} u otras estrategias) 
+ni mecanismos de protección ante velocidades de viento excesivas. Lo anterior se 
+propone como una posible extensión del trabajo.
 
-Lo anterior con es principalmente con fines de visualización y de ejemplificación, dado que el diseño del controlador pretende ser general y no estar enfocado a un tipo específico de turbinas o diseñado para trabajar en alguna región con ciertas características climáticas en particular. 
-
-}
 \section{Trabajos relacionados}
-{\parindent0pt 
-El diseño de controladores para turbinas eólicas de velocidad variable se suele realizar desde dos puntos de partida: controladores con un enfoque más teórico que suelen resultar en un control más avanzado y preciso pero que funciona sobre una turbina en la que se han simplificado muchas cosas; y un enfoque más práctico que suele resultar en una turbina mejor modelada y, por lo mismo, con menor precisión al momento de operar \cite{Johnson2004}. Ambas situaciones suelen deberse al hecho de que la mayoría de las investigaciones que derivan en el diseño de controladores de velocidad concluyen en la construcción de simulaciones en las que las leyes de control expuestas funcionan bien, mas no es común que dichos controladores sean probados en turbinas reales.
+
+El diseño de controladores para turbinas eólicas de velocidad variable se suele 
+realizar desde dos puntos de partida: controladores con un enfoque más teórico 
+que suelen resultar en un control más avanzado y preciso pero que funciona sobre 
+una turbina en la que se han simplificado muchas cosas; y un enfoque más práctico 
+que suele resultar en una turbina mejor modelada y, por lo mismo, con menor 
+precisión al momento de operar \cite{Johnson2004}. Ambas situaciones suelen 
+deberse al hecho de que la mayoría de las investigaciones que derivan en el 
+diseño de controladores de velocidad concluyen en la construcción de simulaciones 
+en las que las leyes de control expuestas funcionan bien, mas no es común que 
+dichos controladores sean probados en turbinas reales.
 \\
 
-Para el \emph{pitch control} ha habido desde aproximaciones clásicas como lo es el uso de controladores PID \cite{Johnson2004}. Investigaciones más recientes han apuntado también al uso de controles adaptativos para el control de velocidad del rotor, aunque no han sido suficientemente probados en campo \cite{Johnson2004}. Algunas otras investigaciones han buscado alternativas a los \emph{pitch actuators} para cambiar la aerodinámica de las aspas, explorando el uso de \emph{micro-tabs} y pequeñas válvulas de aire presurizado que permite un flujo extra de aire en la superficie de las aspas y, de esta forma, cambiar el flujo de aire que cruza el área de barrido del rotor \cite{Pao2009}.
+\subsection{Control PI clásico en coordenadas \emph{dq}}
+Una de las estrategias más extendidas para el control de torque en generadores 
+síncronos de imanes permanentes (PMSG) es el uso de controladores PI en una 
+configuración de lazos en cascada operando en coordenadas $dq$. En \cite{chinchilla2006} 
+se presenta un esquema de este tipo aplicado a un PMSG conectado a la red, en el 
+cual un lazo externo de velocidad genera la referencia de corriente $i_q^{\text{ref}}$ 
+y lazos internos regulan las corrientes $i_d$ e $i_q$ del generador. La estrategia 
+incluye la cancelación de los términos de acoplamiento cruzado entre los ejes $d$ 
+y $q$ mediante compensación \emph{feedforward}, lo que permite tratar cada lazo 
+de corriente de manera prácticamente independiente. Este esquema es ampliamente 
+utilizado en la industria por su simplicidad de implementación; sin embargo, al 
+estar basado en la linealización del sistema, carece de garantías formales de 
+estabilidad ante variaciones de parámetros o condiciones de operación.
 \\
 
-Una aproximación más actual se hace en \cite{Jie2020} a partir del uso de redes neuronales y modelos predictivos tomando como entradas varios parámetros de medidos por las turbinas. A partir de esto, se utilizan modelos de aprendizaje como ELM (Extreme Learning Machine). Las salidas son tratadas como datos de referencia para el \emph{pitch control}.
+\subsection{Control basado en pasividad (PBC)}
+Como alternativa a los métodos basados en linealización, se han desarrollado 
+controladores que explotan las propiedades de pasividad del sistema 
+electromecánico para garantizar estabilidad. Este enfoque, conocido como 
+control basado en pasividad (\emph{Passivity-Based Control}, PBC), tiene 
+sus fundamentos en el uso de conceptos de balance de energía para el control 
+de sistemas Euler-Lagrange \cite{Ortega1998, Ortega2001}. A diferencia de 
+las técnicas clásicas de control no lineal, que buscan cancelar las no 
+linealidades del sistema, el PBC explota y respeta la estructura física 
+del mismo. En \cite{Cisneros2013} se presenta un controlador 
+basado en pasividad (PBC) para un WECS de pequeña escala conectado 
+a la red, donde se demuestra la estabilidad del sistema en lazo cerrado aunque 
+con una respuesta lenta en la regulación de la velocidad del rotor. 
+En \cite{Cisneros2016} se propone una versión mejorada que combina un PI con un 
+PBC (PI-PBC) para un sistema similar, logrando garantías de estabilidad y 
+mejorando la extracción de potencia, aunque el diseño del controlador se basa en 
+una simplificación importante del modelo del generador. 
+Una comparación experimental entre el control PI estándar y el PBC aplicados 
+a un WECS se reporta en \cite{Gao2016}, donde se observa que ambos controladores 
+logran un seguimiento adecuado de la velocidad óptima, pero el PBC demanda un 
+menor esfuerzo de control.
 \\
 
-Se ha explorado también el uso de nuevas tecnologías que permitirían nuevas posibilidades en el diseño de controladores. Un ejemplo de esto es el uso de sensores LIDAR (del inglés \emph{Light Detection and Ranging}) para fines de medición del viento. Los sensores \emph{lidar} han sido usados exitosamente con aplicaciones meteorológicas y podrían ser interesantes de aprovechar en el control de granjas eólicas. Igualmente, turbinas más grandes han empezado a incluir actuadores independientes para cada una de las aspas, lo que permite variar el ángulo de cada una de manera independiente. Esto posibilita toda una nueva forma de realizar el control de velocidad del rotor \cite{Pao2009}. 
+Más recientemente, en \cite{cisneros2020} se propone un esquema PI+PBC para un 
+WECS basado en un PMSG conectado a un \emph{solid-state transformer}. Este 
+trabajo constituye un antecedente directo de la presente tesis, ya que utiliza 
+el mismo modelo matemático del sistema electromecánico y los mismos parámetros 
+de la turbina. A diferencia de los trabajos anteriores, en \cite{cisneros2020} 
+se presenta una prueba completa de estabilidad para el sistema en lazo cerrado 
+y se demuestra una mejora significativa en la robustez ante variaciones 
+paramétricas respecto al controlador PI clásico de \cite{chinchilla2006}. 
+El controlador propuesto en la presente tesis retoma la estructura de lazos PI 
+en cascada con cancelación de términos no lineales, y complementa el análisis 
+de estabilidad mediante el criterio de Routh-Hurwitz y el lugar geométrico de 
+las raíces para la selección sistemática de las ganancias del controlador.
+\\
 
-}
+\subsection{Estrategias de MPPT}
+Para determinar la velocidad angular óptima del rotor que maximiza la extracción 
+de potencia, se requiere un algoritmo de seguimiento del punto de máxima potencia 
+(MPPT). En \cite{nak2013} se clasifican las estrategias de MPPT en tres 
+categorías principales: control de la relación de velocidad punta (TSR), 
+que requiere conocimiento de la velocidad del viento y de la curva $C_p(\lambda)$; 
+búsqueda \emph{hill-climbing} (HCS), también conocida como \emph{Perturb \& 
+Observe} (P\&O), que opera sin conocimiento previo del sistema; y control de 
+retroalimentación de la señal de potencia (PSF). En \cite{kazmi2011} se propone 
+un algoritmo HCS mejorado que aborda el problema de la convergencia lenta y 
+la confusión direccional ante cambios rápidos del viento. Por su parte, en 
+\cite{xia2013} se analiza el efecto del tamaño de paso del algoritmo P\&O 
+sobre la eficiencia de extracción de potencia. La estrategia P\&O fue 
+seleccionada para esta tesis debido a su independencia de los parámetros del 
+sistema y su compatibilidad con cualquier estrategia de control del generador 
+\cite{kazmi2011, wang2004}.
+\\
 
+\subsection{Otras técnicas de control}
+Se han explorado también otras aproximaciones para el control de WECS. 
+En \cite{Boukezzar2008} se presenta un control por modos deslizantes 
+(\emph{sliding mode}) aplicado a un generador de inducción doblemente 
+alimentado (DFIG) para la optimización de la producción de potencia. 
+Aproximaciones más recientes han incorporado el uso de redes neuronales y 
+modelos predictivos para el control de la velocidad del rotor, como se 
+reporta en \cite{Jie2020}, donde se utilizan modelos de aprendizaje tipo 
+ELM (\emph{Extreme Learning Machine}). Sin embargo, estas técnicas más 
+avanzadas suelen requerir grandes cantidades de datos de entrenamiento y 
+su implementación en tiempo real presenta retos adicionales que las hacen 
+menos accesibles para aplicaciones prácticas en comparación con los 
+controladores PI y PBC.
 
 \section{Estándares de la industria}
-{\parindent0pt 
-El diseño de estándares para la fabricación de turbinas eólicas comienza en 1986 cuando Germanischer Lloyd publicó un conjunto de regulaciones para la certificación del diseño de turbinas eólicas que, conforme las investigaciones alrededor de este campo fueron aumentando, llevaron a la publicación en 1993 de la \emph{Regulation for the Certification of Wind Energy Conversion Systems}. Similarmente se publicaron estándares de carácter nacional en Países Bajos (NEN 6096) en 1988 y en Dinamarca (DS 472) en 1992 \cite{Burton2011}.
+
+El diseño de estándares para la fabricación de turbinas eólicas comienza 
+en 1986 cuando Germanischer Lloyd publicó un conjunto de regulaciones 
+para la certificación del diseño de turbinas eólicas que, conforme las 
+investigaciones alrededor de este campo fueron aumentando, llevaron a 
+la publicación en 1993 de la \emph{Regulation for the Certification of 
+Wind Energy Conversion Systems}. Similarmente se publicaron estándares 
+de carácter nacional en Países Bajos (NEN 6096) en 1988 y en Dinamarca 
+(DS 472) en 1992 \cite{Burton2011}.
 \\
 
-La primera emisión de normas con un carácter verdaderamente internacional fue llevada a cabo por la \emph{International Electrothecnical Comission (IEC)} en 1988 y culminó con la publicación de las normas \emph{IEC-1400-1 Wind Turbine Generator Systems – Part 1: Safety Requirements}. Posteriores revisiones y ediciones fueron publicadas. Entre ellas la IEC-61400 publicada en 2005 y que continua actualmente en funcionamiento luego de varias revisiones \cite{Burton2011}.
-}
+La primera emisión de normas con un carácter verdaderamente internacional 
+fue llevada a cabo por la \emph{International Electrotechnical Commission 
+(IEC)} en 1988 y culminó con la publicación de las normas \emph{IEC-1400-1 
+Wind Turbine Generator Systems -- Part 1: Safety Requirements}. Posteriores 
+revisiones y ediciones fueron publicadas, entre ellas la serie IEC-61400 
+que continúa actualmente en funcionamiento y expansión. La edición vigente 
+de la parte principal de requisitos de diseño corresponde a la 
+IEC 61400-1:2019, con una enmienda en proceso de publicación 
+\cite{Burton2011}.
+\\
+
+De particular relevancia para el presente trabajo es la parte 
+IEC 61400-27, publicada en 2020, la cual define modelos de simulación 
+eléctrica estándar para turbinas eólicas y parques eólicos. Estos 
+modelos están orientados a análisis de estabilidad de sistemas de 
+potencia e incluyen representaciones genéricas para las topologías 
+de generadores más comunes, incluyendo generadores síncronos de imanes 
+permanentes (PMSG) como el utilizado en esta tesis. Si bien el modelo 
+desarrollado en el Capítulo~3 no pretende seguir estrictamente esta 
+norma, la existencia de la IEC 61400-27 proporciona un marco de 
+referencia para la validación de modelos eléctricos de turbinas eólicas 
+mediante simulación.
 
 \section{Plan de trabajo}
 
-\textbf{Fechas de entregas:}
+El desarrollo de este documento se gestiona mediante un repositorio de control 
+de versiones con \texttt{Git}, lo que permite llevar un registro estructurado de 
+las correcciones, revisiones e incorporación de nuevos capítulos a lo largo del 
+proceso de escritura. Los nombres de ramas y etiquetas se manejan en inglés para
+evitar conflictos con el gestor de versiones.
+
+\subsection{Estructura de ramas}
+
+Se definen tres tipos de ramas según la naturaleza del trabajo:
+
 \begin{itemize}
-    \item \emph{Capítulos I y II:} 29 de noviembre, 2023.
+    \item \textbf{\texttt{draft/[capítulo]-[month]-[year]}}: se utiliza al iniciar 
+    un capítulo nuevo. Cada capítulo corresponde a un archivo \texttt{.tex} 
+    independiente, incorporado al documento principal mediante \texttt{main.tex}. 
+    La rama se integra a \texttt{main} cuando se cuenta con un primer borrador 
+    completo listo para revisión.
 
-    \item \emph{Capitulo III:} 28 de febrero, 2024.
+    \item \textbf{\texttt{review/[capítulo]-[month]-[year]}}: registra los 
+    comentarios y sugerencias del asesor sobre un capítulo existente. 
+    Esta rama nunca se integra a \texttt{main}; se conserva como referencia 
+    histórica del estado del documento al momento de la revisión.
 
-    \item \emph{Capítulo IV:} 01 de abril, 2024.
-
-    \item \emph{Capítulos V y VI:} 15 de mayo, 2024. 
+    \item \textbf{\texttt{fix/[capítulo]-[month]-[year]}}: contiene las correcciones 
+    derivadas de una rama \texttt{review} correspondiente. Se integra a 
+    \texttt{main} al concluir el ciclo de corrección, independientemente de 
+    que el capítulo haya alcanzado su versión definitiva.
 \end{itemize}
+
+Cada ciclo de corrección abarca aproximadamente un mes, periodo durante 
+el cual pueden coexistir ramas de distintos capítulos en diferentes etapas. 
+Esto permite avanzar en la redacción de nuevos capítulos sin bloquear el 
+proceso de revisión de los anteriores.
+
+\subsection{Etiquetas de hitos}
+
+Complementariamente, se utilizan etiquetas (\textit{tags}) de \texttt{Git} 
+para marcar hitos relevantes en la historia del repositorio, como la 
+incorporación de un nuevo borrador o la conclusión de un ciclo de correcciones 
+significativo. La convención de nomenclatura es:
+
+\begin{center}
+    \texttt{[capítulo]-[tipo]-round-[month]-[year]}
+\end{center}
+
+Por ejemplo, \texttt{design-fix-round-dec-2025} corresponde a la conclusión 
+de un ciclo de correcciones del capítulo de diseño en diciembre de 2025, y 
+\texttt{simulation-draft-round-mar-2026} marca el primer borrador del 
+capítulo de simulación en marzo de 2026. A diferencia de las ramas, las 
+etiquetas no implican trabajo activo sino que señalan puntos de referencia 
+en la evolución del documento.
