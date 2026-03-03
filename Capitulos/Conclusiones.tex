@@ -1,7 +1,196 @@
 %!TEX root = ../main.tex
-\chapter{Conclusiones} \label{intro_chapter}
+\chapter{Conclusiones}
+\label{ch:conclusiones}
 
-En este capítulo se analizan los resultados de las pruebas realizadas para determinar si la solución proporcionada de esta tesis cumple con los requerimientos de la misma. 
+En este capítulo se presentan las conclusiones del trabajo realizado, se 
+discuten las contribuciones y limitaciones del diseño propuesto, y se delinean 
+posibles extensiones para trabajo futuro.
 
-\section{Conclusiones pruebas de velocidad y posición}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+\section{Resumen de resultados}
+
+En esta tesis se diseñó un sistema de control para la regulación de la 
+velocidad angular del rotor en un aerogenerador basado en un generador 
+síncrono de imanes permanentes (PMSG), operando en la región 2 de operación. 
+El controlador propuesto combina una estructura de controladores PI en cascada 
+con compensación \textit{feedforward} de los términos de acoplamiento cruzado 
+entre los ejes $d$ y $q$ del generador, junto con un algoritmo de seguimiento 
+del punto de máxima potencia (MPPT) basado en la estrategia de perturbación y 
+observación (P\&O).
+\\
+
+El desarrollo del trabajo siguió una metodología sistemática que partió del 
+modelado matemático del sistema, pasando por el diseño del controlador y el 
+análisis formal de estabilidad, hasta la validación mediante simulación 
+numérica. Los principales resultados obtenidos se resumen a continuación.
+\\
+
+Se obtuvo el modelo dinámico completo del sistema de conversión de energía 
+eólica, acoplando el subsistema mecánico del rotor con el subsistema eléctrico 
+del PMSG en coordenadas $dq$. A partir de este modelo se formularon los 
+objetivos de control: mantener $i_d = 0$ para minimizar pérdidas eléctricas y 
+regular $\omega_m$ hacia la velocidad angular óptima determinada por el 
+algoritmo MPPT.
+\\
+
+Se demostró que la sustitución de las leyes de control en las ecuaciones 
+dinámicas del sistema produce un desacoplamiento del sistema en lazo cerrado 
+en dos subsistemas independientes, $\Sigma_1$ y $\Sigma_2$ (Lema \ref{lem:wecs}). Este 
+resultado es consecuencia directa de la cancelación \textit{feedforward} de los 
+términos no lineales $pL i_q \omega_m$ y $-pL i_d \omega_m + p\varphi\omega_m$ 
+en las leyes de control $v_d$ y $v_q$, respectivamente. El desacoplamiento 
+permitió analizar la estabilidad de cada subsistema de manera independiente.
+\\
+
+Para el subsistema lineal $\Sigma_1$, se obtuvieron condiciones necesarias y 
+suficientes de estabilidad mediante el criterio de Routh-Hurwitz aplicado a su 
+polinomio característico de segundo orden: $k_{P1} > -R$ y $k_{I1} > 0$ 
+(Lema \ref{lem:sigma_1}). Estas condiciones garantizan estabilidad exponencial global del 
+punto de equilibrio $\bar{x} = 0$, lo cual asegura que la corriente $i_d$ 
+converge a cero independientemente de las condiciones iniciales.
+\\
+
+Para el subsistema no lineal $\Sigma_2$, se procedió a linealizar alrededor del 
+punto de equilibrio deseado $\bar{z}$ (Lema \ref{lem:sigma_2_eq}) y se aplicó el criterio de 
+Routh-Hurwitz al polinomio característico de cuarto orden resultante. Se 
+obtuvieron cuatro condiciones sobre las ganancias $k_{P2}$, $k_{I2}$, $k_{P3}$ 
+y $k_{I3}$ (Lema \ref{lem:sigma_2}), y se propuso un algoritmo sistemático para la 
+selección de ganancias que satisfagan dichas condiciones (Lema \ref{lem:conds}). El 
+análisis del lugar geométrico de las raíces complementó este resultado, 
+visualizando la migración de los valores propios de $\bar{A}_2$ desde el 
+semiplano derecho hacia el semiplano izquierdo conforme $k'_{P2}$ aumenta, lo 
+cual valida geométricamente la existencia de un umbral mínimo de ganancia para 
+la estabilidad.
+\\
+
+Finalmente, las simulaciones en MATLAB/Simulink confirmaron el correcto 
+funcionamiento del controlador. Ante una entrada escalón de viento constante 
+($v_w = 11$ m/s), el sistema alcanzó el estado estable en aproximadamente 
+30 s con un sobrepico de $\approx 6$ rad/s en la velocidad angular. Ante un 
+perfil de viento turbulento con velocidades entre 9.8 y 16 m/s, el controlador 
+demostró capacidad de seguimiento de la referencia variable $\omega_m^\star$ 
+generada por el MPPT, manteniendo la corriente $i_d$ regulada en cero durante 
+toda la simulación. La eficiencia media de extracción de potencia obtenida fue 
+de $\eta_{\text{avg}} = 99.8$ \%, lo cual indica que el sistema opera de 
+manera consistente cerca del punto de máxima potencia.
+
+\section{Contribuciones y limitaciones}
+
+El controlador propuesto en esta tesis se sitúa metodológicamente entre dos 
+antecedentes directos: el controlador PI clásico de Chinchilla et 
+al. \cite{chinchilla2006} y el controlador PI+PBC de Cisneros et 
+al. \cite{cisneros2020}.
+\\
+
+El esquema de Chinchilla et al.\ emplea la misma arquitectura de lazos PI en 
+cascada con compensación \textit{feedforward} de los acoplamientos $dq$ que se 
+adopta en la presente tesis. Sin embargo, el diseño de Chinchilla et al.\ se 
+basa exclusivamente en técnicas de dominio frecuencial aplicadas a cada lazo de 
+corriente de manera aislada, modelando la planta como una función de 
+transferencia de primer orden $1/(R_s + L_s s)$ y sin considerar la dinámica 
+mecánica del rotor acoplada al generador. En consecuencia, dicho trabajo no 
+ofrece garantías formales de estabilidad para el sistema completo en lazo 
+cerrado.
+\\
+
+Por otra parte, Cisneros et al.\ proponen un controlador PI+SPBC que explota 
+las propiedades de pasividad del sistema electromecánico modelado en forma 
+Euler-Lagrange para demostrar estabilidad asintótica del sistema completo. La 
+prueba de estabilidad se construye mediante una función de Lyapunov de tipo 
+energético y el teorema de LaSalle-Yoshizawa, lo que proporciona garantías de 
+estabilidad global. No obstante, la implementación del PI+SPBC es 
+considerablemente más compleja: requiere la medición o estimación del torque 
+mecánico $T_m$ y su derivada $T_m'(\omega_m)$, el cálculo en línea de señales 
+auxiliares como $x_{d2}$ y $\varphi$, y la integración de una dinámica 
+adicional ($x_{d4}$) para manejar la incertidumbre en el voltaje del bus DC. 
+Además, el sistema considerado en \cite{cisneros2020} incluye el rectificador 
+y la carga del bus DC, lo que amplía el alcance del modelo pero también la 
+complejidad del controlador.
+\\
+
+La contribución principal de la presente tesis consiste en proporcionar un 
+análisis riguroso de estabilidad para la estructura PI clásica de Chinchilla 
+et al., considerando el sistema acoplado completo (mecánico + eléctrico) en 
+lazo cerrado. En particular:
+
+\begin{enumerate}
+    \item Se demostró formalmente el desacoplamiento del sistema en lazo cerrado 
+    en los subsistemas $\Sigma_1$ y $\Sigma_2$, resultado que 
+    en \cite{chinchilla2006} se asume implícitamente pero no se demuestra.
+
+    \item Se derivaron condiciones necesarias y suficientes sobre las ganancias 
+    del controlador que garantizan estabilidad exponencial del punto de 
+    equilibrio deseado, incluyendo el efecto de la no linealidad del torque 
+    mecánico $T_m(\omega_m)$ a través de la constante $\gamma$ en la 
+    linealización del subsistema $\Sigma_2$.
+
+    \item Se propuso un algoritmo sistemático para la selección de ganancias 
+    que satisfagan las condiciones de Routh-Hurwitz, junto con una demostración 
+    de existencia de solución (Lema \ref{lem:conds}).
+
+    \item Se complementó el análisis con el lugar geométrico de las raíces, 
+    proporcionando una herramienta visual y complementaria a las condiciones 
+    algebraicas para la sintonización de ganancias.
+\end{enumerate}
+
+Este enfoque ofrece un compromiso entre la simplicidad de implementación del 
+controlador PI clásico y el rigor teórico del enfoque basado en pasividad, 
+utilizando herramientas de análisis de control lineal (Routh-Hurwitz, lugar 
+geométrico de las raíces) que resultan más accesibles para la práctica de la 
+ingeniería de potencia.
+\\
+
+No obstante, el trabajo presenta limitaciones que deben señalarse. La principal 
+es que el análisis de estabilidad se basa en la linealización del sistema 
+alrededor del punto de equilibrio (método indirecto de Lyapunov), lo cual 
+proporciona garantías de estabilidad \textit{local}. En contraste, el enfoque 
+de Cisneros et al.\ basado en pasividad ofrece estabilidad \textit{global}. 
+Esto significa que las garantías de estabilidad derivadas en esta tesis son 
+válidas en una vecindad del punto de equilibrio cuyo tamaño no se cuantifica 
+explícitamente.
+\\
+
+Adicionalmente, la suposición de velocidad del viento constante ($v_w$ 
+constante) es necesaria para el análisis de estabilidad, dado que el sistema 
+$\Sigma_2$ resulta invariante en el tiempo únicamente bajo esta hipótesis. 
+Aunque las simulaciones demuestran un desempeño adecuado ante perfiles de 
+viento turbulento, no se dispone de una prueba formal de estabilidad para el 
+caso de viento variable.
+\\
+
+Finalmente, no se evaluó la robustez del controlador ante variaciones 
+paramétricas. En \cite{cisneros2020} se demostró mediante simulación que el 
+controlador PI clásico de \cite{chinchilla2006} pierde la capacidad de regular 
+la velocidad angular ante variaciones simultáneas del 300\,\% en el flujo 
+magnético $\varphi$, del 70\,\% en la inductancia $L$ y del 95\,\% en el 
+voltaje del bus DC, mientras que el PI+SPBC mantiene su desempeño. Dado que el 
+controlador propuesto en esta tesis comparte la misma estructura del PI clásico, 
+es razonable esperar una sensibilidad similar ante variaciones paramétricas de 
+gran magnitud, lo cual constituye una limitación inherente al enfoque basado en 
+linealización y cancelación de términos no lineales.
+
+\section{Trabajo futuro}
+
+A partir de las limitaciones identificadas y de los resultados obtenidos, se 
+proponen las siguientes líneas de trabajo futuro:
+\\
+
+\begin{enumerate}
+    \item \textbf{Extensión a la región 3 de operación.} El controlador diseñado 
+    en esta tesis se limita a la región 2, donde el objetivo es maximizar la 
+    extracción de potencia. En la región 3, donde la velocidad del viento supera 
+    el valor nominal y se requiere limitar la potencia para proteger los 
+    componentes de la turbina, es necesario incorporar estrategias adicionales 
+    como el control de ángulo de paso (\textit{pitch control}). Una extensión 
+    natural del presente trabajo consistiría en diseñar un controlador que 
+    integre el control de torque con el control de \textit{pitch} para cubrir 
+    el rango completo de operación del aerogenerador, incluyendo las 
+    transiciones entre regiones.
+
+    \item \textbf{Validación experimental.} Todos los resultados presentados en 
+    esta tesis se obtuvieron mediante simulación numérica. Una validación 
+    experimental del controlador en un prototipo de laboratorio ---similar a la 
+    reportada en \cite{chinchilla2006} con un motor DC que emula la turbina 
+    eólica--- permitiría verificar el desempeño del controlador ante condiciones 
+    reales de operación, incluyendo ruido en las mediciones, retardos de 
+    cómputo, efectos de la modulación PWM y saturación de los actuadores.
+\end{enumerate}
