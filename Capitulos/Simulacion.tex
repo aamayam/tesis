@@ -17,8 +17,8 @@ condiciones más representativas de operación real.
 
 \section{Estructura de la simulación}
 
-La figura \ref{fig:diag_alto_nivel} muestra la arquitectura de control de alto
-nivel implementada en Simulink. El modelo se compone de tres bloques principales:
+La figura \ref{fig:diag_alto_nivel} muestra la arquitectura de control 
+implementada en Simulink. El modelo se compone de tres bloques principales:
 la planta (WECS), el controlador y el algoritmo MPPT. La planta implementa las
 ecuaciones dinámicas del sistema acoplado \eqref{eq:full_system}, incluyendo
 la dinámica mecánica del rotor y las ecuaciones eléctricas del PMSG en coordenadas
@@ -30,7 +30,7 @@ cascada se detalla en la figura \ref{fig:diag_lazos}.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.85\textwidth]{block_diagram.pdf}
-\caption{Arquitectura de control de alto nivel del sistema WECS. El bloque MPPT genera
+\caption{Arquitectura de control del sistema WECS. El bloque MPPT genera
 la referencia de velocidad $\omega_m^*$ a partir de la potencia medida $P$ y la velocidad
 del viento $v_w$. El controlador implementa los subsistemas $\Sigma_1$ y $\Sigma_2$
 descritos en el Capítulo 3.}
@@ -47,6 +47,8 @@ subsistema $\Sigma_1$ controla $i_d$. Los términos de compensación no lineal c
 a las expresiones \eqref{valUd} y \eqref{eqnVq}.}
 \label{fig:diag_lazos}
 \end{figure}
+
+\subsection{Algoritmo MPPT}
 
 El algoritmo MPPT sigue una estrategia de perturbación y observación (P\&O),
 descrita en la \autoref{sec:objetivos_de_control}. En cada paso de muestreo, el algoritmo 
@@ -103,6 +105,103 @@ oscilaciones de $\pm 40$ A en $i_d$.
 El valor seleccionado de $\omega_c = 1$ rad/s, ligeramente menor que la frecuencia 
 de oscilación observada, proporciona un balance adecuado entre atenuación de las 
 perturbaciones del MPPT y preservación de la dinámica del sistema.
+
+\section{Sintonización del PI en \texorpdfstring{$\Sigma_2$}{Sigma 2}}
+
+Se aplicó el algoritmo presentado anteriormente en la \autoref{sec:algoritmo}
+con los parámetros del sistema dados en la \autoref{tab:parametros_sim} . Los valores 
+numéricos relevantes son $\frac{R}{L} = 103.5493$, 
+$\bar{\gamma}_1 = 0.000117$ y $\bar{\gamma}_2 = 1.5328$.
+
+Siguiendo el Paso 1 del algoritmo, se fijaron las ganancias del lazo externo como:
+\begin{equation}
+    k_{\textrm{P3}} = 10, \quad k_{\textrm{I3}} = 10
+\end{equation}
+
+Conforme al Paso 2, se estableció la relación $k_{\textrm{I2}}' = \frac{1}{k_{\textrm{P2}}'}$.
+
+Para el Paso 3, se realizó una búsqueda incremental de $k_{\textrm{P2}}'$ hasta encontrar 
+un valor que satisficiera las condiciones \eqref{eq:cond3} y \eqref{eq:cond4}. El valor 
+$k_{\textrm{P2}}' = 10$ resultó en el siguiente conjunto de ganancias normalizadas:
+\begin{equation}
+    k_{\textrm{P2}}' = 10, \quad k_{\textrm{I2}}' = 0.1
+\end{equation}
+
+que corresponde a las ganancias originales:
+\begin{equation}\label{eq:gains_solution}
+    k_{\textrm{P2}} = 0.0355, \quad k_{\textrm{I2}} = 0.000355, \quad 
+    k_{\textrm{P3}} = 10, \quad k_{\textrm{I3}} = 10
+\end{equation}
+
+La verificación numérica confirmó que todas las condiciones de Routh-Hurwitz se satisfacen:
+\begin{align*}
+    a_3 &= 113.67 > 0 \quad \checkmark \\
+    a_0 &= 1.53 > 0 \quad \checkmark \\
+    b_1 &= 166.34 > 0 \quad \checkmark \\
+    c_1 &= 153.77 > 0 \quad \checkmark
+\end{align*}
+
+Adicionalmente, se verificó que la matriz $\bar{A}_2$ con estas ganancias es Hurwitz. 
+Los valores propios de $\bar{A}_2$ son:
+\begin{equation} \label{eq:eigenvalues}
+    \begin{aligned}
+        &\lambda_1 = -112.193, \quad \lambda_2 = -0.736 + 0.907i, \quad \lambda_3 = -0.736 - 0.907i,\\
+        &\lambda_4 = -0.010008
+    \end{aligned}
+\end{equation}
+
+Como todos los valores propios tienen parte real negativa, se confirma que $\bar{A}_2$ es 
+Hurwitz y, por lo tanto, el punto de equilibrio $\bar{z}$ es exponencialmente estable.
+
+\subsection{Análisis del lugar geométrico de las raíces}
+
+Con el objetivo de complementar el análisis de estabilidad presentado en la
+sección anterior y visualizar el efecto de la ganancia $k'_{P2}$ sobre la
+ubicación de los valores propios del sistema linealizado $\Sigma_2^{\text{lin}}$,
+se construyó el lugar geométrico de las raíces (LGR) de la matriz $\bar{A}_2$
+en función del parámetro $k'_{P2}$, manteniendo fijas las ganancias del lazo
+externo $k_{P3} = 10$, $k_{I3} = 10$ y la relación $k'_{I2} = 1/k'_{P2}$
+establecida en el Paso 2 del algoritmo de sintonización.
+\\ 
+
+La figura \ref{fig:root_locus} muestra el LGR completo junto con un detalle
+ampliado de los valores propios $\lambda_3$ y $\lambda_4$, que son los de
+mayor relevancia dinámica para el análisis de estabilidad de $\Sigma_2$.
+Los valores propios $\lambda_1$ y $\lambda_2$, asociados al lazo de corriente
+del eje directo $\Sigma_1$, permanecen esencialmente invariantes ante
+variaciones de $k'_{P2}$ y se ubican consistentemente en el semiplano
+izquierdo lejano al eje imaginario, lo cual es consistente con la estabilidad
+incondicional de $\Sigma_1$ demostrada en el Lema \ref{lem:sigma_1}.
+\\ 
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{root_locus.pdf}
+    \caption{Lugar geométrico de las raíces de $\bar{A}_2$ en función de
+    $k'_{P2} \in [0.1,\, 10^4]$. Panel izquierdo: LGR completo mostrando
+    los cuatro valores propios. Panel derecho: detalle de $\lambda_3$ y
+    $\lambda_4$, donde se aprecia la migración desde el semiplano derecho
+    hacia el semiplano izquierdo conforme $k'_{P2}$ aumenta.}
+    \label{fig:root_locus}
+\end{figure} 
+
+El comportamiento observado en el panel derecho de la
+figura \ref{fig:root_locus} es coherente con las condiciones de
+Routh-Hurwitz establecidas en el Lema \ref{lem:sigma_2}. Para valores pequeños de
+$k'_{P2}$, las condiciones \eqref{eq:cond3} y \eqref{eq:cond4} no se
+satisfacen, lo que se manifiesta en la presencia de valores propios con
+parte real positiva. A medida que $k'_{P2}$ crece, los polos $\lambda_3$ y
+$\lambda_4$ migran hacia el semiplano izquierdo, cruzando el eje imaginario
+para un valor umbral de $k'_{P2}$ que puede identificarse visualmente en el
+zoom. Este comportamiento valida geométricamente la existencia del umbral
+mínimo de ganancia establecido analíticamente en el Lema \ref{lem:conds}.
+\\ 
+
+Para el valor seleccionado $k'_{P2} = 10$ — marcado con un cuadro en la
+figura — los cuatro valores propios presentan parte real estrictamente
+negativa, confirmando que $\bar{A}_2$ es Hurwitz y que el punto de
+equilibrio $\bar{z}$ definido en \eqref{eq:sigma_2} es exponencialmente
+estable, en concordancia con los valores numéricos reportados en \eqref{eq:eigenvalues}.
 
 \section{Parámetros de simulación}
 
@@ -239,28 +338,45 @@ Finalmente, la figura \ref{fig:potencia} muestra la potencia extraída $P$
 comparada con la potencia máxima teórica $P_{\max}$, calculada como:
 
 \begin{equation}
-    P_{\max}(t) = \frac{1}{2}\rho\pi r^2 v_w^3(t)\, C_p^{\max}
+    P_{\max}(t) = \frac{1}{2}\rho\pi r^2 v_w^3(t)\, C_p^{\star}
     \label{eq:pmax}
 \end{equation}
 
-donde $C_p^{\max} = 0.411$ es el coeficiente de potencia máximo del sistema,
+donde $C_p^{\star} = 0.411$ es el coeficiente de potencia óptimo del sistema,
 obtenido en la Sección 3.1.2. Durante la fase de viento constante, $P$ converge
 a $P_{\max}$ conforme el MPPT alcanza el punto de operación óptimo. En el
 régimen turbulento, $P$ sigue de cerca las variaciones de $P_{\max}$, con
 una brecha sistemática reducida atribuible al retardo inherente del algoritmo
-P\&O y a la dinámica del lazo de velocidad. La eficiencia media de extracción
-de potencia, calculada sobre el intervalo $t \geq 20$ s, es:
+P\&O y a la dinámica del lazo de velocidad.
+\\
+
+Para cuantificar el desempeño del sistema, se define la eficiencia media 
+de extracción de potencia como el cociente entre la potencia media extraída 
+y la potencia media máxima posible. El cálculo se realiza sobre 
+el intervalo $t \geq 20$\,s con el fin de excluir el transitorio inicial y 
+evaluar únicamente el desempeño en estado estacionario:
 
 \begin{equation}
-    \eta_{\text{avg}} = \frac{\overline{P}}{\overline{P}_{\max}}
-    \times 100 = 99.8\%
+    \eta_{\text{avg}} 
+    = \frac{P(t)}{P_{\max}(t)}\bigg|_{t \geq 20\,\text{s}} 
+    \times 100
+    = \frac{\displaystyle\frac{1}{N}\sum_{i=1}^{N} P(t_i)}
+           {\displaystyle\frac{1}{N}\sum_{i=1}^{N} P_{\max}(t_i)} 
+    \times 100
+    = 99.8 \text{ \%}
     \label{eq:eficiencia}
 \end{equation}
+
+donde la suma se evalúa sobre las $N$ muestras correspondientes al 
+intervalo $t_i \geq 20$\,s. Esta definición es equivalente a comparar 
+la energía total extraída con la energía total que es posible extraer en el mismo 
+periodo de tiempo, lo cual proporciona una medida energéticamente consistente del 
+desempeño del controlador y el algoritmo MPPT.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.85\textwidth]{potencia.pdf}
-    \caption{Potencia extraída $P$ comparada con la potencia máxima teórica
+    \caption{Potencia extraída $P$ comparada con la potencia máxima posible
     $P_{\max}$ ante el perfil de viento turbulento. La línea continua
     corresponde a $P_{\max}$ y la línea discontinua a $P$.}
     \label{fig:potencia}

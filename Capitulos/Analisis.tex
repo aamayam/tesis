@@ -45,7 +45,7 @@ manteniendo al rotor cerca del punto óptimo de operación a pesar de las
 variaciones en la velocidad del viento.
 
 
-\section{Restricciones}
+\section{Restricciones realistas}
 
 Dado que el objetivo de la tesis es el diseño de un controlador para la regulación 
 del par eléctrico del generador mediante las corrientes en coordenadas $dq$, y 
@@ -78,7 +78,7 @@ región 3 (limitación de potencia mediante \emph{pitch control} u otras estrate
 ni mecanismos de protección ante velocidades de viento excesivas. Lo anterior se 
 propone como una posible extensión del trabajo.
 
-\section{Trabajos relacionados}
+\section{Soluciones alternativas}
 
 El diseño de controladores para turbinas eólicas de velocidad variable se suele 
 realizar desde dos puntos de partida: controladores con un enfoque más teórico 
@@ -92,59 +92,141 @@ en las que las leyes de control expuestas funcionan bien, mas no es común que
 dichos controladores sean probados en turbinas reales.
 \\
 
-\subsection{Control PI clásico en coordenadas \emph{dq}}
-Una de las estrategias más extendidas para el control de torque en generadores 
-síncronos de imanes permanentes (PMSG) es el uso de controladores PI en una 
-configuración de lazos en cascada operando en coordenadas $dq$. En \cite{chinchilla2006} 
-se presenta un esquema de este tipo aplicado a un PMSG conectado a la red, en el 
-cual un lazo externo de velocidad genera la referencia de corriente $i_q^{\text{ref}}$ 
-y lazos internos regulan las corrientes $i_d$ e $i_q$ del generador. La estrategia 
-incluye la cancelación de los términos de acoplamiento cruzado entre los ejes $d$ 
-y $q$ mediante compensación \emph{feedforward}, lo que permite tratar cada lazo 
-de corriente de manera prácticamente independiente. Este esquema es ampliamente 
-utilizado en la industria por su simplicidad de implementación; sin embargo, al 
-estar basado en la linealización del sistema, carece de garantías formales de 
-estabilidad ante variaciones de parámetros o condiciones de operación.
-\\
+\subsection{Estrategias de control en la literatura}
 
-\subsection{Control basado en pasividad (PBC)}
-Como alternativa a los métodos basados en linealización, se han desarrollado 
-controladores que explotan las propiedades de pasividad del sistema 
-electromecánico para garantizar estabilidad. Este enfoque, conocido como 
-control basado en pasividad (\emph{Passivity-Based Control}, PBC), tiene 
-sus fundamentos en el uso de conceptos de balance de energía para el control 
-de sistemas Euler-Lagrange \cite{Ortega1998, Ortega2001}. A diferencia de 
-las técnicas clásicas de control no lineal, que buscan cancelar las no 
-linealidades del sistema, el PBC explota y respeta la estructura física 
-del mismo. En \cite{Cisneros2013} se presenta un controlador 
-basado en pasividad (PBC) para un WECS de pequeña escala conectado 
-a la red, donde se demuestra la estabilidad del sistema en lazo cerrado aunque 
+En la literatura se han propuesto diversas estrategias de control para 
+sistemas de conversión de energía eólica basados en generadores síncronos de 
+imanes permanentes (PMSG). A continuación se presenta un panorama de las 
+principales aproximaciones, organizadas por el tipo de técnica de control 
+empleada.
+
+\subsubsection*{Pasividad}
+Una de las líneas de investigación con mayor rigor teórico en el control 
+de WECS es el control basado en pasividad (\emph{Passivity-Based Control}, 
+PBC). Este enfoque tiene sus fundamentos en el uso de conceptos de balance 
+de energía para el control de sistemas Euler-Lagrange \cite{Ortega1998}, 
+donde se explota la estructura física del sistema en lugar de intentar 
+cancelar sus no linealidades \cite{Ortega2001}. En \cite{Cisneros2013} se 
+presenta un controlador PBC para un WECS de pequeña escala conectado a la 
+red, donde se demuestra la estabilidad del sistema en lazo cerrado aunque 
 con una respuesta lenta en la regulación de la velocidad del rotor. 
-En \cite{Cisneros2016} se propone una versión mejorada que combina un PI con un 
-PBC (PI-PBC) para un sistema similar, logrando garantías de estabilidad y 
-mejorando la extracción de potencia, aunque el diseño del controlador se basa en 
-una simplificación importante del modelo del generador. 
-Una comparación experimental entre el control PI estándar y el PBC aplicados 
-a un WECS se reporta en \cite{Gao2016}, donde se observa que ambos controladores 
-logran un seguimiento adecuado de la velocidad óptima, pero el PBC demanda un 
-menor esfuerzo de control.
+En \cite{Cisneros2016} se propone una versión mejorada que combina un PI 
+con un PBC (PI-PBC) para un sistema similar, logrando garantías de 
+estabilidad y mejorando la extracción de potencia, aunque el diseño del 
+controlador se basa en una simplificación importante del modelo del 
+generador. Una comparación entre el control PI estándar y el PBC aplicados 
+a un WECS se reporta en \cite{Gao2016}, donde se observa que ambos 
+controladores logran un seguimiento adecuado de la velocidad óptima, pero 
+el PBC demanda un menor esfuerzo de control.
 \\
 
-Más recientemente, en \cite{cisneros2020} se propone un esquema PI+PBC para un 
-WECS basado en un PMSG conectado a un \emph{solid-state transformer}. Este 
-trabajo constituye un antecedente directo de la presente tesis, ya que utiliza 
-el mismo modelo matemático del sistema electromecánico y los mismos parámetros 
-de la turbina. A diferencia de los trabajos anteriores, en \cite{cisneros2020} 
-se presenta una prueba completa de estabilidad para el sistema en lazo cerrado 
-y se demuestra una mejora significativa en la robustez ante variaciones 
-paramétricas respecto al controlador PI clásico de \cite{chinchilla2006}. 
-El controlador propuesto en la presente tesis retoma la estructura de lazos PI 
-en cascada con cancelación de términos no lineales, y complementa el análisis 
-de estabilidad mediante el criterio de Routh-Hurwitz y el lugar geométrico de 
-las raíces para la selección sistemática de las ganancias del controlador.
+Por otra parte, en \cite{cisneros2020} se propone un controlador PI+SPBC que explota 
+las propiedades de pasividad del sistema electromecánico modelado en forma 
+Euler-Lagrange para demostrar estabilidad asintótica del sistema completo. La 
+prueba de estabilidad se construye mediante una función de Lyapunov de tipo 
+energético y el teorema de LaSalle-Yoshizawa, lo que proporciona garantías de 
+estabilidad global. No obstante, la implementación del PI+SPBC es 
+considerablemente más compleja: requiere la medición o estimación del torque 
+mecánico $T_m$ y su derivada $T_m'(\omega_m)$, el cálculo en línea de señales 
+auxiliares como $x_{d2}$ y $\varphi$, y la integración de una dinámica 
+adicional ($x_{d4}$) para manejar la incertidumbre en el voltaje del bus DC. 
+Además, el sistema considerado en \cite{cisneros2020} incluye el rectificador 
+y la carga del bus DC, lo que amplía el alcance del modelo pero también la 
+complejidad del controlador.
 \\
 
-\subsection{Estrategias de MPPT}
+Este trabajo constituye un antecedente directo de la presente tesis, ya que 
+utiliza el mismo modelo matemático del sistema electromecánico y los mismos 
+parámetros de la turbina. A diferencia de los trabajos anteriores, en 
+\cite{cisneros2020} se presenta una prueba completa de estabilidad para el 
+sistema en lazo cerrado y se demuestra una mejora significativa en la 
+robustez ante variaciones paramétricas respecto al controlador PI clásico 
+de \cite{chinchilla2006}. 
+
+\subsubsection*{Control por \emph{backstepping}}
+La técnica de \emph{backstepping} ha sido ampliamente utilizada en el control 
+de WECS por su capacidad de manejar sistemas no lineales de manera 
+sistemática mediante la teoría de estabilidad de Lyapunov. En 
+\cite{Galeazzi2015} se presenta un controlador adaptativo por 
+\emph{backstepping} para una turbina eólica de estructura liviana, mientras 
+que en \cite{Galeazzi2013} se desarrolla un observador combinado con 
+\emph{backstepping} para turbinas de velocidad variable. En 
+\cite{Bossoufi2020} se reporta la implementación experimental de un 
+controlador por \emph{backstepping} para un PMSG utilizando una plataforma 
+dSPACE, validando su desempeño tanto en régimen transitorio como en estado 
+estable. Una ventaja de esta técnica es que permite incorporar estimadores 
+adaptativos para parámetros inciertos del sistema; sin embargo, su 
+implementación requiere el conocimiento del modelo completo del sistema y 
+la diferenciación sucesiva de funciones de Lyapunov, lo que puede resultar 
+en leyes de control de alta complejidad.
+
+\subsubsection*{Control por modos deslizantes}
+El control por modos deslizantes (\emph{sliding mode control}, SMC) 
+constituye otra alternativa robusta para el control de WECS, particularmente 
+ante incertidumbres paramétricas y perturbaciones externas. En 
+\cite{Boukezzar2008} se presenta un controlador SMC aplicado a un generador 
+de inducción doblemente alimentado (DFIG) para la optimización de la 
+producción de potencia. En \cite{Valenciaga2003} se propone un esquema de 
+control por modos deslizantes combinado con pasividad para un sistema 
+híbrido de generación que incluye un aerogenerador, donde se logra 
+satisfacer la demanda de potencia sin medición directa de la velocidad del 
+viento. En \cite{Kim2019} se combina el SMC con un estimador adaptativo 
+basado en \emph{backstepping} para el control de velocidad de un PMSG, 
+demostrando convergencia exponencial de la velocidad del rotor a la 
+referencia óptima mediante una función de Lyapunov. La principal limitación 
+del SMC es el fenómeno de \emph{chattering}, que consiste en oscilaciones 
+de alta frecuencia en la señal de control que pueden afectar la vida útil 
+de los componentes del sistema.
+
+\subsubsection*{Control PI clásico en coordenadas \emph{dq}}
+A pesar de los avances en técnicas de control no lineal, una de las 
+estrategias más extendidas en la industria para el control de torque en 
+PMSG sigue siendo el uso de controladores PI en una configuración de lazos 
+en cascada operando en coordenadas $dq$. En \cite{chinchilla2006} se 
+presenta un esquema de este tipo aplicado a un PMSG conectado a la red, en 
+el cual un lazo externo de velocidad genera la referencia de corriente 
+$i_q^{\text{ref}}$ y lazos internos regulan las corrientes $i_d$ e $i_q$ 
+del generador. La estrategia incluye la cancelación de los términos de 
+acoplamiento cruzado entre los ejes $d$ y $q$ mediante compensación 
+\emph{feedforward}, lo que permite tratar cada lazo de corriente de manera 
+prácticamente independiente. 
+\\
+
+El esquema de \cite{chinchilla2006} emplea la misma arquitectura de lazos PI en 
+cascada con compensación \textit{feedforward} de los acoplamientos $dq$ que se 
+adopta en la presente tesis. Sin embargo, el diseño de \cite{chinchilla2006} se 
+basa exclusivamente en técnicas de dominio frecuencial aplicadas a cada lazo de 
+corriente de manera aislada, modelando la planta como una función de 
+transferencia de primer orden $1/(R_s + L_s s)$ y sin considerar la dinámica 
+mecánica del rotor acoplada al generador. En consecuencia, dicho trabajo no 
+ofrece garantías formales de estabilidad para el sistema completo en lazo 
+cerrado.
+\\
+
+El controlador propuesto en la presente tesis 
+retoma la estructura de lazos PI en cascada con cancelación de términos no 
+lineales, y complementa el análisis de estabilidad mediante el criterio de 
+Routh-Hurwitz y el lugar geométrico de las raíces para la selección 
+sistemática de las ganancias del controlador. Se presenta una forma de sintonizar
+las ganancias de los controladores que garantiza estabilidad y regulación de 
+la corriente y de la velocidad angular.
+
+\subsubsection*{Otras técnicas de control}
+Aproximaciones más recientes han incorporado técnicas de inteligencia 
+artificial y control predictivo al problema del control de WECS. En 
+\cite{Jie2020} se utilizan modelos de aprendizaje tipo ELM (\emph{Extreme 
+Learning Machine}) para el control de la velocidad del rotor. En 
+\cite{Boukhezzar2011} se presenta un enfoque de linealización parcial por 
+retroalimentación para una turbina de velocidad variable utilizando un 
+modelo de dos masas, mientras que en \cite{Calderaro2008} se propone un 
+controlador basado en lógica difusa (\emph{fuzzy control}) para la máxima 
+extracción de energía. Estas técnicas más avanzadas ofrecen potenciales 
+mejoras en el desempeño, pero suelen requerir grandes cantidades de datos 
+de entrenamiento o conocimiento experto para su sintonización, y su 
+implementación en tiempo real presenta retos adicionales que las hacen 
+menos accesibles en comparación con los controladores PI y PBC.
+
+\subsubsection*{Estrategias de MPPT}
 Para determinar la velocidad angular óptima del rotor que maximiza la extracción 
 de potencia, se requiere un algoritmo de seguimiento del punto de máxima potencia 
 (MPPT). En \cite{nak2013} se clasifican las estrategias de MPPT en tres 
@@ -160,21 +242,6 @@ sobre la eficiencia de extracción de potencia. La estrategia P\&O fue
 seleccionada para esta tesis debido a su independencia de los parámetros del 
 sistema y su compatibilidad con cualquier estrategia de control del generador 
 \cite{kazmi2011, wang2004}.
-\\
-
-\subsection{Otras técnicas de control}
-Se han explorado también otras aproximaciones para el control de WECS. 
-En \cite{Boukezzar2008} se presenta un control por modos deslizantes 
-(\emph{sliding mode}) aplicado a un generador de inducción doblemente 
-alimentado (DFIG) para la optimización de la producción de potencia. 
-Aproximaciones más recientes han incorporado el uso de redes neuronales y 
-modelos predictivos para el control de la velocidad del rotor, como se 
-reporta en \cite{Jie2020}, donde se utilizan modelos de aprendizaje tipo 
-ELM (\emph{Extreme Learning Machine}). Sin embargo, estas técnicas más 
-avanzadas suelen requerir grandes cantidades de datos de entrenamiento y 
-su implementación en tiempo real presenta retos adicionales que las hacen 
-menos accesibles para aplicaciones prácticas en comparación con los 
-controladores PI y PBC.
 
 \section{Estándares de la industria}
 
@@ -211,55 +278,55 @@ norma, la existencia de la IEC 61400-27 proporciona un marco de
 referencia para la validación de modelos eléctricos de turbinas eólicas 
 mediante simulación.
 
-\section{Plan de trabajo}
+% \section{Plan de trabajo}
 
-El desarrollo de este documento se gestiona mediante un repositorio de control 
-de versiones con \texttt{Git}, lo que permite llevar un registro estructurado de 
-las correcciones, revisiones e incorporación de nuevos capítulos a lo largo del 
-proceso de escritura. Los nombres de ramas y etiquetas se manejan en inglés para
-evitar conflictos con el gestor de versiones.
+% El desarrollo de este documento se gestiona mediante un repositorio de control 
+% de versiones con \texttt{Git}, lo que permite llevar un registro estructurado de 
+% las correcciones, revisiones e incorporación de nuevos capítulos a lo largo del 
+% proceso de escritura. Los nombres de ramas y etiquetas se manejan en inglés para
+% evitar conflictos con el gestor de versiones.
 
-\subsection{Estructura de ramas}
+% \subsection{Estructura de ramas}
 
-Se definen tres tipos de ramas según la naturaleza del trabajo:
+% Se definen tres tipos de ramas según la naturaleza del trabajo:
 
-\begin{itemize}
-    \item \textbf{\texttt{draft/[capítulo]-[month]-[year]}}: se utiliza al iniciar 
-    un capítulo nuevo. Cada capítulo corresponde a un archivo \texttt{.tex} 
-    independiente, incorporado al documento principal mediante \texttt{main.tex}. 
-    La rama se integra a \texttt{main} cuando se cuenta con un primer borrador 
-    completo listo para revisión.
+% \begin{itemize}
+%     \item \textbf{\texttt{draft/[capítulo]-[month]-[year]}}: se utiliza al iniciar 
+%     un capítulo nuevo. Cada capítulo corresponde a un archivo \texttt{.tex} 
+%     independiente, incorporado al documento principal mediante \texttt{main.tex}. 
+%     La rama se integra a \texttt{main} cuando se cuenta con un primer borrador 
+%     completo listo para revisión.
 
-    \item \textbf{\texttt{review/[capítulo]-[month]-[year]}}: registra los 
-    comentarios y sugerencias del asesor sobre un capítulo existente. 
-    Esta rama nunca se integra a \texttt{main}; se conserva como referencia 
-    histórica del estado del documento al momento de la revisión.
+%     \item \textbf{\texttt{review/[capítulo]-[month]-[year]}}: registra los 
+%     comentarios y sugerencias del asesor sobre un capítulo existente. 
+%     Esta rama nunca se integra a \texttt{main}; se conserva como referencia 
+%     histórica del estado del documento al momento de la revisión.
 
-    \item \textbf{\texttt{fix/[capítulo]-[month]-[year]}}: contiene las correcciones 
-    derivadas de una rama \texttt{review} correspondiente. Se integra a 
-    \texttt{main} al concluir el ciclo de corrección, independientemente de 
-    que el capítulo haya alcanzado su versión definitiva.
-\end{itemize}
+%     \item \textbf{\texttt{fix/[capítulo]-[month]-[year]}}: contiene las correcciones 
+%     derivadas de una rama \texttt{review} correspondiente. Se integra a 
+%     \texttt{main} al concluir el ciclo de corrección, independientemente de 
+%     que el capítulo haya alcanzado su versión definitiva.
+% \end{itemize}
 
-Cada ciclo de corrección abarca aproximadamente un mes, periodo durante 
-el cual pueden coexistir ramas de distintos capítulos en diferentes etapas. 
-Esto permite avanzar en la redacción de nuevos capítulos sin bloquear el 
-proceso de revisión de los anteriores.
+% Cada ciclo de corrección abarca aproximadamente un mes, periodo durante 
+% el cual pueden coexistir ramas de distintos capítulos en diferentes etapas. 
+% Esto permite avanzar en la redacción de nuevos capítulos sin bloquear el 
+% proceso de revisión de los anteriores.
 
-\subsection{Etiquetas de hitos}
+% \subsection{Etiquetas de hitos}
 
-Complementariamente, se utilizan etiquetas (\textit{tags}) de \texttt{Git} 
-para marcar hitos relevantes en la historia del repositorio, como la 
-incorporación de un nuevo borrador o la conclusión de un ciclo de correcciones 
-significativo. La convención de nomenclatura es:
+% Complementariamente, se utilizan etiquetas (\textit{tags}) de \texttt{Git} 
+% para marcar hitos relevantes en la historia del repositorio, como la 
+% incorporación de un nuevo borrador o la conclusión de un ciclo de correcciones 
+% significativo. La convención de nomenclatura es:
 
-\begin{center}
-    \texttt{[capítulo]-[tipo]-round-[month]-[year]}
-\end{center}
+% \begin{center}
+%     \texttt{[capítulo]-[tipo]-round-[month]-[year]}
+% \end{center}
 
-Por ejemplo, \texttt{design-fix-round-dec-2025} corresponde a la conclusión 
-de un ciclo de correcciones del capítulo de diseño en diciembre de 2025, y 
-\texttt{simulation-draft-round-mar-2026} marca el primer borrador del 
-capítulo de simulación en marzo de 2026. A diferencia de las ramas, las 
-etiquetas no implican trabajo activo sino que señalan puntos de referencia 
-en la evolución del documento.
+% Por ejemplo, \texttt{design-fix-round-dec-2025} corresponde a la conclusión 
+% de un ciclo de correcciones del capítulo de diseño en diciembre de 2025, y 
+% \texttt{simulation-draft-round-mar-2026} marca el primer borrador del 
+% capítulo de simulación en marzo de 2026. A diferencia de las ramas, las 
+% etiquetas no implican trabajo activo sino que señalan puntos de referencia 
+% en la evolución del documento.

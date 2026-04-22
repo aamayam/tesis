@@ -76,40 +76,13 @@ manera consistente cerca del punto de máxima potencia.
 \section{Contribuciones y limitaciones}
 
 El controlador propuesto en esta tesis se sitúa metodológicamente entre dos 
-antecedentes directos: el controlador PI clásico de Chinchilla et 
-al. \cite{chinchilla2006} y el controlador PI+PBC de Cisneros et 
-al. \cite{cisneros2020}.
-\\
-
-El esquema de Chinchilla et al.\ emplea la misma arquitectura de lazos PI en 
-cascada con compensación \textit{feedforward} de los acoplamientos $dq$ que se 
-adopta en la presente tesis. Sin embargo, el diseño de Chinchilla et al.\ se 
-basa exclusivamente en técnicas de dominio frecuencial aplicadas a cada lazo de 
-corriente de manera aislada, modelando la planta como una función de 
-transferencia de primer orden $1/(R_s + L_s s)$ y sin considerar la dinámica 
-mecánica del rotor acoplada al generador. En consecuencia, dicho trabajo no 
-ofrece garantías formales de estabilidad para el sistema completo en lazo 
-cerrado.
-\\
-
-Por otra parte, Cisneros et al.\ proponen un controlador PI+SPBC que explota 
-las propiedades de pasividad del sistema electromecánico modelado en forma 
-Euler-Lagrange para demostrar estabilidad asintótica del sistema completo. La 
-prueba de estabilidad se construye mediante una función de Lyapunov de tipo 
-energético y el teorema de LaSalle-Yoshizawa, lo que proporciona garantías de 
-estabilidad global. No obstante, la implementación del PI+SPBC es 
-considerablemente más compleja: requiere la medición o estimación del torque 
-mecánico $T_m$ y su derivada $T_m'(\omega_m)$, el cálculo en línea de señales 
-auxiliares como $x_{d2}$ y $\varphi$, y la integración de una dinámica 
-adicional ($x_{d4}$) para manejar la incertidumbre en el voltaje del bus DC. 
-Además, el sistema considerado en \cite{cisneros2020} incluye el rectificador 
-y la carga del bus DC, lo que amplía el alcance del modelo pero también la 
-complejidad del controlador.
+antecedentes directos: el controlador PI clásico de \cite{chinchilla2006} y 
+el controlador PI+PBC de \cite{cisneros2020}.
 \\
 
 La contribución principal de la presente tesis consiste en proporcionar un 
-análisis riguroso de estabilidad para la estructura PI clásica de Chinchilla 
-et al., considerando el sistema acoplado completo (mecánico + eléctrico) en 
+análisis riguroso de estabilidad para la estructura PI clásica de \cite{chinchilla2006}, 
+considerando el sistema acoplado completo (mecánico + eléctrico) en 
 lazo cerrado. En particular:
 
 \begin{enumerate}
@@ -123,7 +96,7 @@ lazo cerrado. En particular:
     mecánico $T_m(\omega_m)$ a través de la constante $\gamma$ en la 
     linealización del subsistema $\Sigma_2$.
 
-    \item Se propuso un algoritmo sistemático para la selección de ganancias 
+    \item Se propuso un algoritmo sistemático para la sintonización de ganancias 
     que satisfagan las condiciones de Routh-Hurwitz, junto con una demostración 
     de existencia de solución (Lema \ref{lem:conds}).
 
@@ -136,14 +109,14 @@ Este enfoque ofrece un compromiso entre la simplicidad de implementación del
 controlador PI clásico y el rigor teórico del enfoque basado en pasividad, 
 utilizando herramientas de análisis de control lineal (Routh-Hurwitz, lugar 
 geométrico de las raíces) que resultan más accesibles para la práctica de la 
-ingeniería de potencia.
+electrónica de potencia.
 \\
 
 No obstante, el trabajo presenta limitaciones que deben señalarse. La principal 
 es que el análisis de estabilidad se basa en la linealización del sistema 
 alrededor del punto de equilibrio (método indirecto de Lyapunov), lo cual 
 proporciona garantías de estabilidad \textit{local}. En contraste, el enfoque 
-de Cisneros et al.\ basado en pasividad ofrece estabilidad \textit{global}. 
+de \cite{cisneros2020}.\ basado en pasividad ofrece estabilidad \textit{global}. 
 Esto significa que las garantías de estabilidad derivadas en esta tesis son 
 válidas en una vecindad del punto de equilibrio cuyo tamaño no se cuantifica 
 explícitamente.

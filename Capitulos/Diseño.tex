@@ -5,47 +5,54 @@
 
 \subsection{Subsistema mecánico}
 
-{\parindent0pt
-Este subsistema está compuesto por el eje de baja velocidad, el cual está conectado al rotor, el eje de alta velocidad 
-y la caja de engranes (\emph{gearbox}). Estos tres componentes juntos conforman el tren motriz de la turbina eólica 
-\cite{soltani2013}. La caja de engranes tiene como principal objetivo convertir la velocidad rotacional baja proveniente 
-del rotor a una velocidad rotacional mayor requerida por el generador. Es importante destacar que la caja de engranes 
-de una turbina eólica tiene una relación de engranes fija y no variable (como las que se encuentran en los automóviles) 
-dado que su función únicamente es generar una mayor velocidad rotacional para alimentar al generador.
+Este subsistema está compuesto por el rotor, el tren motriz y el generador 
+eléctrico. En turbinas eólicas convencionales, el tren motriz incluye un 
+eje de baja velocidad conectado al rotor, una caja de engranes 
+(\emph{gearbox}) y un eje de alta velocidad que alimenta al generador 
+\cite{soltani2013}. La caja de engranes convierte la velocidad rotacional 
+baja del rotor a una velocidad mayor requerida por el generador, con una 
+relación de engranes fija $N_g$. Sin embargo, en configuraciones que 
+utilizan un generador síncrono de imanes permanentes (PMSG) de 
+accionamiento directo (\emph{direct-drive}), como la considerada en esta 
+tesis, el generador opera a la misma velocidad que el rotor, lo que 
+elimina la necesidad de la caja de engranes ($N_g = 1$). Esta 
+configuración reduce las pérdidas mecánicas, los costos de mantenimiento y 
+el peso del conjunto, a cambio de requerir un generador de mayor diámetro 
+y mayor número de polos \cite{Burton2011}.
 \\
 
-Permitir que el rotor gire a mayor velocidad ayudaría a tener una transmisión con una menor relación de engranes, 
-lo cual es beneficioso considerando que se trata de uno de los componentes más costosos en la turbina; sin embargo, 
-esto conlleva a mayor estrés mecánico y eléctrico en el resto de los componentes, por lo que una disminución en esta 
-relación de engranes debe hacerse con cuidado \cite{Burton2011}.
-\\
-
-En \cite{soltani2013} se presenta un modelo matemático para este subsistema en el cual se considera: 1) el eje de baja 
-velocidad compuesto por un momento de inercia rotacional ($J_r$), un amortiguador viscoso y un resorte rotacional con 
-amortiguación viscosa; 2) la caja de engranes perfectamente rígida (se asume que su flexibilidad es transferida a través 
-de la deformación del eje de baja velocidad); y 3) el eje de alta velocidad compuesto por una inercia ($J_g$) y un amortiguador ($B_g$).
-El modelo dinámico de esta configuración se puede simplificar a partir de incluir un modelo simplificado del tren 
-motriz. La dinámica completa del sistema está dada por:
+En \cite{soltani2013} se presenta un modelo matemático general para el 
+tren motriz en el cual se consideran las inercias del rotor y del 
+generador, la amortiguación viscosa y la rigidez torsional del eje. 
+La dinámica simplificada del sistema mecánico, válida para un modelo 
+de una masa, está dada por:
 
 \begin{equation}
     J_t \dot{\omega}_r = \frac{1}{N_g}T_r - T_g - T_\ell
     \label{eq:torque_balance_complete}
 \end{equation}
 
-donde $J_t$ es el momento de inercia combinado del rotor y generador, $N_g$ es la relación de la caja de engranes, $T_r$ 
-es el par aerodinámico recibido por el viento, $T_g$ es el par eléctrico que recibe el generador y $T_\ell$ representa el par de pérdidas.
-Una forma adicional de representar la dinámica del sistema es con la ecuación:
+donde $J_t$ es el momento de inercia combinado del rotor y generador, 
+$N_g$ es la relación de la caja de engranes, $T_r$ es el par aerodinámico, 
+$T_g$ es el par eléctrico del generador y $T_\ell$ representa el par de 
+pérdidas. Al considerar la configuración de accionamiento directo 
+($N_g = 1$) y modelar las pérdidas mecánicas mediante un término de 
+fricción viscosa, la ecuación anterior se reduce a:
 
 \begin{equation}
     J \dot{\omega}_m = -f_r \omega_m + T_m - T_e
     \label{eq:torque_balance_simplified}
 \end{equation}
 
-donde $\omega_m$ representa la velocidad angular, $f_r$ es el coeficiente de fricción viscosa, $T_m$ es el par mecánico 
-y $T_e$ el par eléctrico. La equivalencia se da al considerar que $T_m = T_r/N_g$, $T_e = T_g$ y que el término 
-$f_r\omega_m$ modela las pérdidas mecánicas representadas por $T_\ell$ en la ecuación anterior.
-En adelante, se utilizará la versión simplificada del balance de torques (\ref{eq:torque_balance_simplified}) 
-puesto que permite manejar el torque de pérdidas como un valor constante en la dinámica del sistema.
+donde $\omega_m$ representa la velocidad angular del rotor, $f_r$ es el 
+coeficiente de fricción viscosa, $T_m$ es el par mecánico aplicado por el 
+viento y $T_e$ el par eléctrico del generador. La equivalencia con la 
+ecuación (\ref{eq:torque_balance_complete}) se da al considerar 
+$T_m = T_r$ (puesto que $N_g = 1$), $T_e = T_g$ y que el término 
+$f_r\omega_m$ modela las pérdidas mecánicas representadas por $T_\ell$.
+En adelante, se utilizará la versión simplificada del balance de torques 
+(\ref{eq:torque_balance_simplified}) puesto que permite incorporar las 
+pérdidas de manera directa en la dinámica del sistema.
 \\
 
 Es importante aclarar que en la práctica la potencia real que se puede obtener del viento es limitada y, por 
@@ -54,7 +61,7 @@ tanto, también lo es el torque aerodinámico/mecánico. En particular, la poten
 la literatura. Para una derivación detallada véase Burton et al. \cite{Burton2011}. Para aplicaciones prácticas 
 y consideraciones de diseño véase Hau \cite{Hau2013}.}:
 \begin{equation}
-    P_a = \frac{1}{2}\rho \pi r^2 v_w^3 C_p(\lambda,\beta)
+    P = \frac{1}{2}\rho \pi r^2 v_w^3 C_p(\lambda,\beta)
     \label{eq:aerodynamic_power}
 \end{equation}
 
@@ -64,7 +71,7 @@ $C_p(\lambda,\beta)$ es el coeficiente de potencia en términos de la relación 
 
 La potencia se relaciona directamente con el torque aerodinámico mediante la ecuación:
 \begin{equation}
-    T_r = \frac{P_a}{\omega_r}
+    T_r = \frac{P}{\omega_r}
     \label{eq:aerodynamic_torque}
 \end{equation}
 
@@ -115,12 +122,9 @@ La potencia teórica extraida por la turbina se puede expresar como:
 y de acuerdo con Betz \cite{betz1926}, la potencia máxima teórica extraida sería:
 
 \begin{align}
-    P_{W_{\text{max}}} = \frac{16}{27}A_R\frac{\rho}{2}v_1^3 
+    P_{W_{\text{max}}} = \frac{16}{27}A_R\frac{\rho}{2}v^3 
     \label{eq:max_theoretical_power}
 \end{align}
-
-donde $v_1$ es la velocidad del viento antes del rotor.
-\\
 
 El cociente entre la potencia teórica extraida y la potencia en la masa de aire en movimiento, la cual se expresa como:
 
@@ -131,7 +135,7 @@ El cociente entre la potencia teórica extraida y la potencia en la masa de aire
 define el coeficiente de potencia (también llamado coeficiente de rendimiento):
 
 \begin{align}
-    c_p = \frac{P_W}{P_0}
+    C_p = \frac{P_W}{P_0} = \frac{16}{27}\frac{v^3}{v_1^3}
 \end{align}
 
 Se puede observar que el coeficiente de potencia consiste en el cociente entre el cubo la velocidad $v$ 
@@ -313,13 +317,16 @@ del generador utilzando coordenadas \emph{dq}:
     \begin{aligned}
         L\frac{di_q}{dt} &= -Ri_d + pLi_q\omega_m - v_d
         \\
-        L\frac{di_d}{dt} &= -Ri_q - pLi_d\omega_e + p\phi\omega_e - v_q 
+        L\frac{di_d}{dt} &= -Ri_q - pLi_d\omega_m + p\phi\omega_m - v_q 
     \end{aligned}
     \label{eq:electrical_subsystem}
 \end{equation}
 
 donde $i_d$, $i_q$, $v_d$ y $v_q$ son los voltajes y corrientes en el eje directo y de cuadratura, $p$ es el número de polos,
 $\phi$ es el flujo magnético en el generador y $R$ es el valor de la resistencia en el generador. 
+\\
+
+\textbf{Hipótesis 1:} Para fines del diseño de control se asume que el sistema opera en la región 2.
 
 \subsection{Sistema acoplado}
 
@@ -329,7 +336,7 @@ obtenemos el modelo dinámico que define el comportamiento del sistema completo 
 \begin{align}
     L\frac{di_q}{dt} &= -Ri_d + pLi_q\omega_m - v_d
     \\
-    L\frac{di_d}{dt} &= -Ri_q - pLi_d\omega_e + p\phi\omega_e - v_q 
+    L\frac{di_d}{dt} &= -Ri_q - pLi_d\omega_m + p\phi\omega_m - v_q 
     \\
     J \dot{\omega}_m &= -f_r \omega_m + T_m - T_e
     \label{eq:full_system}
@@ -337,7 +344,7 @@ obtenemos el modelo dinámico que define el comportamiento del sistema completo 
 
 Donde
 \begin{align}
-    T_m &:=T_m(\lambda,\beta)= r\frac{\kappa_1}{v_w} \frac{C_p(\lambda,\beta)}{\lambda}
+    T_m &:=T_m(\lambda)= r\frac{\kappa_1}{v_w} \frac{C_{p,0}(\lambda)}{\lambda}
     \\
     T_e  &:= T_e(i_q)= \frac{3}{2}p\phi i_q
     \\
@@ -345,6 +352,8 @@ Donde
     \label{eq:definitions}
 \end{align}
 
+Donde $C_{p,0}(\lambda) := C_p(\lambda,0)$ es el coeficiente de potencia debido a $\beta = 0$.
+Esta asignación de $\beta$ se debe a que el aerogenerador opera en la región 2.
 Los voltajes $v_d$ y $v_q$ se pueden manipular de forma libre, es decir, corresponden a las variables de control.
 
 \section{Diseño del control de torque}
@@ -396,8 +405,8 @@ del resto de la turbina.
 Por tanto, los objetivos de control se pueden resumir en:
 \begin{enumerate}
     \item regular la corriente del eje directo en $i_d = i_d^\star = 0$ para minimizar pérdidas,
-    \item regular la velocidad angular $\omega_m$ a un valor constante positivo que corresponta a 
-        la velocidad óptima del MPPT.
+    \item regular la velocidad angular $\omega_m$ a un valor constante positivo que corresponda a 
+        la velocidad óptima. Esta velocidad es impuesta por el algoritmo MPPT.
 \end{enumerate}
 
 \subsection{Estrategia de control}
@@ -509,7 +518,7 @@ Uniendo la ecuación anterior con las de la dinámica de $\xi_2$ y de $\xi_3$ (d
 \end{aligned}=:f(z)
 $}
 \end{equation}
-donde $z=\mathrm{col}(\xi_2,\xi_3,\omega_m,i_q)$ y $C_{p,0}(\lambda):=C_{p}(\lambda,0)$. Asumiendo la velocidad del 
+donde $z=\mathrm{col}(\xi_2,\xi_3,\omega_m,i_q)$. Asumiendo la velocidad del 
 viento constante,\footnote{Se aclara al lector que esta suposición se asume solamente para el propósito del control 
 propuesto. Como se verá en las simulaciones, el hacer esto resulta en un control sencillo con un desempeño aceptable 
 cuando el sistema es sometido a perfiles de viento realistas.} el sistema $\Sigma_2$ anterior es un sistema invariante del tiempo. 
@@ -545,7 +554,7 @@ Como parte del análisis de estabilidad, primero se obtienen los puntos de equil
 Estos quedan enunciados en los siguientes lemas.
 
 \begin{lemma}
-    El sistema $\Sigma_1$ tiene un solo punto de equilibrio en $$x=\bar{x}:=0$$.
+    El sistema $\Sigma_1$ tiene un solo punto de equilibrio en $$x=\bar{x}:=0$$
     \tripletriang
 
     \begin{proof}
@@ -785,9 +794,11 @@ matriz $A_2$ toma valores negativos, esto es, $A_{2}^{(3,3)}<0$.\\
     \end{proof}
 \end{lemma}
 
-\subsection*{Algoritmo para encontrar las ganancias}
+\subsection*{Algoritmo para encontrar las ganancias}\label{sec:algoritmo}
 
-El siguiente algoritmo proporciona un procedimiento sistemático para encontrar un conjunto de ganancias que satisfagan las condiciones \eqref{eq:cond1}--\eqref{eq:cond4}.
+El siguiente algoritmo proporciona un procedimiento sistemático para la 
+sintonización de un conjunto de ganancias que satisfagan las condiciones 
+\eqref{eq:cond1}--\eqref{eq:cond4}.
 
 \begin{tabular}{l}
 \hline
@@ -813,104 +824,13 @@ A medida que $k_{\textrm{P2}}'$ toma valores más grandes, el término dominante
 \bar{\gamma}_2 \left[\frac{1}{k_{\textrm{P2}}'}\bar{k}_{\textrm{P3}} + \bar{k}_{\textrm{I3}}k_{\textrm{P2}}'\right] + \frac{\bar{\gamma}_1}{k_{\textrm{P2}}'} - \frac{\frac{1}{k_{\textrm{P2}}'}\left(\frac{R}{L} + k_{\textrm{P2}}' + \bar{\gamma}_1\right)\bar{\gamma}_2\bar{k}_{\textrm{I3}}}{\varrho\left(k_{\textrm{P2}}',\bar{k}_{\textrm{P3}},\frac{1}{k_{\textrm{P2}}'},\bar{k}_{\textrm{I3}}\right)} > 0
 \end{align}
 
-ya que el término $\bar{k}_{\textrm{I3}}k_{\textrm{P2}}'$ crece linealmente mientras que el término del denominador decrece. Por lo tanto, existe un valor de $k_{\textrm{P2}}'$ suficientemente grande que garantiza que las condiciones de Routh-Hurwitz se satisfagan.
+ya que el término $\bar{k}_{\textrm{I3}}k_{\textrm{P2}}'$ crece linealmente mientras 
+que el término del denominador decrece. Por lo tanto, existe un valor de 
+$k_{\textrm{P2}}'$ suficientemente grande que garantiza que las condiciones 
+de Routh-Hurwitz se satisfagan. Del análisis anterior se puede hacer la siguiente
+aserción.
 
 \begin{lemma}\label{lem:conds}
     Las condiciones \eqref{eq:cond1}--\eqref{eq:cond4} admiten solución. \tripletriang
-    
-    \begin{proof}
-        Para demostrar la existencia de solución, se aplicó el algoritmo presentado anteriormente 
-        con los parámetros del sistema dados en la \autoref{tab:parametros_sim} . Los valores numéricos relevantes son $\frac{R}{L} = 103.5493$, 
-        $\bar{\gamma}_1 = 0.000117$ y $\bar{\gamma}_2 = 1.5328$.
-        
-        Siguiendo el Paso 1 del algoritmo, se fijaron las ganancias del lazo externo como:
-        \begin{equation}
-            k_{\textrm{P3}} = 10, \quad k_{\textrm{I3}} = 10
-        \end{equation}
-        
-        Conforme al Paso 2, se estableció la relación $k_{\textrm{I2}}' = \frac{1}{k_{\textrm{P2}}'}$.
-        
-        Para el Paso 3, se realizó una búsqueda incremental de $k_{\textrm{P2}}'$ hasta encontrar 
-        un valor que satisficiera las condiciones \eqref{eq:cond3} y \eqref{eq:cond4}. El valor 
-        $k_{\textrm{P2}}' = 10$ resultó en el siguiente conjunto de ganancias normalizadas:
-        \begin{equation}
-            k_{\textrm{P2}}' = 10, \quad k_{\textrm{I2}}' = 0.1
-        \end{equation}
-        
-        que corresponde a las ganancias originales:
-        \begin{equation}\label{eq:gains_solution}
-            k_{\textrm{P2}} = 0.0355, \quad k_{\textrm{I2}} = 0.000355, \quad 
-            k_{\textrm{P3}} = 10, \quad k_{\textrm{I3}} = 10
-        \end{equation}
-        
-        La verificación numérica confirmó que todas las condiciones de Routh-Hurwitz se satisfacen:
-        \begin{align*}
-            a_3 &= 113.67 > 0 \quad \checkmark \\
-            a_0 &= 1.53 > 0 \quad \checkmark \\
-            b_1 &= 166.34 > 0 \quad \checkmark \\
-            c_1 &= 153.77 > 0 \quad \checkmark
-        \end{align*}
-        
-        Adicionalmente, se verificó que la matriz $\bar{A}_2$ con estas ganancias es Hurwitz. 
-        Los valores propios de $\bar{A}_2$ son:
-        \begin{equation} \label{eq:eigenvalues}
-            \begin{aligned}
-                &\lambda_1 = -112.193, \quad \lambda_2 = -0.736 + 0.907i, \quad \lambda_3 = -0.736 - 0.907i,\\
-                &\lambda_4 = -0.010008
-            \end{aligned}
-        \end{equation}
-        
-        Como todos los valores propios tienen parte real negativa, se confirma que $\bar{A}_2$ es 
-        Hurwitz y, por lo tanto, el punto de equilibrio $\bar{z}$ es exponencialmente estable.
-    \end{proof}
 \end{lemma}
 
-\subsection{Análisis del lugar geométrico de las raíces}
-
-Con el objetivo de complementar el análisis de estabilidad presentado en la
-sección anterior y visualizar el efecto de la ganancia $k'_{P2}$ sobre la
-ubicación de los valores propios del sistema linealizado $\Sigma_2^{\text{lin}}$,
-se construyó el lugar geométrico de las raíces (LGR) de la matriz $\bar{A}_2$
-en función del parámetro $k'_{P2}$, manteniendo fijas las ganancias del lazo
-externo $k_{P3} = 10$, $k_{I3} = 10$ y la relación $k'_{I2} = 1/k'_{P2}$
-establecida en el Paso 2 del algoritmo de sintonización.
-\\ 
-
-La figura \ref{fig:root_locus} muestra el LGR completo junto con un detalle
-ampliado de los valores propios $\lambda_3$ y $\lambda_4$, que son los de
-mayor relevancia dinámica para el análisis de estabilidad de $\Sigma_2$.
-Los valores propios $\lambda_1$ y $\lambda_2$, asociados al lazo de corriente
-del eje directo $\Sigma_1$, permanecen esencialmente invariantes ante
-variaciones de $k'_{P2}$ y se ubican consistentemente en el semiplano
-izquierdo lejano al eje imaginario, lo cual es consistente con la estabilidad
-incondicional de $\Sigma_1$ demostrada en el Lema \ref{lem:sigma_1}.
-\\ 
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=\textwidth]{root_locus.pdf}
-    \caption{Lugar geométrico de las raíces de $\bar{A}_2$ en función de
-    $k'_{P2} \in [0.1,\, 10^4]$. Panel izquierdo: LGR completo mostrando
-    los cuatro valores propios. Panel derecho: detalle de $\lambda_3$ y
-    $\lambda_4$, donde se aprecia la migración desde el semiplano derecho
-    hacia el semiplano izquierdo conforme $k'_{P2}$ aumenta.}
-    \label{fig:root_locus}
-\end{figure} 
-
-El comportamiento observado en el panel derecho de la
-figura \ref{fig:root_locus} es coherente con las condiciones de
-Routh-Hurwitz establecidas en el Lema \ref{lem:sigma_2}. Para valores pequeños de
-$k'_{P2}$, las condiciones \eqref{eq:cond3} y \eqref{eq:cond4} no se
-satisfacen, lo que se manifiesta en la presencia de valores propios con
-parte real positiva. A medida que $k'_{P2}$ crece, los polos $\lambda_3$ y
-$\lambda_4$ migran hacia el semiplano izquierdo, cruzando el eje imaginario
-para un valor umbral de $k'_{P2}$ que puede identificarse visualmente en el
-zoom. Este comportamiento valida geométricamente la existencia del umbral
-mínimo de ganancia establecido analíticamente en el Lema \ref{lem:conds}.
-\\ 
-
-Para el valor seleccionado $k'_{P2} = 10$ — marcado con un cuadro en la
-figura — los cuatro valores propios presentan parte real estrictamente
-negativa, confirmando que $\bar{A}_2$ es Hurwitz y que el punto de
-equilibrio $\bar{z}$ definido en \eqref{eq:sigma_2} es exponencialmente
-estable, en concordancia con los valores numéricos reportados en \eqref{eq:eigenvalues}.
