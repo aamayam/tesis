@@ -1,15 +1,15 @@
 %!TEX root = ../main.tex
 \chapter{Análisis}
 
-En este capítulo se introduce formalmente el problema del control de la velocidad 
-del rotor en turbinas eólicas de velocidad variable mediante la regulación del par 
-eléctrico del generador (\emph{torque control}). Se presenta una revisión de las 
-principales estrategias de control que se han desarrollado para este fin, con 
-énfasis en aquellas basadas en el seguimiento del punto de máxima potencia 
-(\emph{Maximum Power Point Tracking}, MPPT). Además, se enuncian los 
-requerimientos y las restricciones para el diseño del controlador. Por último, 
-se mencionan los estándares que existen tanto a nivel nacional como internacional 
-que estén relacionados o que puedan afectar el diseño del sistema de control.
+En este capítulo se introduce formalmente el problema de regulación de la velocidad 
+angular del rotor en turbinas eólicas de velocidad variable mediante el control del 
+par eléctrico del generador (\emph{torque control}). El capítulo se organiza en tres 
+partes. Primero, se presenta una revisión de las principales estrategias de control 
+reportadas en la literatura, con énfasis en aquellas basadas en el seguimiento del 
+punto de máxima potencia (\emph{Maximum Power Point Tracking}, MPPT). Segundo, se 
+enuncian los requerimientos y restricciones que guían el diseño del controlador 
+propuesto. Finalmente, se mencionan los estándares nacionales e internacionales 
+relevantes para el diseño del sistema de control.
 
 \section{Requerimientos}
 
@@ -24,38 +24,37 @@ de operación de la región 2.
 \\
 
 La regulación de la velocidad del rotor se realiza mediante el control del par 
-eléctrico del generador $T_e$. Dado que el generador opera en coordenadas $dq$, 
+eléctrico del generador $T_e$. Basados en el modelo del generador en coordenadas $dq$, 
 los requerimientos de control se traducen en dos objetivos sobre las corrientes del 
 generador: mantener la corriente del eje directo en $i_d = 0$ para minimizar las 
 pérdidas eléctricas en el generador, y regular la corriente del eje de cuadratura 
 $i_q$ de tal forma que el par eléctrico producido conduzca al rotor hacia la 
-velocidad angular óptima. Lo anterior implica una estructura de control en cascada 
-en la que un lazo externo de velocidad genera la referencia de corriente $i_q^{\text{ref}}$ 
-y lazos internos de corriente regulan las variables eléctricas del generador.
+velocidad angular óptima.
 \\
 
-Se requiere, de igual forma, evaluar el desempeño del sistema de control en 
-términos de su capacidad para extraer la mayor cantidad de potencia disponible 
-en el viento. Para esto se utilizará como métrica la eficiencia de extracción de 
-potencia, definida como el cociente entre la potencia efectivamente extraída por 
-la turbina y la potencia máxima teórica que se podría extraer dado el coeficiente 
-de potencia óptimo del sistema. Una eficiencia cercana al 100\,\% indicaría que 
-el algoritmo MPPT y el controlador de torque operan de manera adecuada, 
+Con el fin de evaluar el desempeño del sistema de control en términos de su 
+capacidad para extraer la mayor cantidad de potencia disponible en el viento, 
+se utilizará como métrica la eficiencia de extracción de potencia, definida 
+como el cociente entre la potencia efectivamente extraída por la turbina y la 
+potencia máxima teórica que se podría extraer dado el coeficiente de potencia 
+óptimo del sistema. Una eficiencia cercana al 100\,\% indicaría que el 
+algoritmo MPPT y el controlador de torque operan de manera adecuada, 
 manteniendo al rotor cerca del punto óptimo de operación a pesar de las 
 variaciones en la velocidad del viento.
 
 
-\section{Restricciones realistas}
+\section{Restricciones realistas}\label{sec:restricciones}
 
 Dado que el objetivo de la tesis es el diseño de un controlador para la regulación 
 del par eléctrico del generador mediante las corrientes en coordenadas $dq$, y 
-debido a lo complicado ---o incluso inviable--- de ser implementado en un 
-aerogenerador real, el resultado esperado para esta tesis será la simulación de la 
-operación de la turbina en la región 2 bajo diferentes condiciones de viento. La 
-simulación debe permitir variar la velocidad del viento a lo largo de un periodo 
-determinado de tiempo y, como resultado, se debe observar el comportamiento del 
-sistema de control al regular la velocidad del rotor hacia el punto de máxima 
-extracción de potencia.
+debido a que no se cuenta con acceso a un aerogenerador real donde implementar 
+y validar experimentalmente el algoritmo de control, el alcance de esta tesis 
+es la simulación de la operación de la turbina en la región 2 bajo diferentes 
+condiciones de viento. La simulación se realiza sobre perfiles de viento 
+predefinidos, evaluando el comportamiento del sistema de control al regular 
+la velocidad del rotor hacia el punto de máxima extracción de potencia. Las 
+condiciones de viento consideradas ---viento constante y perfil de viento 
+turbulento--- se describen en detalle en el Capítulo \ref{ch:simulacion}.
 \\
 
 La simulación se realizará en Matlab Simulink y deberá presentar tanto los datos 
@@ -78,7 +77,7 @@ región 3 (limitación de potencia mediante \emph{pitch control} u otras estrate
 ni mecanismos de protección ante velocidades de viento excesivas. Lo anterior se 
 propone como una posible extensión del trabajo.
 
-\section{Soluciones alternativas}
+\section{Soluciones alternativas}\label{sec:soluciones_alternativas}
 
 El diseño de controladores para turbinas eólicas de velocidad variable se suele 
 realizar desde dos puntos de partida: controladores con un enfoque más teórico 
@@ -97,7 +96,7 @@ dichos controladores sean probados en turbinas reales.
 En la literatura se han propuesto diversas estrategias de control para 
 sistemas de conversión de energía eólica basados en generadores síncronos de 
 imanes permanentes (PMSG). A continuación se presenta un panorama de las 
-principales aproximaciones, organizadas por el tipo de técnica de control 
+principales estrategias, organizadas por el tipo de técnica de control 
 empleada.
 
 \subsubsection*{Pasividad}
@@ -120,19 +119,22 @@ controladores logran un seguimiento adecuado de la velocidad óptima, pero
 el PBC demanda un menor esfuerzo de control.
 \\
 
-Por otra parte, en \cite{cisneros2020} se propone un controlador PI+SPBC que explota 
-las propiedades de pasividad del sistema electromecánico modelado en forma 
-Euler-Lagrange para demostrar estabilidad asintótica del sistema completo. La 
-prueba de estabilidad se construye mediante una función de Lyapunov de tipo 
-energético y el teorema de LaSalle-Yoshizawa, lo que proporciona garantías de 
-estabilidad global. No obstante, la implementación del PI+SPBC es 
-considerablemente más compleja: requiere la medición o estimación del torque 
-mecánico $T_m$ y su derivada $T_m'(\omega_m)$, el cálculo en línea de señales 
-auxiliares como $x_{d2}$ y $\varphi$, y la integración de una dinámica 
-adicional ($x_{d4}$) para manejar la incertidumbre en el voltaje del bus DC. 
-Además, el sistema considerado en \cite{cisneros2020} incluye el rectificador 
-y la carga del bus DC, lo que amplía el alcance del modelo pero también la 
-complejidad del controlador.
+Por otra parte, en \cite{cisneros2020} se propone un controlador PI+SPBC 
+(\emph{Standard Passivity-Based Control}, siguiendo el procedimiento de 
+\cite{Ortega1998}) que explota las propiedades de pasividad del sistema 
+electromecánico modelado en forma Euler-Lagrange para demostrar estabilidad 
+asintótica del sistema completo. La prueba de estabilidad se construye mediante 
+una función de Lyapunov de tipo energético y el teorema de LaSalle-Yoshizawa, 
+lo que proporciona garantías de estabilidad global. No obstante, la 
+implementación del PI+SPBC es considerablemente más compleja: requiere la 
+medición o estimación del torque mecánico $T_m$ ---el par aplicado por el 
+viento sobre el rotor--- y su derivada $T_m'(\omega_m)$, el cálculo en línea 
+de señales auxiliares de estado interno del controlador ($x_{d2}$ y 
+$\varphi$), y la integración de una dinámica adicional ($x_{d4}$) introducida 
+para manejar la incertidumbre en el voltaje del bus DC. Además, el sistema 
+considerado en \cite{cisneros2020} incluye el rectificador y la carga del bus 
+DC, lo que amplía el alcance del modelo pero también la complejidad del 
+controlador.
 \\
 
 Este trabajo constituye un antecedente directo de la presente tesis, ya que 
@@ -201,18 +203,18 @@ transferencia de primer orden $1/(R_s + L_s s)$ y sin considerar la dinámica
 mecánica del rotor acoplada al generador. En consecuencia, dicho trabajo no 
 ofrece garantías formales de estabilidad para el sistema completo en lazo 
 cerrado.
-\\
+%\\
 
-El controlador propuesto en la presente tesis 
-retoma la estructura de lazos PI en cascada con cancelación de términos no 
-lineales, y complementa el análisis de estabilidad mediante el criterio de 
-Routh-Hurwitz y el lugar geométrico de las raíces para la selección 
-sistemática de las ganancias del controlador. Se presenta una forma de sintonizar
-las ganancias de los controladores que garantiza estabilidad y regulación de 
-la corriente y de la velocidad angular.
+% El controlador propuesto en la presente tesis 
+% retoma la estructura de lazos PI en cascada con cancelación de términos no 
+% lineales, y complementa el análisis de estabilidad mediante el criterio de 
+% Routh-Hurwitz y el lugar geométrico de las raíces para la selección 
+% sistemática de las ganancias del controlador. Se presenta una forma de sintonizar
+% las ganancias de los controladores que garantiza estabilidad y regulación de 
+% la corriente y de la velocidad angular.
 
 \subsubsection*{Otras técnicas de control}
-Aproximaciones más recientes han incorporado técnicas de inteligencia 
+Estrategias más recientes han incorporado técnicas de inteligencia 
 artificial y control predictivo al problema del control de WECS. En 
 \cite{Jie2020} se utilizan modelos de aprendizaje tipo ELM (\emph{Extreme 
 Learning Machine}) para el control de la velocidad del rotor. En 
@@ -242,6 +244,24 @@ sobre la eficiencia de extracción de potencia. La estrategia P\&O fue
 seleccionada para esta tesis debido a su independencia de los parámetros del 
 sistema y su compatibilidad con cualquier estrategia de control del generador 
 \cite{kazmi2011, wang2004}.
+\\
+
+De entre las estrategias revisadas, en esta tesis se adopta la estructura 
+de controladores PI en cascada operando en coordenadas $dq$. Esta elección 
+se justifica por tres razones principales. Primero, su implementación es 
+computacionalmente ligera: la ley de control consiste en operaciones 
+algebraicas simples que no representan una carga significativa de cómputo 
+en tiempo real. Segundo, a diferencia de las técnicas de control no lineal 
+como el PBC o el \emph{backstepping}, la expresión del controlador no 
+depende del torque mecánico $T_m$ —lo que evita la necesidad de un sensor 
+o estimador adicional para esta magnitud—. Tercero, la ley de control no 
+incorpora explícitamente la función $C_p(\lambda)$ en su expresión, por lo 
+que no requiere conocimiento preciso de sus parámetros para operar; el 
+algoritmo MPPT se encarga de determinar la referencia de velocidad de 
+manera independiente. Estas características hacen al controlador PI en 
+cascada una opción práctica y accesible, compatible con cualquier 
+implementación del algoritmo MPPT y con los recursos computacionales 
+típicos de sistemas embebidos en aplicaciones industriales.
 
 \section{Estándares de la industria}
 

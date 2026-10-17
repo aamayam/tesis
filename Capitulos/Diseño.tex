@@ -3,6 +3,14 @@
 
 \section{Modelo matemático del sistema}
 
+A lo largo de este capítulo se utilizan dos notaciones para la derivada
+temporal: la notación de punto, $\dot{x}$, se emplea al escribir
+ecuaciones de estado y sistemas dinámicos en forma compacta (por ejemplo,
+$\dot{x} = f(x)$); la notación de fracción, $\frac{dx}{dt}$, se emplea
+al despejar o manipular explícitamente la derivada de una variable individual
+dentro de un desarrollo algebraico.
+
+
 \subsection{Subsistema mecánico}
 
 Este subsistema está compuesto por el rotor, el tren motriz y el generador 
@@ -21,23 +29,8 @@ el peso del conjunto, a cambio de requerir un generador de mayor diámetro
 y mayor número de polos \cite{Burton2011}.
 \\
 
-En \cite{soltani2013} se presenta un modelo matemático general para el 
-tren motriz en el cual se consideran las inercias del rotor y del 
-generador, la amortiguación viscosa y la rigidez torsional del eje. 
-La dinámica simplificada del sistema mecánico, válida para un modelo 
-de una masa, está dada por:
-
-\begin{equation}
-    J_t \dot{\omega}_r = \frac{1}{N_g}T_r - T_g - T_\ell
-    \label{eq:torque_balance_complete}
-\end{equation}
-
-donde $J_t$ es el momento de inercia combinado del rotor y generador, 
-$N_g$ es la relación de la caja de engranes, $T_r$ es el par aerodinámico, 
-$T_g$ es el par eléctrico del generador y $T_\ell$ representa el par de 
-pérdidas. Al considerar la configuración de accionamiento directo 
-($N_g = 1$) y modelar las pérdidas mecánicas mediante un término de 
-fricción viscosa, la ecuación anterior se reduce a:
+La dinámica del sistema mecánico, válida para un modelo de una masa 
+\cite{soltani2013}, está dada por:
 
 \begin{equation}
     J \dot{\omega}_m = -f_r \omega_m + T_m - T_e
@@ -46,13 +39,7 @@ fricción viscosa, la ecuación anterior se reduce a:
 
 donde $\omega_m$ representa la velocidad angular del rotor, $f_r$ es el 
 coeficiente de fricción viscosa, $T_m$ es el par mecánico aplicado por el 
-viento y $T_e$ el par eléctrico del generador. La equivalencia con la 
-ecuación (\ref{eq:torque_balance_complete}) se da al considerar 
-$T_m = T_r$ (puesto que $N_g = 1$), $T_e = T_g$ y que el término 
-$f_r\omega_m$ modela las pérdidas mecánicas representadas por $T_\ell$.
-En adelante, se utilizará la versión simplificada del balance de torques 
-(\ref{eq:torque_balance_simplified}) puesto que permite incorporar las 
-pérdidas de manera directa en la dinámica del sistema.
+viento y $T_e$ el par eléctrico del generador.
 \\
 
 Es importante aclarar que en la práctica la potencia real que se puede obtener del viento es limitada y, por 
@@ -65,68 +52,76 @@ y consideraciones de diseño véase Hau \cite{Hau2013}.}:
     \label{eq:aerodynamic_power}
 \end{equation}
 
-donde $\rho$ es la densidad del aire, $r$ es el radio de giro de las aspas, $v_w$ la velocidad del viento y 
-$C_p(\lambda,\beta)$ es el coeficiente de potencia en términos de la relación de velocidad punta ($\lambda$) y el angulo de ataque de las aspas ($\beta$).
+donde $\rho$ es la densidad del aire, $r$ es el radio de giro de las aspas, 
+$v_w$ la velocidad del viento y $C_p(\lambda,\beta)$ es el coeficiente de 
+potencia en términos de la relación de velocidad punta ($\lambda$) y el 
+ángulo de ataque de las aspas ($\beta$).
 \\
 
 La potencia se relaciona directamente con el torque aerodinámico mediante la ecuación:
 \begin{equation}
-    T_r = \frac{P}{\omega_r}
+    T_r = \frac{P}{\omega_r}.
     \label{eq:aerodynamic_torque}
 \end{equation}
 
 En (\ref{eq:torque_balance_simplified}) utilizamos una versión simplificada del balance de torques. 
-En esta ecuación se define cada torque como sigue:
+En esta ecuación se define cada par como sigue:
 
 \begin{equation}
     T_m = r\frac{\kappa_1}{v_w} \frac{C_p(\lambda,\beta)}{\lambda}
     \label{eq:mechanical_torque}
 \end{equation}
 
+donde $\kappa_1$ es un parámetro que agrupa la potencia aerodinámica disponible y se define como: 
+
 \begin{equation}
-    T_e = \frac{3}{2}p\phi i_q
-    \label{eq:electrical_torque}
+    \kappa_1 = \frac{1}{2}\rho\pi r^2 v_w^3.
 \end{equation}
 
-con 
+El resto de la ecuación surge a partir de la manipulación algebráica y posterior simplificación de:
 
 \begin{equation}
-    \lambda = \frac{r\omega_m}{v_w}
+    \lambda = \frac{r\omega_m}{v_w}.
     \label{eq:lambda}
 \end{equation}
 
-Estas ecuaciones introducen las variables $\kappa_1$, la cual es un parámetro de diseño y un valor 
-constante en la simulación, el flujo eléctrico en el generador ($\phi$) y la corriente en el eje de 
+Por su parte, el par eléctrico se define como:
+
+\begin{equation}
+    T_e = \frac{3}{2}p\phi i_q.
+    \label{eq:electrical_torque}
+\end{equation}
+
+Estas ecuaciones introducen el flujo eléctrico en el generador ($\phi$) y la corriente en el eje de 
 cuadratura del generador ($i_q$). Estas últimas dos variables serán tratadas
 a profundidad en la sección del subsistema eléctrico.
 
 
-
-\subsection{Coeficiente de potencia}
+\subsection{Coeficiente de potencia}\label{sec:coef_potencia}
 
 Durante su operación, el rotor de la turbina eólica absorbe energía de la corriente de aire, 
 lo cual promueve su movimiento. El poder de absorción y las condiciones de operación del aerogenerador dependen, por tanto, 
-del área efectiva de barrido ($A_R$), la velocidad del viento y los cambios que ocurren en estas 
+del área efectiva de barrido ($A_R := \pi r^2$), la velocidad del viento y los cambios que ocurren en estas 
 cantidades en el campo de flujo del rotor. Durante el proceso de extracción de la potencia el flujo de aire experimenta
 desaceleración axial, una desviación tangencial al momento de chocar con el área del rotor y una 
 expansión del área de la sección transversal una vez que ha pasado el rotor (efecto estela) \cite{heier2014}.
 \\
 
-La potencia teórica extraida por la turbina se puede expresar como:
+La potencia teórica extraída por la turbina se puede expresar como:
 
 \begin{align}
     P_W = A_R\frac{\rho}{2}v^3
     \label{eq:theoretical_power}
 \end{align}
 
-y de acuerdo con Betz \cite{betz1926}, la potencia máxima teórica extraida sería:
+y de acuerdo con Betz \cite{betz1926}, la potencia máxima teórica extraída sería:
 
 \begin{align}
     P_{W_{\text{max}}} = \frac{16}{27}A_R\frac{\rho}{2}v^3 
     \label{eq:max_theoretical_power}
 \end{align}
 
-El cociente entre la potencia teórica extraida y la potencia en la masa de aire en movimiento, la cual se expresa como:
+El cociente entre la potencia teórica extraída y la potencia en la masa de aire en movimiento, la cual se expresa como:
 
 \begin{align}
     P_0 = A_R\frac{\rho}{2}v_1^3
@@ -136,9 +131,9 @@ define el coeficiente de potencia (también llamado coeficiente de rendimiento):
 
 \begin{align}
     C_p = \frac{P_W}{P_0} = \frac{16}{27}\frac{v^3}{v_1^3}
-\end{align}
+\end{align} 
 
-Se puede observar que el coeficiente de potencia consiste en el cociente entre el cubo la velocidad $v$ 
+Se puede observar que el coeficiente de potencia consiste en el cociente entre el cubo de la velocidad $v$ 
 (el cual es una función de las velocidades $v_1$, $v_2$ y $v_3$, siendo estas las velocidades antes, en 
 y después del rotor, respectivamente), y el cubo de la velocidad del viento antes del rotor ($v_1$). En 
 la práctica, la manera más común de obtener este valor es utilizando métodos 
@@ -147,17 +142,21 @@ método \emph{blade element} en \cite{heier2014}).
 \\
 
 Un punto importante a notar es que, de acuerdo con \cite{Burton2011}, en turbinas modernas de tres palas 
-el valor máximo de $C_P$ es de solo 0.47, lo cual se aleja considerablemente del límite teórico de Betz, 
-y se logra con un valor de la relación de velocidad punta de $\lambda^\star \approx 7$. 
+el valor máximo de $C_p$ es de solo 0.47, lo cual se aleja considerablemente del límite teórico de Betz, 
+y se logra con un valor de la relación de velocidad punta de $\lambda^\star \approx 7$. Este valor de 
+$\lambda^\star$ corresponde a un valor típico reportado en la literatura para turbinas comerciales de 
+tres palas, y no debe confundirse con el valor de $\lambda^\star$ calculado más adelante en esta sección 
+para el modelo específico de $C_p(\lambda,\beta)$ utilizado en esta tesis.
 \\
 
 Con el objetivo de obtener un valor del coeficiente de potencia ajustado a los parámetros utilizados durante 
-el modelado de la turbina se utilizará una aproximación mediante una función analítica de $c_p$.
+el modelado de la turbina se utilizará una aproximación mediante una función analítica de $C_p$.
 En \cite{man1981} se desarrolla una expresión para el coeficiente de potencia como la siguiente función de 
-la relación de velocidad punta y el angulo de inclinación de las palas:
+la relación de velocidad punta y el ángulo de inclinación de las palas:
 
 \begin{align}
     C_p = c_1 \left( c_2 - c_3\beta - c_4\beta^x - c_5 \right) e^{-c_6(\lambda,\beta)}
+    \label{eq:cp_analytic}
 \end{align}
 
 Los valores de las constantes cambian según el método y modelo utilizado. A partir del procedimiento en 
@@ -168,38 +167,72 @@ Los valores de las constantes cambian según el método y modelo utilizado. A pa
         \\
         c_4 = 0, &c_5 = 5, &c_6 = \frac{21}{\lambda_i}
     \end{array}
+    \label{eq:cp_constants}
 \end{align}
-
-y
+donde $\lambda_i$ está dado por
 \begin{align}
-    \frac{1}{\lambda_i} = \frac{1}{\lambda + 0.08\beta} - \frac{0.035}{\beta^3 + 1}
+    \frac{1}{\lambda_i} = \frac{1}{\lambda + 0.08\beta} - \frac{0.035}{\beta^3 + 1}.
+    \label{eq:lambda_i}
 \end{align}
 
-$\beta$ es el angulo de inclinación (\emph{pitch}) de las palas.
+Nótese que, si bien $c_6$ se expresa únicamente en términos de $\lambda_i$, esta última depende tanto de 
+$\lambda$ como de $\beta$, por lo que la notación $c_6(\lambda,\beta)$ es consistente. Por otro lado, 
+\cite{amlang1992} no reporta un valor explícito para el exponente $x$ en este conjunto de constantes; sin 
+embargo, dado que $c_4 = 0$, el término $c_4\beta^x$ se anula independientemente del valor de $x$, por lo 
+que su omisión no afecta la expresión resultante de $C_p$. $\beta$ es el ángulo de inclinación (\emph{pitch}) de las palas.
 \\ 
 
-Utilizando estos parámetros y asumiendo $\beta = 0$ (sin control de \textit{pitch}), 
-se calculó numéricamente mediante MATLAB el punto de máxima extracción de potencia, 
-obteniéndose $\lambda^* = 7.96$ y $C_p^{\text{max}} = 0.411$. La figura \ref{fig:cp_lambda} 
-muestra la curva característica $C_p$ vs $\lambda$ para estos parámetros.
+\textbf{Hipótesis 1:} Se asume $\beta = 0$ (sin control de \textit{pitch}), lo cual
+es consistente con el alcance de la tesis, restringido a la operación en la región 2
+(véase Sección \ref{sec:restricciones}), donde el ángulo de \textit{pitch} se mantiene fijo en un valor
+cercano a cero para maximizar la extracción de potencia, en lugar de utilizarse
+activamente como variable de control --- a diferencia de la región 3, donde $\beta$
+se regula para limitar la potencia extraída ---.
+\\
+
+Bajo la Hipótesis 1, la superficie $C_p(\lambda,\beta)$ definida por
+\eqref{eq:cp_analytic}--\eqref{eq:lambda_i} se reduce a una curva unidimensional
+$C_p(\lambda) := C_p(\lambda,0)$, la cual es la que se utiliza en el resto del
+análisis y las simulaciones de esta tesis. Utilizando estos parámetros se calculó
+numéricamente mediante MATLAB el punto de máxima extracción de potencia,
+obteniéndose $\lambda^\star = 7.96$ y $C_p^{\text{max}} = 0.411$. Estos parámetros y el
+valor resultante de $\lambda^\star$ y $C_p^{\text{max}}$ coinciden con los reportados en
+\cite{cisneros2020}, cuyo modelo matemático y parámetros de turbina se retoman en
+esta tesis (véase Sección 2.3.1). La figura \ref{fig:cp_lambda} muestra la curva
+característica $C_p$ vs $\lambda$ para estos parámetros.
+
+% Utilizando estos parámetros y asumiendo $\beta = 0$ (sin control de \textit{pitch}), 
+% se calculó numéricamente mediante MATLAB el punto de máxima extracción de potencia, 
+% obteniéndose $\lambda^\star = 7.96$ y $C_p^{\text{max}} = 0.411$. Esta hipótesis es consistente 
+% con el alcance de la tesis, restringido a la operación en la región 2 (véase Sección 2.2), 
+% donde el ángulo de \textit{pitch} se mantiene fijo en un valor cercano a cero para maximizar 
+% la extracción de potencia, en lugar de utilizarse activamente como variable de control 
+% --- a diferencia de la región 3, donde $\beta$ se regula para limitar la potencia extraída---. 
+% Bajo esta hipótesis, la superficie $C_p(\lambda,\beta)$ definida por \eqref{eq:cp_analytic}--\eqref{eq:lambda_i} 
+% se reduce a una curva unidimensional $C_p(\lambda) := C_p(\lambda,0)$, la cual es la que se utiliza en 
+% el resto del análisis y las simulaciones de esta tesis. Estos parámetros y el valor resultante de 
+% $\lambda^\star$ y $C_p^{\text{max}}$ coinciden con los reportados en \cite{cisneros2020}, cuyo modelo 
+% matemático y parámetros de turbina se retoman en esta tesis (véase Sección 2.3.1). La figura 
+% \ref{fig:cp_lambda} muestra la curva característica $C_p$ vs $\lambda$ para estos parámetros.
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cp_vs_lambda.pdf}
 \caption{Curva de $\lambda$ vs $C_p$ calculada con los parámetros del sistema. 
-El punto óptimo $\lambda^* = 7.96$ corresponde al máximo coeficiente de potencia 
+El punto óptimo $\lambda^\star = 7.96$ corresponde al máximo coeficiente de potencia 
 $C_p^{\text{max}} = 0.411$.}
 \label{fig:cp_lambda}
 \end{figure}
 
 \subsection{Subsistema eléctrico}
 
-La parte eléctrica del modelo está compuesta por: 1) el generador eléctrico (PMSG), 2) la electrónica 
-de potencia y 3) la carga que será alimentada. La elección del generador 
+La parte eléctrica del modelo está compuesta por el generador eléctrico (PMSG). La elección del generador 
 eléctrico depende de factores como la potencia requerida para ser extraída del viento, la eficiencia 
 requerida, la cantidad de mantenimiento requerida, la fiabilidad y la 
 longevidad del generador en comparación con el resto de los componentes y la vida útil general de la 
-turbina, entre otros. 
+turbina, entre otros. El desarrollo de esta tesis se limita al modelado y control del generador en sí; 
+no se incluye el modelado de la electrónica de potencia del lado de la red ni de una carga específica, 
+ya que estos elementos están fuera del alcance definido en la Sección \ref{sec:restricciones}.
 \\
 
 Dos de los tipos de generadores eléctricos más usados en WECS son los Generadores de Inducción Doblemente 
@@ -211,7 +244,10 @@ puede ser
 conectado directamente a la red y al rotor a través de un convertidor \cite{dahiya2019}. Este tipo de 
 generadores es el más usado en turbinas eólicas de velocidad variable
 \cite{dahiya2019,soltani2013}.
-Los PMSG, por su parte, tienen la característica de permitir el accionamiento 
+Los PMSG, por su parte, generan a una frecuencia eléctrica variable que depende directamente de la 
+velocidad del rotor, por lo que requieren de un convertidor de potencia de capacidad plena (\emph{full-scale 
+power converter}) para acoplar el estator a la red, procesando la totalidad de la potencia generada 
+\cite{swibki2020}. Adicionalmente, los PMSG tienen la característica de permitir el accionamiento 
 directo (\emph{direct drive}) del generador, lo cual hace posible la eliminación del \emph{gearbox} de 
 la mecánica del sistema. Esto se logra a partir de incluir un alto número 
 de polos en el diseño del generador, lo que permite la operación a bajas velocidades del rotor \cite{soltani2013, swibki2020}.
@@ -240,7 +276,7 @@ o flujo magnético se encuentra desfasada $120^\circ$ con respecto a la anterior
 asigna una letra para denotar sus respectivas magnitudes. Este sistema se conoce como el \textbf{marco de referencia}
 \emph{abc}. A pesar de que este marco de referencia emplea las variables físicas reales del sistema ($v_{abc}$, $i_{abc}$ y $\phi_{abc}$), 
 introduce una mayor complejidad al momento de diseñar el control debido a la existencia de términos dependientes del 
-tiempo y cuyo comportamiendo suele ser senoidal. 
+tiempo y cuyo comportamiendo es senoidal. 
 \\
 
 Para simplificar el análisis matemático y el diseño del control se utiliza un cambio de variable que permite transformar 
@@ -251,9 +287,12 @@ específicas de Park \cite{park1929} para distintas aplicaciones. En particular,
 las transformadas de Clarke \cite{clarke1943} y Park de manera sucesiva. 
 \\
 
-En el nuevo marco de referencia las variablas de tipo \emph{dq} se conocen como variables del \textbf{eje directo} para \emph{d} y variables 
-del \textbf{eje de cuadratura} para \emph{q}. Las variables \emph{0's} no serán incluidas ya que dichas magnitudes están aritméticamente relacionadas
-con las variables \emph{abc} y solo se incluiran aquellas que permitan condiciones de balance. i.e. \emph{dq} al ser independientes del tiempo \cite{krause2013,krause1998}.
+En el nuevo marco de referencia las variables de tipo \emph{dq} se conocen como variables del \textbf{eje directo} para \emph{d} y variables 
+del \textbf{eje de cuadratura} para \emph{q}. El eje directo se alinea con la dirección del flujo magnético producido por los imanes 
+permanentes del rotor, mientras que el eje de cuadratura se encuentra en cuadratura (es decir, a 90 grados eléctricos) respecto al eje 
+directo \cite{krause2013}. Esta elección de orientación es la que permite, como se detalla más adelante en este capítulo, desacoplar el 
+control del flujo magnético del control del par electromagnético del generador. Las variables \emph{0's} no serán incluidas ya que dichas magnitudes están aritméticamente relacionadas
+con las variables \emph{abc} y solo se incluirán aquellas que permitan condiciones de balance. i.e. \emph{dq} al ser independientes del tiempo \cite{krause2013,krause1998}.
 \\
 
 El análisis dinámico del generador de la turbina parte de leyes fundamentales de la electricidad
@@ -261,53 +300,110 @@ El análisis dinámico del generador de la turbina parte de leyes fundamentales 
 En particular, para los \textbf{componentes resistivos} 
 del generador, la ley de Ohm establece que:
 \begin{align}
-    v_{abc} = R_s i_{abc}
+    v_{abc} = R_s i_{abc},
 \end{align}
-
-donde $R_s$ es la matriz de resistencias del estator. Al transformar esta relación al marco de referencia arbitrario obtenemos:
+donde $v_{abc}, i_{abc} \in \mathbb{R}^3$ son los vectores de voltaje y corriente de fase, y $R_s \in \mathbb{R}^{3\times 3}$ 
+es la matriz de resistencias del estator. Al transformar esta relación al marco de referencia arbitrario mediante la matriz 
+de transformación $K_s$ --- que combina sucesivamente las transformadas de Clarke y Park, siendo esta última evaluada 
+respecto al ángulo eléctrico del rotor $\theta_e = p\theta_m$, consistente con la orientación del eje directo hacia el 
+flujo de los imanes permanentes discutida anteriormente --- obtenemos:
 \begin{align}
-    v_{dq0} = K_sR_s(K_s)^{-1} i_{dq0}
+    v_{dq0} = K_sR_s(K_s)^{-1} i_{dq0},
 \end{align}
+donde $v_{dq0}, i_{dq0} \in \mathbb{R}^3$ son los vectores transformados de voltaje y corriente.
 
-Asumiendo que cada uno de los embobinados de fase del estator tienen la misma resistencia se cumple entonces que:
+Asumiendo que cada uno de los embobinados de fase del estator tienen la misma resistencia se cumple entonces que
 \begin{align}
-    K_sR_s(K_s)^{-1} = R
+    K_sR_s(K_s)^{-1} = R,
 \end{align}
-
-Resultando en la siguiente expresión para el voltaje:
+donde $R \in \mathbb{R}$ es un escalar. Resultando en la siguiente expresión para el voltaje:
 \begin{align}
-    v_{dq} = R i_{dq}
+    v_{dq} = R i_{dq}.
 \end{align}
 
 Por su parte, los \textbf{elementos inductivos} siguen la ley de inducción electromagnética de Faraday,
 \begin{align}
-    v_{abc} = \frac{d}{dt}\lambda_{abc}
+    v_{abc} = \frac{d}{dt}\lambda_{abc},
 \end{align}
-
-donde $\lambda_{abc}$ son los enlaces de flujo, los cuales a su vez representan el 
+donde $\lambda_{abc} \in \mathbb{R}^3$ son los enlaces de flujo, los cuales a su vez representan el 
 flujo magnético total que atraviesa un embobinado y que, en el caso de un PMSG, recibe dos aportaciones principalmente:
 el flujo magnético generado en los devanados del estator y el flujo producido en los imanes permanentes en el rotor.
 Al transformar a coordenadas \emph{dq} obtenemos:
 \begin{align}
-    v_{dq} = \omega\lambda_{dq} + \frac{d}{dt}\lambda_{dq}
+    v_{dq} = \omega\lambda_{dq} + \frac{d}{dt}\lambda_{dq},
 \end{align}
+donde $\omega \in \mathbb{R}$ es la velocidad angular eléctrica del generador.
 
 La expresión final de los voltajes \emph{dq} resulta de la suma de los voltajes de los elementos resistivos e inductivos. 
 Por tanto,
 \begin{align}
-    v_{dq} = Ri_{dq} + \omega\lambda_{dq} + \frac{d}{dt}\lambda_{dq}
+    v_{dq} = Ri_{dq} + \omega\lambda_{dq} + \frac{d}{dt}\lambda_{dq}.
 \end{align}
 
-En \cite{krause2013} los valores de $\lambda_{dq}$ se asignan como sigue. 
+En \cite{krause2013} los valores de $\lambda_{dq}$ se definen como sigue: 
 \begin{align}
-    &\lambda_q = L_q i_q
+    &\lambda_q = L_q i_q,
     \\ 
-    &\lambda_d = L_d i_d + \lambda_m
+    &\lambda_d = L_d i_d + \lambda_m,
 \end{align}
-
-donde $L_q = L_{ls} + L_{mq}$, $L_d = L_{ls} + L_{md}$. i.e. en ambos casos, la inductancia total de cada eje es la suma de la inductancia
-de fuga más la inductancia de magnetización (inducida por los imanes permanentes); $\lambda_m$ es el enlace de flujo de los imanes permanentes.
+donde $L_q = L_{ls} + L_{mq}$, $L_d = L_{ls} + L_{md}$ son escalares. i.e. en ambos casos, la inductancia 
+total de cada eje es la suma de la inductancia de fuga más la inductancia de magnetización 
+(inducida por los imanes permanentes); $\lambda_m \in \mathbb{R}$ es la constante 
+del enlace de flujo magnético debido a los imanes permanentes.
 \\
+
+% El análisis dinámico del generador de la turbina parte de leyes fundamentales de la electricidad
+% \footnote{El desarrollo completo de las ecuaciones dinámicas del sistema se puede encontrar en \cite{krause2013}}. 
+% En particular, para los \textbf{componentes resistivos} 
+% del generador, la ley de Ohm establece que:
+% \begin{align}
+%     v_{abc} = R_s i_{abc}
+% \end{align}
+
+% donde $R_s$ es la matriz de resistencias del estator. Al transformar esta relación al marco de referencia arbitrario obtenemos:
+% \begin{align}
+%     v_{dq0} = K_sR_s(K_s)^{-1} i_{dq0}
+% \end{align}
+
+% Asumiendo que cada uno de los embobinados de fase del estator tienen la misma resistencia se cumple entonces que:
+% \begin{align}
+%     K_sR_s(K_s)^{-1} = R
+% \end{align}
+
+% Resultando en la siguiente expresión para el voltaje:
+% \begin{align}
+%     v_{dq} = R i_{dq}
+% \end{align}
+
+% Por su parte, los \textbf{elementos inductivos} siguen la ley de inducción electromagnética de Faraday,
+% \begin{align}
+%     v_{abc} = \frac{d}{dt}\lambda_{abc}
+% \end{align}
+
+% donde $\lambda_{abc}$ son los enlaces de flujo, los cuales a su vez representan el 
+% flujo magnético total que atraviesa un embobinado y que, en el caso de un PMSG, recibe dos aportaciones principalmente:
+% el flujo magnético generado en los devanados del estator y el flujo producido en los imanes permanentes en el rotor.
+% Al transformar a coordenadas \emph{dq} obtenemos:
+% \begin{align}
+%     v_{dq} = \omega\lambda_{dq} + \frac{d}{dt}\lambda_{dq}
+% \end{align}
+
+% La expresión final de los voltajes \emph{dq} resulta de la suma de los voltajes de los elementos resistivos e inductivos. 
+% Por tanto,
+% \begin{align}
+%     v_{dq} = Ri_{dq} + \omega\lambda_{dq} + \frac{d}{dt}\lambda_{dq}
+% \end{align}
+
+% En \cite{krause2013} los valores de $\lambda_{dq}$ se asignan como sigue. 
+% \begin{align}
+%     &\lambda_q = L_q i_q
+%     \\ 
+%     &\lambda_d = L_d i_d + \lambda_m
+% \end{align}
+
+% donde $L_q = L_{ls} + L_{mq}$, $L_d = L_{ls} + L_{md}$. i.e. en ambos casos, la inductancia total de cada eje es la suma de la inductancia
+% de fuga más la inductancia de magnetización (inducida por los imanes permanentes); $\lambda_m$ es el enlace de flujo de los imanes permanentes.
+% \\
 
 Una manipulación algebráica permite llegar a las siguientes ecuaciones dinámicas que caracterizan el funcionamiento 
 del generador utilzando coordenadas \emph{dq}:
@@ -326,21 +422,22 @@ donde $i_d$, $i_q$, $v_d$ y $v_q$ son los voltajes y corrientes en el eje direct
 $\phi$ es el flujo magnético en el generador y $R$ es el valor de la resistencia en el generador. 
 \\
 
-\textbf{Hipótesis 1:} Para fines del diseño de control se asume que el sistema opera en la región 2.
+\textbf{Hipótesis 2:} Para fines del diseño de control se asume que el sistema opera en la región 2.
 
 \subsection{Sistema acoplado}
 
 A partir de las ecuaciones del subsistema mecánico (\ref{eq:torque_balance_simplified}) y el subsistema eléctrico (\ref{eq:electrical_subsystem}) 
 obtenemos el modelo dinámico que define el comportamiento del sistema completo de la turbina eólica:
 
-\begin{align}
-    L\frac{di_q}{dt} &= -Ri_d + pLi_q\omega_m - v_d
-    \\
-    L\frac{di_d}{dt} &= -Ri_q - pLi_d\omega_m + p\phi\omega_m - v_q 
-    \\
-    J \dot{\omega}_m &= -f_r \omega_m + T_m - T_e
-    \label{eq:full_system}
-\end{align}
+\begin{equation}\label{eq:full_system}
+    \begin{aligned}
+        L\frac{di_q}{dt} &= -Ri_d + pLi_q\omega_m - v_d
+        \\
+        L\frac{di_d}{dt} &= -Ri_q - pLi_d\omega_m + p\phi\omega_m - v_q 
+        \\
+        J \frac{d\omega_m}{dt} &= -f_r \omega_m + T_m - T_e
+    \end{aligned}
+\end{equation}
 
 Donde
 \begin{align}
@@ -352,8 +449,9 @@ Donde
     \label{eq:definitions}
 \end{align}
 
-Donde $C_{p,0}(\lambda) := C_p(\lambda,0)$ es el coeficiente de potencia debido a $\beta = 0$.
-Esta asignación de $\beta$ se debe a que el aerogenerador opera en la región 2.
+Donde $C_{p,0}(\lambda) := C_p(\lambda,0)$ es el coeficiente de potencia fijando el ángulo 
+de inclinación en $\beta = 0$. Esta asignación de $\beta$ se debe a que el aerogenerador opera en la región 2 
+y al objetivo de maximizar el coeficiente de potencia ($C_p$).
 Los voltajes $v_d$ y $v_q$ se pueden manipular de forma libre, es decir, corresponden a las variables de control.
 
 \section{Diseño del control de torque}
@@ -365,7 +463,9 @@ En turbinas éolicas de velocidad variable obtenemos una mayor eficiencia del si
 del generador para una carga dada. Dentro del marco de referencia \emph{dq} la corriente $i_q$ se emplea para
 inducir el torque en el generador. Esto se puede apreciar en la ecuación del torque eléctrico (\ref{eq:electrical_torque})
 en la cual la corriente $i_d$ no tiene ninguna contribución. Por lo anterior, y para minimizar pérdidas, 
-buscamos llevar la corriente del eje directo a un valor de $i_d = 0$ \cite{chinchilla2006}.
+buscamos llevar la corriente del eje directo a un valor de $i_d = 0$ \cite{chinchilla2006}, ya que al regular esta 
+corriente a cero se reducen las pérdidas en forma de calor en el generador, las cuales son de la forma $I^2R$, 
+donde $I$ es la magnitud de la corriente del estator y $R$ es la resistencia del generador definida previamente.
 Por su parte, el valor de la corriente $i_q$ deberá ser controlado con el objetivo de maximizar la extracción 
 de potencia del viento. Lo anterior tiene como objetivo final la regulación de la velocidad rotacional del 
 rotor de la turbina. 
@@ -398,7 +498,7 @@ se puede realizar en conjunto con otras estrategias de control para WECS como el
 Por otra parte, los algoritmos HCS presentan dos desventajas que pueden estar inducidas por alteraciones 
 en la velocidad del viento en periodos cortos de tiempo o a un tamaño de paso del algoritmo inadecuado 
 \cite{kazmi2011,xia2013}. Sin ambargo, estos problemas serán tratados con mayor detalle en la sección de
-simulación dado que, como se mencionó, su Implementación es independiente de la dinámica del generador y 
+simulación dado que, como se mencionó, su implementación es independiente de la dinámica del generador y 
 del resto de la turbina. 
 \\
 
@@ -409,13 +509,27 @@ Por tanto, los objetivos de control se pueden resumir en:
         la velocidad óptima. Esta velocidad es impuesta por el algoritmo MPPT.
 \end{enumerate}
 
+\textbf{Hipótesis 3:} Para el diseño de los controladores se asume que el estado
+completo del sistema --- la velocidad angular $\omega_m$ y las corrientes $i_d$,
+$i_q$ --- se encuentra disponible para retroalimentación, ya sea de forma medida
+o estimada. En la práctica, esto se logra mediante instrumentación estándar en
+aerogeneradores con PMSG (por ejemplo, un encoder o tacómetro para $\omega_m$ y
+sensores de corriente en los devanados del estator para $i_d$, $i_q$); el diseño
+y la evaluación de dichos sensores quedan fuera del alcance de esta tesis, que se
+enfoca en el análisis y diseño teórico del controlador.
+
+
 \subsection{Estrategia de control}
 
 El sistema de control propuesto combina distintas estrategias para regulación de la velocidad del rotor.
 Para empezar, se regula el torque del generador mediante un control PI cuyo objetivo es mantener las variables
-del PMSG en coordenadas \emph{dq} en un régimen adecuado para la máxima extracción de potencia del viento. Para
-esto, se utiliza como referencia el valor de la velocidad rotacional y un algoritmo de seguimiento del punto de
-máxima potencia (MPPT) para ajustar la velocidad rotacional óptima a la cual se quiere seguir.
+del PMSG en coordenadas \emph{dq} en un régimen adecuado para la máxima extracción de potencia del viento. Esta
+estrategia corresponde al control por campo orientado (\emph{Field Oriented Control}, FOC), una de las técnicas
+más empleadas para el control de torque en máquinas eléctricas, y cuya adopción para esta tesis fue justificada
+en la Sección \ref{sec:soluciones_alternativas} frente a otras alternativas de la literatura
+\cite{chinchilla2006,cisneros2020}. Para esto, se utiliza como referencia el valor de la velocidad rotacional y un
+algoritmo de seguimiento del punto de máxima potencia (MPPT) para ajustar la velocidad rotacional óptima a la
+cual se quiere seguir.
 \\
 
 Con base en la sección anterior, en particular las ecuaciones (\ref{eq:full_system}) que describen el 
@@ -482,7 +596,7 @@ como sigue:
 La sustitución de \eqref{eqUd} en \eqref{valUd} y, la sustitución de la expresión resultante en la primera
 ecuación de \eqref{eq:electrical_subsystem} da lugar a las ecuaciones de $\Sigma_1$. Esto es:
 \begin{align}
-    L\dot{i_d} &= -(R+k_{P1})i_d - k_{I1}\xi_1\\
+    L\frac{di_d}{dt} &= -(R+k_{P1})i_d - k_{I1}\xi_1\\
     \dot{\xi_1} &= i_d,
 \end{align}
 
@@ -493,10 +607,11 @@ o, equivalentemente, % en representación de estados,
  \end{align}
 
  con $x=\mathrm{col}(\xi_1,i_d)$. Claramente este subsistema corresponde a un sistema lineal e invariante en el tiempo. \\
+
 Para el segundo subsistema, sustituyendo \eqref{eqnVq}, \eqref{PI2} y \eqref{xi} en la segunda ecuación de  \eqref{eq:electrical_subsystem}  resulta en la siguiente dinámica
 \begin{align*}
-    L\dot{i_q} =& -(R+k_{P2})i_q + k_{P2}i_q^{ref} \\
-    =&-(R+k_{P2})i_q  + k_{P2}k_{P3}(\omega_m - \omega_m^\star) + k_{P2}k_{I3}\xi_3 - k_{I2}\xi_2
+    L\frac{di_q}{dt} =& -(R+k_{P2})i_q + k_{P2}i_q^{ref} \\
+    =&-(R+k_{P2})i_q  + k_{P2}k_{P3}(\omega_m - \omega_m^\star) + k_{P2}k_{I3}\xi_3 - k_{I2}\xi_2.
 \end{align*}
 
 Uniendo la ecuación anterior con las de la dinámica de $\xi_2$ y de $\xi_3$ (descritas en  \eqref{PI2} y 
@@ -510,10 +625,10 @@ Uniendo la ecuación anterior con las de la dinámica de $\xi_2$ y de $\xi_3$ (d
     \dot{\omega}_m \\
     \dot{i}_q
     \end{bmatrix} = \begin{bmatrix}
-    z_4 - (k_{P3}(z_3 - \omega^*_m) + k_{I3}z_2) \\
-    z_3 - \omega^*_m \\
+    z_4 - (k_{P3}(z_3 - \omega^\star_m) + k_{I3}z_2) \\
+    z_3 - \omega^\star_m \\
     -\frac{f_r}{J}z_3 + \frac{r\kappa_1}{Jv_w}\frac{C_{p,0}(\lambda)}{\lambda} - \frac{3}{2J}p\phi z_4 \\
-    -\frac{R+k_{P2}}{L}z_4 + \frac{k_{P2}k_{P3}}{L}(z_3 - \omega^*_m) + \frac{k_{P2}k_{I3}}{L}z_2 - \frac{k_{I2}}{L}z_1
+    -\frac{R+k_{P2}}{L}z_4 + \frac{k_{P2}k_{P3}}{L}(z_3 - \omega^\star_m) + \frac{k_{P2}k_{I3}}{L}z_2 - \frac{k_{I2}}{L}z_1
     \end{bmatrix}
 \end{aligned}=:f(z)
 $}
@@ -534,19 +649,22 @@ La discusión anterior se resume en el siguiente lema.\\
         \Sigma_1: \dot x= & \begin{bmatrix}0&1\\  -\frac{1}{L}k_{I1} & -\frac{1}{L}(R+k_{P1}) 
             \end{bmatrix}\\
         \Sigma_2: \dot z=& \begin{bmatrix}
-            z_4 - (k_{P3}(z_3 - \omega^*_m) + k_{I3}z_2) \\
-            z_3 - \omega^*_m \\
+            z_4 - (k_{P3}(z_3 - \omega^\star_m) + k_{I3}z_2) \\
+            z_3 - \omega^\star_m \\
             -\frac{f_r}{J}z_3 + \frac{r\kappa_1}{Jv_w}\frac{C_{p,0}(\lambda)}{\lambda} - \frac{3}{2J}p\phi z_4 \\
-            -\frac{R+k_{P2}}{L}z_4 + \frac{k_{P2}k_{P3}}{L}(z_3 - \omega^*_m) + \frac{k_{P2}k_{I3}}{L}z_2 - \frac{k_{I2}}{L}z_1
+            -\frac{R+k_{P2}}{L}z_4 + \frac{k_{P2}k_{P3}}{L}(z_3 - \omega^\star_m) + \frac{k_{P2}k_{I3}}{L}z_2 - \frac{k_{I2}}{L}z_1
             \end{bmatrix}
     \end{align*}
     \tripletriang
 \end{lemma}
 
-A continuación, se linealizará el sistema alrededor del punto de equilibrio que cumpla con los objetivos 
-de control. Luego, se obtendrán las condiciones en las ganancias $k_{P}$s y $K_I$s que hacen que esa 
-linealización tenga valores propios en el semiplano complejo izquierdo. De acuerdo con el Método Indirecto 
-de Lyapunov, esto garantiza que el punto de equilibrio deseado sea exponencialmente estable.
+A continuación, se linealizará el sistema alrededor del punto de equilibrio que
+cumpla con los objetivos de control. Luego, se obtendrán las condiciones en las
+ganancias $k_P$s y $k_I$s que hacen que esa linealización tenga valores propios en
+el semiplano izquierdo del plano complejo. De acuerdo con el Método Indirecto de
+Lyapunov \cite{khalil2002}, esto garantiza que el punto de equilibrio
+deseado sea exponencialmente estable.
+
 
 \subsubsection*{Puntos de equilibrio de $\Sigma_1$ y $\Sigma_2$}
 
@@ -560,12 +678,12 @@ Estos quedan enunciados en los siguientes lemas.
     \begin{proof}
         Al igualar $\dot x=0$ en (1.37), resulta en la siguientes ecuaciones
         \begin{align*}
-            x_2=&0\\
+            \bar{x}_2=&0\\
             -(R+k_{P1})x_2-k_{I1}x_1  =&0 	
         \end{align*}
-        Se concluye que $x_2=0$ es un punto de equibrio. Reemplazando lo anterior en la segunda ecuación queda
+        Se concluye que $\bar{x}_2=0$ es un punto de equibrio. Reemplazando lo anterior en la segunda ecuación queda
         $$k_{I1}x_1  =0,$$
-        de donde se concluye que  tambien  $x_1=0$ es el valor de equilibrio para $x_1$.
+        de donde se concluye que  tambien  $x_1=0$ es el punto de equilibrio para $x_1$.
     \end{proof}
 \end{lemma}
 
@@ -574,14 +692,14 @@ Estos quedan enunciados en los siguientes lemas.
 	\begin{align}\label{barz}
 	\bar{z} :=
 		\begin{bmatrix}
-			-\frac{2R}{3p\phi k_{\textrm{I2}}}(T^*_m - f_r\omega^*_m) \\[0.3cm]
-			\frac{2}{3p\phi k_{\textrm{I3}}}(T^*_m - f_r\omega^*_m) \\[0.3cm]
-			\omega^*_m \\[0.3cm]
-			\frac{2}{3p\phi}(T^*_m - f_r\omega^*_m)
+			-\frac{2R}{3p\phi k_{\textrm{I2}}}(T^\star_m - f_r\omega^\star_m) \\[0.3cm]
+			\frac{2}{3p\phi k_{\textrm{I3}}}(T^\star_m - f_r\omega^\star_m) \\[0.3cm]
+			\omega^\star_m \\[0.3cm]
+			\frac{2}{3p\phi}(T^\star_m - f_r\omega^\star_m)
 	\end{bmatrix}
 	\end{align}
-    donde $T^*_m := r\frac{\kappa_1 v_w C_{p,0}(\lambda^*)}{\lambda^*}$ es el torque mecánico en el 
-    equilibrio, $\lambda^* := \frac{r\omega_m^*}{v_w}$ y $\omega_m^*$ es la referencia de velocidad 
+    donde $T^\star_m := r\frac{\kappa_1 v_w C_{p,0}(\lambda^\star)}{\lambda^\star}$ es el torque mecánico en el 
+    equilibrio, $\lambda^\star := \frac{r\omega_m^\star}{v_w}$ y $\omega_m^\star$ es la referencia de velocidad 
     angular.
 
     \tripletriang
@@ -590,15 +708,15 @@ Estos quedan enunciados en los siguientes lemas.
         Los puntos de equilibrio se obtienen al igualar a cero las ecuaciones del sistema \eqref{eq:sigma_2}, esto es, resolviendo $\dot{z} = 0$:
 
         \begin{align}
-        z_4 - [k_{\textrm{P3}}(z_3 - \omega^*_m) + k_{\textrm{I3}}z_2] &= 0 \label{eq:ss1} \\
-        z_3 - \omega^*_m &= 0 \label{eq:ss2} \\
+        z_4 - [k_{\textrm{P3}}(z_3 - \omega^\star_m) + k_{\textrm{I3}}z_2] &= 0 \label{eq:ss1} \\
+        z_3 - \omega^\star_m &= 0 \label{eq:ss2} \\
         -\frac{f_r}{J}z_3 + \frac{r\kappa_1}{Jv_w}\frac{C_{p,0}(\lambda)}{\lambda} - \frac{3}{2J}p\phi z_4 &= 0 \label{eq:ss3} \\
-        -\frac{R+k_{\textrm{P2}}}{L}z_4 + \frac{k_{\textrm{P2}}k_{\textrm{P3}}}{L}(z_3 - \omega^*_m) + \frac{k_{\textrm{P2}}k_{\textrm{I3}}}{L}z_2 - \frac{k_{\textrm{I2}}}{L}z_1 &= 0 \label{eq:ss4}
+        -\frac{R+k_{\textrm{P2}}}{L}z_4 + \frac{k_{\textrm{P2}}k_{\textrm{P3}}}{L}(z_3 - \omega^\star_m) + \frac{k_{\textrm{P2}}k_{\textrm{I3}}}{L}z_2 - \frac{k_{\textrm{I2}}}{L}z_1 &= 0 \label{eq:ss4}
         \end{align}
 
         De la ecuación \eqref{eq:ss2} se obtiene directamente que:
         \begin{equation}
-        \bar{z}_3 = \omega^*_m \label{eq:eq1}
+        \bar{z}_3 = \omega^\star_m \label{eq:eq1}
         \end{equation}
 
         Sustituyendo \eqref{eq:eq1} en \eqref{eq:ss1}, se tiene:
@@ -606,19 +724,19 @@ Estos quedan enunciados en los siguientes lemas.
         \bar{z}_4 - k_{\textrm{I3}}\bar{z}_2 = 0 \label{eq:eq2}
         \end{align}
 
-        Por otro lado, de la ecuación \eqref{eq:ss3}, usando \eqref{eq:eq1} y $\lambda^* = \frac{r\omega^*_m}{v_w}$, se obtiene:
+        Por otro lado, de la ecuación \eqref{eq:ss3}, usando \eqref{eq:eq1} y $\lambda^\star = \frac{r\omega^\star_m}{v_w}$, se obtiene:
         \begin{equation}
-        \bar{z}_4 = \frac{2}{3p\phi}(T^*_m - f_r\omega^*_m) \label{eq:eq3}
+        \bar{z}_4 = \frac{2}{3p\phi}(T^\star_m - f_r\omega^\star_m) \label{eq:eq3}
         \end{equation}
 
         Combinando \eqref{eq:eq2} y \eqref{eq:eq3}:
         \begin{equation}
-        \bar{z}_2 = \frac{1}{k_{\textrm{I3}}}\bar{z}_4 = \frac{2}{3p\phi k_{\textrm{I3}}}(T^*_m - f_r\omega^*_m) \label{eq:eq4}
+        \bar{z}_2 = \frac{1}{k_{\textrm{I3}}}\bar{z}_4 = \frac{2}{3p\phi k_{\textrm{I3}}}(T^\star_m - f_r\omega^\star_m) \label{eq:eq4}
         \end{equation}
 
-        Finalmente, sustituyendo $\bar{z}_3 = \omega^*_m$ y \eqref{eq:eq3} en \eqref{eq:ss4}:
+        Finalmente, sustituyendo $\bar{z}_3 = \omega^\star_m$ y \eqref{eq:eq3} en \eqref{eq:ss4}:
         \begin{equation}
-        \bar{z}_1 = -\frac{R}{k_{\textrm{I2}}}\bar{z}_4 = -\frac{2R}{3p\phi k_{\textrm{I2}}}(T^*_m - f_r\omega^*_m) \label{eq:eq5}
+        \bar{z}_1 = -\frac{R}{k_{\textrm{I2}}}\bar{z}_4 = -\frac{2R}{3p\phi k_{\textrm{I2}}}(T^\star_m - f_r\omega^\star_m) \label{eq:eq5}
         \end{equation}
 
         Así, el punto de equilibrio queda determinado por \eqref{barz}.
@@ -633,23 +751,26 @@ los mismos. Puesto que los subsistemas están desacoplados, la estabilidad de ca
 por separado.\\
 
 \begin{lemma}\label{lem:sigma_1}
-    Considere el sistema $\Sigma_1$ con $k_{P1}>-R$ y $k_{I1}>0$. Entonces, su punto de equilibrio 
-    $x=\bar x=0$ es exponencialmente, globalmente estable.
+    Considere el sistema $\Sigma_1$ con $k_{P1}>-R$ y $k_{I1}>0$. El punto de equilibrio 
+    $x=\bar x=0$ es exponencialmente, localmente estable.
 
     \tripletriang
 
     \begin{proof}
-        El polinomio característico de  $A_1$  en (\ref{eq:sigma_1}) es el siguiente:
+        El polinomio característico de $A_1$ en (\ref{eq:sigma_1}) es el siguiente:
         \begin{align}\label{p1}
             p_1(s)=s^2 + \frac{k_{P1}+R}{L}s + \frac{k_{I1}}{L}.
         \end{align}
-
-        Luego, por el criterio de estabilida de Routh, la condición necesaria y suficiente para que un polinomio de grado 
-        dos tenga sus raices en el semiplano izquierdo es que sus coeficientes sean positivos. Por tanto, tomando 
-        en cuenta que $L>0$, tenemos las siguientes relaciones
+    
+        Para un polinomio de grado dos, la tabla de Routh--Hurwitz asociada a
+        $p_1(s) = a_2 s^2 + a_1 s + a_0$ tiene como primera columna a los
+        coeficientes $a_2$, $a_1$ y $a_0$, por lo que el criterio de estabilidad de
+        Routh se reduce, en este caso particular, a la condición equivalente de que
+        todos los coeficientes del polinomio sean positivos. Por tanto, tomando en
+        cuenta que $L>0$, tenemos las siguientes relaciones:
         \begin{align}
-            k_{P1} +R > 0  \Longleftrightarrow k_{P1} &> -R\\
-            k_{I1} &> 0 
+            k_{P1} +R > 0  \Longleftrightarrow k_{P1} &> -R,\\
+            k_{I1} &> 0.
         \end{align}
     \end{proof}
 \end{lemma}
@@ -674,24 +795,32 @@ A_2 = \left.\frac{\partial f}{\partial z}\right|_{z=\bar{z}} = \begin{bmatrix}
 \end{bmatrix} \label{eq:A2_symbolic}
 \end{equation}
 
-donde $\gamma$ está definida como la siguiente derivada evaluada en el punto $\lambda=\lambda_\star$
+donde $\gamma$ está definida como la siguiente derivada evaluada en el punto de
+equilibrio $\lambda=\lambda^\star$ (véase la Sección \ref{sec:coef_potencia}, donde se define
+$\lambda^\star$ como el valor de la relación de velocidad punta óptima)
 \begin{align}\nonumber
-	\gamma:= \frac{r\kappa_1}{Jv_w}\left.\frac{\partial}{\partial \lambda}\left(\frac{C_{p,0}(\lambda)}{\lambda}\right)\right|_{\lambda=\lambda_\star}.
+	\gamma:= \frac{r\kappa_1}{Jv_w}\left.\frac{\partial}{\partial \lambda}
+	\left(\frac{C_{p,0}(\lambda)}{\lambda}\right)\right|_{\lambda=\lambda^\star}.
 \end{align}
 Desarrollando la derivada, la constante $\gamma$ se reduce a la expresión
 \begin{align}
-	\gamma=&\left.\frac{r\kappa_1}{Jv_w} \left[\frac{1}{\lambda}\frac{\partial }{\partial \lambda}C_{p,0}(\lambda)-\frac{1}{\lambda^2}C_{p,0}(\lambda)\right]\right|_{\lambda=\lambda_\star}\nonumber\\
-	=& - \frac{1}{\lambda_\star^2}\frac{r\kappa_1}{Jv_w} C_{p,0}(\lambda_\star) \label{eq:gamma}
-	\end{align}
+	\gamma=&\left.\frac{r\kappa_1}{Jv_w}
+	\left[\frac{1}{\lambda}\frac{\partial }{\partial \lambda}C_{p,0}(\lambda)
+	-\frac{1}{\lambda^2}C_{p,0}(\lambda)\right]\right|_{\lambda=\lambda^\star}\nonumber\\
+	=& - \frac{1}{(\lambda^\star)^2}\frac{r\kappa_1}{Jv_w} C_{p,0}(\lambda^\star). \label{eq:gamma}
+\end{align}
+
 
 Puesto que los parámetros son positivos y $C_{p,0}>0$, entonces $\gamma<0$. A partir de lo anterior, 
 es posible enunciar el siguiente lema. Así mismo, es posible concluir que la entrada (3,3) de la 
 matriz $A_2$ toma valores negativos, esto es, $A_{2}^{(3,3)}<0$.\\
 
 \begin{lemma}\label{lem:sigma_2}
-    Considere el sistema $\Sigma_2^{\mathrm{lin}}$ en \eqref{dz} que consiste en la linealización 
-    de $\Sigma_2$. El punto de equilibrio $z=\bar{z}$, con la constante $\bar{z}$ definida en 
-    \eqref{barz}, es exponencialmente estable si y solo si se cumplen las siguientes condiciones:
+    Considere el sistema $\Sigma_2^{\mathrm{lin}}$ en \eqref{dz} que consiste en la
+    linealización de $\Sigma_2$ alrededor de su punto de equilibrio. El
+    punto de equilibrio $z=\bar{z}$ de $\Sigma_2$, con la constante $\bar{z}$
+    definida en \eqref{barz}, es exponencial y localmente estable si y
+    solo si se cumplen las siguientes condiciones:
     \begin{align}
         & \frac{R}{L} + \bar{\gamma_1} + k_{\textrm{P2}}' > 0 \label{eq:cond1}
         \\

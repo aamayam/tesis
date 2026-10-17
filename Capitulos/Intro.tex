@@ -40,7 +40,7 @@ de fuentes renovables a partir de 1985 y hasta 2022 ha fluctuado entre
 15-32\,\% \cite{EnergyInstitute2023}. En 2022 se registró una participación 
 del 22.94\,\% de energías renovables en la generación de electricidad 
 \cite{Ritchie2020}. Para el periodo comprendido entre julio de 2024 y 
-junio de 2025, las fuentes renovables contribuyeron con cerca de una 
+junio de 2025, las fuentes renovables contribuyeron con al rededor de una 
 cuarta parte del total de la generación eléctrica en el país 
 \cite{LowCarbonPower2025}.
 \\
@@ -154,7 +154,7 @@ distintos factores que favorecen la configuración horizontal del generador entr
 modificar el ángulo de ataque de las aspas del generador, lo cual resulta ser la forma más 
 eficiente de limitar la velocidad angular particularmente en turbinas de gran tamaño.
 \item La forma de las aspas se puede diseñar para que sea aerodinámica y, de esta forma, 
-aprovechar mejor toda la energía del viento
+aprovechar mejor toda la energía del viento.
 \item La existencia de más y mejor tecnología para turbinas de eje horizontal \cite{Hau2013}.
 \end{itemize}
 
@@ -167,19 +167,20 @@ aprovechar mejor toda la energía del viento
 
 Los aerogeneradores de eje horizontal tienen 3 componentes principales: la torre, el rotor y 
 la góndola (\emph{nacelle}). Dentro de la góndola se encuentra el generador eléctrico conectado 
-con el rotor por medio de los ejes de alta y baja velocidad, así como la caja de cambios 
+con el rotor por medio de los ejes de alta y baja velocidad, así como la caja de engranes 
 (\emph{gearbox}) \cite{Pao2009}. La mayoría de las turbinas eólicas de gran escala cuentan con 
-un sistema que permite girar la góndola y el rotor para que apunte siempre en la dirección del 
-viento, este sistema es manejado por el \emph{yaw actuator} y une la góndola con la torre. El 
+un sistema que permite girar la góndola con el fin de alinear el rotor con la dirección del viento, 
+este sistema es manejado por el \emph{yaw actuator} y une la góndola con la torre. El 
 rotor incluye las aspas y, en algunos casos, los actuadores que controlan el ángulo de estas 
 (\emph{pitch actuator}). 
 \\
 
 Las turbinas eólicas pueden ser de velocidad fija o variable. Las turbinas de velocidad variable 
-puede trabajar más cerca de la máxima eficiencia aerodinámica por un mayor tiempo. Sin embargo, 
+pueden trabajar más cerca de la máxima eficiencia aerodinámica por un mayor tiempo. Sin embargo, 
 el hecho de tener una velocidad variable implica también que se debe realizar una correcta 
-regulación y procesamiento de la electricidad generada para que esta pueda ser subida a la 
-red con la frecuencia correcta \cite{Pao2009}.
+regulación de la velocidad angular del rotor y un adecuado procesamiento de la electricidad 
+generada para que esta pueda ser suministrada a la red eléctrica con la frecuencia correcta 
+\cite{Pao2009}.
 \\
 
 Las turbinas de velocidad variable suelen trabajar en 3 regiones de operación. Cuando la 
@@ -187,26 +188,38 @@ velocidad del viento es baja (usualmente menor a 6 $\text{m}/\text{s}$) la poten
 es insuficiente y las turbinas suelen permanecer detenidas. A esto se le conoce como \textbf{región 1} 
 e incluye también el momento en el que las turbinas se encienden y comienzan a girar. Durante 
 la región 1 el control se limita al monitoreo y supervisión de la velocidad del viento para 
-determinar en qué momento se pueden iniciar las rutinas de activación para encender las turbinas \cite{Johnson2004}.
+determinar en qué momento se pueden iniciar las rutinas de activación para encender las turbinas 
+\cite{Johnson2004}.
 \\
 
 La \textbf{región 2} de operación ocurre generalmente cuando el viento alcanza velocidades 
-entre 5 y 14 $\text{m}/\text{s}$. En esta región se busca extraer la mayor potencia posible 
-del viento y para esto se pueden utilizar cualquiera de los tipos de control disponibles en 
-el aerogenerador (\emph{yaw control}, \emph{pitch control} y \emph{torque control}). Debido 
-a que las velocidades del viento son menores que las presentadas en la región 3 normalmente 
-no es necesario reducir las cargas [mecánicas y eléctricas] cuando la turbina opera en la 
-región 2 \cite{Johnson2004}.
+entre 5 y 14 $\text{m}/\text{s}$, es decir, cuando la velocidad del viento es inferior a la 
+velocidad nominal de operación del aerogenerador pero suficiente para producir electricidad. 
+En esta región el objetivo principal es extraer la mayor cantidad de potencia posible del 
+viento. Para esto, el ángulo de inclinación (\emph{pitch}) de las aspas se regula hacia un 
+valor óptimo —usualmente entre 0 y 3 grados dependiendo del diseño del aspa— mientras que 
+el ángulo de guiñada (\emph{yaw}) se mantiene de modo que el viento incida perpendicularmente 
+sobre el plano del rotor.
+\\ 
+
+La extracción máxima de potencia en la región 2 se logra regulando la velocidad angular del 
+generador hacia un valor óptimo que maximiza el coeficiente de potencia $C_p$. Dicho valor 
+óptimo está determinado por la relación entre la velocidad de la punta del aspa y la velocidad 
+del viento, conocida como \emph{tip speed ratio} (TSR). Debido a que las velocidades del viento 
+son menores que las de la región 3, normalmente no es necesario reducir las cargas [mecánicas 
+y eléctricas] cuando la turbina opera en esta región \cite{Johnson2004}.
 \\
 
 Por último, la \textbf{región 3} ocurre cuando el viento supera la velocidad a la cual se 
 extrae la potencia máxima por el aerogenerador. Aunque la velocidad del viento siga aumentando, 
 las turbinas deben limitar la potencia que se extrae del viento para evitar daños en sus 
 componentes debido al estrés y las cargas producidas por la fuerza del viento 
-\cite{Pao2009}-\cite{Johnson2004}. De aquí que la gráfica potencia-velocidad se vea plana 
-en la región 3 (ver figura \ref{Regiones}) aun cuando el viento se siga incrementando hasta 
-alcanzar un cierto valor límite (\emph{high wind cutout}). Después de este límite las turbinas 
-deben ser detenidas completamente.
+\cite{Pao2009}-\cite{Johnson2004}. Esta limitación se logra principalmente ajustando el 
+ángulo de inclinación (\emph{pitch}) de las aspas, lo que permite reducir la eficiencia 
+aerodinámica del rotor de manera controlada. De aquí que la gráfica potencia-velocidad se 
+vea plana en la región 3 (ver figura \ref{Regiones}) aun cuando el viento se siga incrementando 
+hasta alcanzar un cierto valor límite (\emph{high wind cutout}). Después de este límite las 
+turbinas deben ser detenidas completamente.
 \\
 \begin{figure}[H]
     \centering
@@ -217,7 +230,7 @@ deben ser detenidas completamente.
 
 Adicionalmente, las turbinas eólicas tienen una eficiencia definida como el porcentaje de la 
 potencia del viento que de hecho puede ser aprovechada por la turbina eólica. La eficiencia 
-máxima alcanzable de manera teórica está dada por el número de Betz $B=\frac{16}{27}\approx 
+máxima alcanzable de manera teórica está dada por el límite de Betz $B=\frac{16}{27}\approx 
 59.26$\% \cite{Huleihil2012}. Esto implica que solo el 59\% de la potencia del viento puede 
 ser realmente convertida en energía eléctrica. Este valor es teórico y en la práctica las 
 turbinas eólicas suelen tener valores de eficiencia entre 35-45\%.
@@ -238,20 +251,20 @@ completo de la góndola y el rotor giren sobre la torre para mantener el
 viento normal al plano del rotor; hasta el \emph{pitch control}, que permite 
 girar las aspas para modificar el ángulo con el que el viento choca contra 
 la superficie aerodinámica de cada aspa. Otra forma de enfrentar el problema 
-de la velocidad del viento ---y, por tanto, del torque recibido por el 
+de la velocidad del viento ---y, por tanto, del par mecánico recibido por el 
 rotor--- es a través de controlar el par eléctrico del generador 
 (\emph{torque control}), lo que permite controlar la cantidad de torque que 
 se demanda del rotor y de esta forma optimizar su velocidad \cite{Johnson2004}.
 \\
 
 En la región 2 de operación, donde las velocidades del viento permiten la 
-generación de electricidad pero aún no se alcanza la potencia nominal de la 
-turbina, el objetivo principal es extraer la mayor cantidad de potencia 
+generación de electricidad pero aún no se alcanza la potencia nominal de operación 
+de la turbina, el objetivo principal es extraer la mayor cantidad de potencia 
 posible del viento. Para lograr esto, el rotor debe girar a una velocidad 
 angular específica que depende de la velocidad del viento en cada instante. 
 Dicha velocidad angular óptima corresponde al punto en el que el coeficiente 
-de potencia $C_p(\lambda)$ de la turbina alcanza su valor máximo, lo cual a 
-su vez maximiza la potencia extraída del viento. Al procedimiento para 
+de potencia $C_p(\lambda)$ de la turbina alcanza su valor máximo, lo cual 
+maximiza la potencia extraída del viento. Al procedimiento para 
 encontrar y seguir este punto de operación óptimo se le conoce como 
 seguimiento del punto de máxima potencia (\emph{Maximum Power Point 
 Tracking}, MPPT) \cite{nak2013}.
@@ -261,7 +274,7 @@ El control del par eléctrico del generador ofrece una vía efectiva para
 regular la velocidad del rotor y, con ello, mantener la operación cercana 
 al punto de máxima potencia. En un generador síncrono de imanes permanentes 
 (PMSG), el par eléctrico $T_e$ está directamente relacionado con la 
-corriente en el eje de cuadratura $i_q$ del generador en coordenadas $dq$. 
+corriente en el eje de cuadratura $i_q$ del generador modelado en coordenadas $dq$. 
 Esto permite formular el problema de control de velocidad del rotor como un 
 problema de regulación de corrientes en el generador, para el cual se pueden 
 emplear técnicas de control clásicas como controladores PI en cascada 
@@ -274,7 +287,7 @@ mecánica del rotor con la dinámica eléctrica del generador es no lineal, y
 la velocidad del viento ---que actúa como una perturbación sobre el 
 sistema--- es variable e impredecible. Además, la referencia de velocidad 
 generada por el algoritmo MPPT cambia continuamente en respuesta a las 
-condiciones del viento, lo que exige que el controlador sea capaz de seguir 
+condiciones del viento, lo que exige que el controlador deba ser capaz de seguir 
 referencias variables manteniendo la estabilidad del sistema. Lo anterior 
 motiva un análisis riguroso de las condiciones de estabilidad y una 
 selección cuidadosa de las ganancias del controlador.
@@ -293,8 +306,8 @@ De lo anterior, la presente tesis tiene como objetivos los siguientes puntos:
     \item Diseñar una ley de control que, manipulando los voltajes $v_d$ y 
     $v_q$ del generador, permita regular el par eléctrico $T_e$ mediante el 
     control de las corrientes $i_d$ e $i_q$. En particular, se busca mantener 
-    $i_d = 0$ para minimizar las pérdidas eléctricas y regular $i_q$ para 
-    controlar la velocidad angular del rotor.
+    $i_d = 0$ para minimizar las pérdidas eléctricas en forma de calor (pérdidas 
+    de Joule) y regular $i_q$ para controlar la velocidad angular del rotor.
 
     \item Incorporar un algoritmo de seguimiento del punto de máxima potencia 
     (MPPT) que determine la velocidad angular óptima del rotor en función de 
@@ -340,12 +353,12 @@ para obtener el modelo dinámico completo del sistema.
 
 A partir del modelo dinámico acoplado se formulan los objetivos de control: 
 regular la corriente del eje directo en $i_d = 0$ para minimizar pérdidas 
-y controlar la corriente del eje de cuadratura $i_q$ para regular la 
-velocidad angular del rotor hacia el punto de máxima extracción de potencia. 
-La estrategia de control adoptada consiste en controladores PI en una 
-configuración de lazos en cascada, combinados con términos de compensación 
-\emph{feedforward} que cancelan los acoplamientos no lineales entre los 
-ejes $d$ y $q$.
+eléctricas en forma de calor y controlar la corriente del eje de cuadratura 
+$i_q$ para regular la velocidad angular del rotor hacia el punto de máxima 
+extracción de potencia. La estrategia de control adoptada consiste en 
+controladores PI en una configuración de lazos en cascada, combinados con 
+términos de compensación \emph{feedforward} que cancelan los acoplamientos 
+no lineales entre los ejes $d$ y $q$.
 \\
 
 El diseño del controlador se complementa con un algoritmo de seguimiento 
@@ -399,6 +412,7 @@ el comportamiento transitorio del sistema en condiciones ideales; y
 posteriormente, ante un perfil de viento turbulento para evaluar la 
 robustez del controlador en condiciones más representativas de la operación 
 real.
+\\
 
 Las métricas de evaluación incluyen el tiempo de convergencia al estado 
 estable, la regulación de las corrientes $i_d$ e $i_q$ respecto a sus 
