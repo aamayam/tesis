@@ -1,5 +1,5 @@
 %!TEX root = ../main.tex
-\chapter{Simulación}
+\chapter{Simulación}\label{ch:simulacion}
 
 En este capítulo se presenta la validación numérica del sistema de control
 diseñado en el Capítulo 3 mediante simulaciones en MATLAB/Simulink. El objetivo
@@ -31,7 +31,7 @@ cascada se detalla en la figura \ref{fig:diag_lazos}.
 \centering
 \includegraphics[width=0.85\textwidth]{block_diagram.pdf}
 \caption{Arquitectura de control del sistema WECS. El bloque MPPT genera
-la referencia de velocidad $\omega_m^*$ a partir de la potencia medida $P$ y la velocidad
+la referencia de velocidad $\omega_m^\star$ a partir de la potencia medida $P$ y la velocidad
 del viento $v_w$. El controlador implementa los subsistemas $\Sigma_1$ y $\Sigma_2$
 descritos en el Capítulo 3.}
 \label{fig:diag_alto_nivel}
@@ -51,67 +51,52 @@ a las expresiones \eqref{valUd} y \eqref{eqnVq}.}
 \subsection{Algoritmo MPPT}
 
 El algoritmo MPPT sigue una estrategia de perturbación y observación (P\&O),
-descrita en la \autoref{sec:objetivos_de_control}. En cada paso de muestreo, el algoritmo 
-compara la potencia actual $P(k)$ con la potencia del paso anterior $P(k-1)$ e incrementa
-o decrementa la referencia de velocidad $\omega_m^*$ en un paso fijo $\Delta\omega$
-según el signo de $\Delta P = P(k) - P(k-1)$. Para evitar que las perturbaciones
-del algoritmo P\&O exciten el lazo de velocidad con variaciones abruptas, la señal
-$\omega_m^*$ es filtrada mediante un filtro paso-bajas de primer orden antes de
-ser enviada al controlador.
-
-\subsection{Diseño del filtro pasabajas para la referencia de velocidad}
-
-El algoritmo MPPT (P\&O) genera inherentemente oscilaciones en 
-la señal de referencia $\omega_m^\star$ debido a sus perturbaciones periódicas. 
-Para suavizar estas oscilaciones sin comprometer el desempeño del lazo de control 
-de velocidad, se implementó un filtro pasabajas de primer orden:
-
-\begin{equation}
-H(s) = \frac{\omega_c}{s + \omega_c}
-\end{equation}
-
-La selección de la frecuencia de corte $\omega_c$ requiere un compromiso entre 
-dos objetivos contrapuestos:
-
-\begin{itemize}
-\item Atenuar suficientemente las oscilaciones del MPPT
-\item Mantener una respuesta dinámica adecuada ante cambios en la velocidad del viento
-\item Preservar la separación de escalas de tiempo entre los lazos de control cascada
-\end{itemize}
-
-A partir del análisis de la respuesta del sistema en lazo cerrado, se observó 
-que las oscilaciones en estado estable de $\omega_m^\star$ presentan un período 
-de aproximadamente $T = 4$ s, correspondiente a una frecuencia de 
-$f = 0.25$ Hz ($\omega_{osc} \approx 1.57$ rad/s).
+descrita en la \autoref{sec:objetivos_de_control}. En su formulación clásica de
+paso fijo, el algoritmo compara la potencia actual $P(k)$ con la potencia del
+paso anterior $P(k-1)$ e incrementa o decrementa la referencia de velocidad
+$\omega_m^\star$ en un paso constante $\Delta\omega$ según el signo de
+$\Delta P = P(k) - P(k-1)$. Esta formulación presenta, sin embargo, una
+limitación estructural conocida en la literatura de algoritmos MPPT: el
+tamaño de paso fijo obliga a un compromiso directo entre velocidad de
+convergencia y magnitud del rizado (\textit{ripple}) en estado estable —
+un paso grande acelera la búsqueda del punto óptimo pero produce
+oscilaciones persistentes alrededor de él, mientras que un paso pequeño
+reduce el rizado a costa de una convergencia lenta.
 \\
 
-La frecuencia de corte óptima se determinó mediante un proceso iterativo:
+Para mitigar este compromiso, se implementó una variante de paso adaptativo
+basada en la persistencia direccional de las iteraciones. El algoritmo
+mantiene un contador de iteraciones consecutivas en las que $\Delta P$
+mantiene el mismo signo (racha): mientras la racha crece, el algoritmo
+infiere que el punto de operación se encuentra alejado del óptimo e
+incrementa gradualmente el paso $\Delta\omega$ hasta un valor máximo
+$\Delta\omega_{\max}$; cuando el signo de $\Delta P$ se invierte —señal de
+que el algoritmo cruzó el punto óptimo—, la racha se reinicia y el paso se
+reduce a su valor mínimo $\Delta\omega_{\min}$. Este mecanismo permite una
+búsqueda rápida durante transitorios grandes (p.\ ej., ante cambios
+abruptos de $v_w$) sin sacrificar precisión en estado estable.
 
-\begin{enumerate}
-\item Se estableció un rango inicial basado en la frecuencia de oscilación observada
-\item Se evaluaron múltiples valores de $\omega_c$ mediante simulación
-\item Se analizó el compromiso entre suavizado de la señal y preservación de la dinámica
-\item Se verificó que la frecuencia seleccionada no comprometiera la estabilidad 
-de los lazos internos de corriente
-\end{enumerate}
+\subsection{Nota de diseño: filtrado de la referencia de velocidad}
 
-Se encontró que valores de $\omega_c \geq 5$ rad/s resultan insuficientes para 
-atenuar las oscilaciones (siendo significativamente mayores a $\omega_{osc}$), 
-mientras que valores de $\omega_c \leq 0.2$ rad/s introducen dinámicas tan lentas 
-que causan acoplamiento indeseado con los lazos de corriente, manifestándose en 
-oscilaciones de $\pm 40$ A en $i_d$.
-\\
-
-El valor seleccionado de $\omega_c = 1$ rad/s, ligeramente menor que la frecuencia 
-de oscilación observada, proporciona un balance adecuado entre atenuación de las 
-perturbaciones del MPPT y preservación de la dinámica del sistema.
+En una primera iteración de diseño se exploró el uso de un filtro
+pasabajas de primer orden a la salida del MPPT, con el objetivo de atenuar
+las oscilaciones inherentes al algoritmo P\&O antes de que la referencia
+$\omega_m^\star$ ingresara al lazo de velocidad. Si bien este enfoque
+reduce el rizado visible, introduce un retardo adicional en la cadena de
+control que resultó contraproducente: al desacoplar temporalmente la
+decisión del MPPT de la respuesta real del sistema, el algoritmo tiende a
+sobrepasar el punto óptimo antes de corregir, generando transitorios de
+mayor amplitud que los que se buscaba evitar. Por este motivo, se optó por
+atacar el origen del rizado directamente en la lógica del algoritmo MPPT
+—mediante el paso adaptativo descrito anteriormente— en lugar de filtrar
+su efecto aguas abajo.
 
 \section{Sintonización del PI en \texorpdfstring{$\Sigma_2$}{Sigma 2}}
 
 Se aplicó el algoritmo presentado anteriormente en la \autoref{sec:algoritmo}
-con los parámetros del sistema dados en la \autoref{tab:parametros_sim} . Los valores 
+con los parámetros del sistema dados en la \autoref{tab:parametros_sim}. Los valores 
 numéricos relevantes son $\frac{R}{L} = 103.5493$, 
-$\bar{\gamma}_1 = 0.000117$ y $\bar{\gamma}_2 = 1.5328$.
+$\bar{\gamma}_1 = 0.1262$ y $\bar{\gamma}_2 = 1.5328$.
 
 Siguiendo el Paso 1 del algoritmo, se fijaron las ganancias del lazo externo como:
 \begin{equation}
@@ -152,6 +137,48 @@ Los valores propios de $\bar{A}_2$ son:
 
 Como todos los valores propios tienen parte real negativa, se confirma que $\bar{A}_2$ es 
 Hurwitz y, por lo tanto, el punto de equilibrio $\bar{z}$ es exponencialmente estable.
+
+% \subsection{Análisis del polo dominante y su origen}
+
+% El análisis de los valores propios \eqref{eq:eigenvalues} revela que
+% $\lambda_4 = -0.010$ es un polo real considerablemente más cercano al eje
+% imaginario que el resto —aproximadamente 70 veces más lento que la parte
+% real de $\lambda_2, \lambda_3$—. Dado que la constante de tiempo asociada
+% a un polo real domina la respuesta transitoria del modo correspondiente,
+% este resultado predice, para el sistema linealizado, un tiempo de
+% asentamiento del orden de $t_s \approx 4/|\lambda_4| \approx 400$ [s],
+% sensiblemente mayor a los tiempos de asentamiento observados de forma
+% consistente en las simulaciones no lineales presentadas en las secciones
+% siguientes (del orden de decenas de segundos).
+% \\
+
+% Esta discrepancia se investigó evaluando la sensibilidad de $\lambda_4$
+% ante variaciones en las ganancias del lazo cascada. Se encontró que
+% $\lambda_4$ es prácticamente insensible a $k_{I3}$, y que desplazarlo de
+% forma apreciable mediante $k_{I2}$ requeriría incrementar esta ganancia
+% varios órdenes de magnitud respecto al valor obtenido por el algoritmo de
+% búsqueda \eqref{eq:gains_solution} —un cambio sin justificación física
+% clara y con riesgo de no ser realizable en un sistema real (mayor
+% sensibilidad a ruido de medición, posible saturación de actuadores)—. Por
+% este motivo se optó por conservar las ganancias originales obtenidas
+% mediante el algoritmo de búsqueda.
+% \\
+
+% Esta decisión se sustenta en una observación adicional: la discrepancia
+% entre el tiempo de asentamiento teórico del polo dominante ($\approx 400$
+% [s]) y el comportamiento observado en simulación sugiere que $\lambda_4$ no
+% domina de forma apreciable la respuesta real del sistema no lineal
+% completo —ya sea por un residuo pequeño de este modo en la salida
+% $\omega_m$, o porque la dinámica del lazo cascada de velocidad
+% ($\Sigma_3$) y del propio algoritmo MPPT, no capturadas en el modelo
+% linealizado $\bar{A}_2$ (que describe únicamente $\Sigma_1$ y
+% $\Sigma_2$), tienen mayor influencia en el comportamiento transitorio
+% observado que el polo lento identificado en el análisis lineal aislado
+% del lazo de corriente y velocidad—. Este resultado ilustra una limitación
+% relevante del análisis de estabilidad basado en linealización: garantiza
+% estabilidad exponencial local, pero no necesariamente predice con
+% precisión la velocidad de convergencia del sistema no lineal completo en
+% cascada con el algoritmo MPPT.
 
 \subsection{Análisis del lugar geométrico de las raíces}
 
@@ -213,7 +240,7 @@ Tabla \ref{tab:parametros_sim} y las ganancias del controlador obtenidas en la
 % ── Tabla de parámetros ──────────────────────────────────────────────────────
 \begin{table}[ht]
 \centering
-\caption{Parámetros del sistema utilizados en la simulación.}
+\caption{Parámetros del sistema utilizados en la simulación, obtenidos de \cite{Gao2016}.}
 \label{tab:parametros_sim}
 \begin{tabular}{llll}
 \hline
@@ -241,35 +268,62 @@ $k_{P1}$ & $0.5$ & Corriente $i_d$ ($\Sigma_1$) \\
 $k_{I1}$ & $5$ & Corriente $i_d$ ($\Sigma_1$) \\
 $k_{P2}$ & $0.0355$         & Corriente $i_q$ ($\Sigma_2$) \\
 $k_{I2}$ & $3.55\times10^{-4}$ & Corriente $i_q$ ($\Sigma_2$) \\
-$k_{P3}$ & $50$             & Velocidad $\omega_m$ ($\Sigma_2$) \\
-$k_{I3}$ & $50$             & Velocidad $\omega_m$ ($\Sigma_2$) \\ \hline
+$k_{P3}$ & $10$             & Velocidad $\omega_m$ ($\Sigma_2$) \\
+$k_{I3}$ & $10$             & Velocidad $\omega_m$ ($\Sigma_2$) \\ \hline
 \end{tabular}
 \end{table}
 
 \section{Respuesta ante entrada escalón}
 
-Con el objetivo de caracterizar el comportamiento transitorio del sistema en
-condiciones ideales, se simuló la respuesta ante una velocidad de viento
-constante de $v_w = 11$ m/s. Este escenario equivale a una entrada escalón
-en el torque mecánico  y permite evaluar métricas clásicas de
-desempeño del controlador de forma aislada de las perturbaciones del viento.
+Con el objetivo de caracterizar el comportamiento transitorio del sistema
+ante un cambio abrupto en el punto de operación —evitando confundir dicho
+comportamiento con la respuesta de arranque desde reposo—, las condiciones
+iniciales de los integradores del controlador se inicializaron en los
+valores de estado estable correspondientes a $v_w = 8$ [m/s]. Esto permite
+que la simulación represente una turbina que ya se encuentra en operación
+normal, en lugar de un arranque desde el reposo mecánico.
 \\
 
-La figura \ref{fig:omega_step} muestra la respuesta de la velocidad angular
-$\omega_m$ y su referencia $\omega_m^*$ generada por el MPPT. El sistema alcanza
-el estado estable en aproximadamente $t \approx 30$ s, con un
-sobrepico de $\approx 6$ [rad/s]. La figura \ref{fig:corrientes_step} muestra las
-corrientes $i_d$ e $i_q$: la corriente $i_d$ se regula en torno a cero durante
-todo el transitorio, confirmando el correcto funcionamiento del subsistema $\Sigma_1$, mientras
-que $i_q$ evoluciona para suministrar el torque eléctrico necesario para acelerar
-el rotor hasta $\omega_m^*$.
+Se aplicó un escalón en la velocidad del viento de $v_w = 8$ [m/s] a
+$v_w = 12$ [m/s] en $t = 60$ [s]. La figura \ref{fig:omega_step} muestra la
+respuesta de $\omega_m$ junto con su referencia $\omega_m^\star$. Antes
+del escalón, el sistema se mantiene en un punto de equilibrio estable
+($\omega_m \approx 34.5$ [rad/s]), consistente con el valor óptimo teórico
+$\omega_m^\star = \lambda^\star v_w / r$ para $v_w = 8$ [m/s]. Al aplicarse
+el escalón, $\omega_m^\star$ no responde como un escalón instantáneo,
+sino como una rampa acotada por la tasa máxima de búsqueda del algoritmo
+MPPT ($\Delta\omega_{\max}$ por período de muestreo); $\omega_m$ sigue
+esta rampa con un error de seguimiento reducido, alcanzando el nuevo
+punto de operación ($\omega_m \approx 52$ [rad/s]) en aproximadamente
+$t \approx 40$ [s] posteriores al escalón.
+\\
+
+Este comportamiento tiene una explicación física directa: dado que la
+inercia mecánica del rotor impide un cambio instantáneo en $\omega_m$, el
+salto abrupto en $v_w$ provoca una caída momentánea en la relación de
+velocidad de punta $\lambda = \omega_m r / v_w$ por debajo de su valor
+óptimo $\lambda^\star$, alejando al sistema del punto de máxima
+extracción de potencia. Esto se refleja directamente en el coeficiente de
+potencia $C_p$, que cae abruptamente tras el escalón y se recupera
+gradualmente conforme $\omega_m$ alcanza el nuevo óptimo. La figura
+\ref{fig:corrientes_step} muestra las corrientes $i_d$ e $i_q$: $i_d$
+permanece en cero durante todo el transitorio, confirmando el correcto
+desempeño de $\Sigma_1$, mientras que $i_q$ exhibe un incremento
+sostenido consistente con el mayor torque electromagnético requerido para
+acelerar el rotor hacia el nuevo punto de operación. Se observa también
+un rizado de alta frecuencia superpuesto en $i_q$ durante el tramo de
+mayor pendiente de la rampa ($t \approx 80$--$95$ [s]), atribuible a la
+naturaleza inherentemente oscilatoria del algoritmo P\&O, que perturba
+continuamente el punto de operación incluso durante la búsqueda activa
+del óptimo.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.85\textwidth]{omega_step.pdf}
-    \caption{Respuesta de la velocidad angular $\omega_m$ ante entrada escalón
-    ($v_w = 11$ m/s constante). La línea discontinua corresponde a la referencia
-    $\omega_m^*$ generada por el MPPT.}
+    \caption{Respuesta de la velocidad angular $\omega_m$ ante un escalón en
+    la velocidad del viento de $v_w = 8$ [m/s] a $v_w = 12$ [m/s] en $t = 60$ [s].
+    La línea discontinua corresponde a la referencia $\omega_m^\star$
+    generada por el MPPT.}
     \label{fig:omega_step}
 \end{figure}
 
@@ -287,8 +341,8 @@ el rotor hasta $\omega_m^*$.
 Para evaluar la robustez del sistema ante condiciones de operación más realistas,
 se simuló el sistema con el perfil de viento turbulento mostrado en la
 figura \ref{fig:viento}. El perfil consiste en una fase inicial de viento constante
-a $v_w = 11$ m/s durante los primeros $40$ s, seguida de variaciones estocásticas
-con velocidades entre aproximadamente $9.8$ m/s y $16$ m/s.
+a $v_w = 11$ [m/s] durante los primeros $40$ [s], seguida de variaciones estocásticas
+con velocidades entre aproximadamente $9.8$ [m/s] y $16$ [m/s].
 \\
 
 \begin{figure}[ht]
@@ -300,22 +354,30 @@ con velocidades entre aproximadamente $9.8$ m/s y $16$ m/s.
     \label{fig:viento}
 \end{figure}
 
-La figura \ref{fig:omega} muestra la velocidad angular $\omega_m$ junto con la
-referencia $\omega_m^*$. Durante la fase de viento constante, el sistema exhibe
-una respuesta transitoria coherente con la observada en el escenario de escalón,
-convergiendo a la velocidad óptima en régimen permanente. Ante las variaciones
-del perfil turbulento, $\omega_m$ sigue con fidelidad las variaciones de
-$\omega_m^*$, demostrando que el lazo de velocidad mantiene su desempeño ante
-perturbaciones realistas.
+La figura \ref{fig:omega} muestra la velocidad angular $\omega_m$ junto con
+la referencia $\omega_m^\star$. Durante la fase inicial de viento constante
+($t < 40$ [s]), el sistema converge y se mantiene en el punto óptimo,
+replicando el comportamiento observado en el escenario de escalón. Una vez
+que inicia la fase turbulenta, $\omega_m$ sigue la tendencia general de
+$\omega_m^\star$, aunque con un rizado más pronunciado que el observado en
+el escenario de le entrada escalón. Este efecto es esperado: a diferencia de un
+cambio único y aislado en $v_w$, la naturaleza continuamente variable del
+viento turbulento introduce fluctuaciones de potencia comparables en
+magnitud a las que el propio algoritmo P\&O utiliza como señal de
+decisión, dificultando que el algoritmo distinga entre cambios de potencia
+atribuibles a su propia búsqueda y aquellos causados por el viento. Esto
+se traduce en un seguimiento del óptimo instantáneo menos preciso que en
+el caso del escalón, aunque el sistema no pierde estabilidad ni diverge en
+ningún momento de la simulación.
 \\
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.85\textwidth]{omega.pdf}
-    \caption{Velocidad angular $\omega_m$ y referencia $\omega_m^*$ ante el
-    perfil de viento turbulento. Las oscilaciones en $\omega_m^*$ corresponden
-    a las perturbaciones del algoritmo P\&O y son atenuadas por el filtro
-    paso-bajas.}
+    \caption{Velocidad angular $\omega_m$ y referencia $\omega_m^\star$ ante el
+    perfil de viento turbulento. Las oscilaciones en $\omega_m^\star$ corresponden
+    a las perturbaciones inherentes del algoritmo P\&O, atenuadas mediante el
+    mecanismo de paso adaptativo descrito en la \autoref{sec:objetivos_de_control}.}
     \label{fig:omega}
 \end{figure}
 
@@ -323,7 +385,7 @@ Las corrientes $i_d$ e $i_q$ se muestran en la figura \ref{fig:corrientes}.
 La corriente $i_d$ permanece en cero durante toda la simulación,
 confirmando que $\Sigma_1$ opera correctamente incluso bajo el perfil de
 viento variable. La corriente $i_q$ refleja las variaciones del torque
-eléctrico requerido para seguir las fluctuaciones de $\omega_m^*$.
+eléctrico requerido para seguir las fluctuaciones de $\omega_m^\star$.
 \\
 
 \begin{figure}[ht]
@@ -345,33 +407,56 @@ comparada con la potencia máxima teórica $P_{\max}$, calculada como:
 donde $C_p^{\star} = 0.411$ es el coeficiente de potencia óptimo del sistema,
 obtenido en la Sección 3.1.2. Durante la fase de viento constante, $P$ converge
 a $P_{\max}$ conforme el MPPT alcanza el punto de operación óptimo. En el
-régimen turbulento, $P$ sigue de cerca las variaciones de $P_{\max}$, con
-una brecha sistemática reducida atribuible al retardo inherente del algoritmo
-P\&O y a la dinámica del lazo de velocidad.
+régimen turbulento, $P$ se mantiene consistentemente por debajo de
+$P_{\max}$, con una brecha que se amplía durante los períodos de mayor
+velocidad de viento. Este comportamiento es consistente con el hecho de
+que la pendiente de la curva $P$ respecto a $\omega_m$ alrededor del punto
+óptimo es mayor en regímenes de viento más intenso, de modo que un mismo
+error de seguimiento en $\omega_m$ se traduce en una mayor pérdida de
+potencia absoluta a altas velocidades de viento.
 \\
 
-Para cuantificar el desempeño del sistema, se define la eficiencia media 
-de extracción de potencia como el cociente entre la potencia media extraída 
-y la potencia media máxima posible. El cálculo se realiza sobre 
-el intervalo $t \geq 20$\,s con el fin de excluir el transitorio inicial y 
-evaluar únicamente el desempeño en estado estacionario:
+Para cuantificar el desempeño del sistema, se evaluaron tres métricas de
+eficiencia complementarias sobre el intervalo $t \geq 20$ [s], excluyendo el
+transitorio inicial de convergencia del MPPT:
 
-\begin{equation}
-    \eta_{\text{avg}} 
-    = \frac{P(t)}{P_{\max}(t)}\bigg|_{t \geq 20\,\text{s}} 
-    \times 100
+\begin{align}
+    \eta_1 &= \frac{\overline{P}}{\overline{P_{\max}}} \times 100
     = \frac{\displaystyle\frac{1}{N}\sum_{i=1}^{N} P(t_i)}
-           {\displaystyle\frac{1}{N}\sum_{i=1}^{N} P_{\max}(t_i)} 
+           {\displaystyle\frac{1}{N}\sum_{i=1}^{N} P_{\max}(t_i)}
     \times 100
-    = 99.8 \text{ \%}
-    \label{eq:eficiencia}
-\end{equation}
+    \label{eq:eficiencia1} \\[2mm]
+    \eta_2 &= \overline{\left(\frac{P}{P_{\max}}\right)} \times 100
+    = \frac{1}{N}\sum_{i=1}^{N} \frac{P(t_i)}{P_{\max}(t_i)}
+    \times 100
+    \label{eq:eficiencia2} \\[2mm]
+    \eta_3 &= \frac{\displaystyle\int_{t\geq20} P(t)\,dt}
+                    {\displaystyle\int_{t\geq20} P_{\max}(t)\,dt}
+    \times 100
+    \label{eq:eficiencia3}
+\end{align}
 
-donde la suma se evalúa sobre las $N$ muestras correspondientes al 
-intervalo $t_i \geq 20$\,s. Esta definición es equivalente a comparar 
-la energía total extraída con la energía total que es posible extraer en el mismo 
-periodo de tiempo, lo cual proporciona una medida energéticamente consistente del 
-desempeño del controlador y el algoritmo MPPT.
+donde $\eta_1$ es la razón entre las potencias medias, $\eta_2$ es el
+promedio de la razón instantánea punto a punto —que pondera cada instante
+de forma equitativa, independientemente de la magnitud de la potencia
+disponible en ese momento—, y $\eta_3$ es el cociente entre la energía
+total extraída y la energía total disponible, obtenida por integración
+numérica sobre el mismo intervalo. Esta última es equivalente a comparar
+la energía total extraída con la energía total que es posible extraer en
+el mismo periodo de tiempo, y constituye la medida energéticamente más
+consistente del desempeño del controlador y el algoritmo MPPT.
+\\
+
+Las tres métricas arrojan resultados consistentes entre sí:
+$\eta_1 = 87.9\%$, $\eta_2 = 90.4\%$ y $\eta_3 = 87.5\%$. La
+convergencia entre estos tres criterios —que ponderan de forma distinta la
+contribución de cada instante de la simulación— respalda la validez del
+resultado frente a la elección particular de la métrica de evaluación.
+Este rango de eficiencia (87--90\,\%) es consistente con lo reportado en
+la literatura para algoritmos de la familia P\&O bajo perfiles de viento
+turbulentos comparables, y refleja el compromiso inherente entre velocidad
+de búsqueda y precisión de seguimiento discutido en la
+\autoref{sec:objetivos_de_control}.
 
 \begin{figure}[ht]
     \centering

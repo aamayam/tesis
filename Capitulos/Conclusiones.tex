@@ -63,15 +63,18 @@ la estabilidad.
 \\
 
 Finalmente, las simulaciones en MATLAB/Simulink confirmaron el correcto 
-funcionamiento del controlador. Ante una entrada escalón de viento constante 
-($v_w = 11$ m/s), el sistema alcanzó el estado estable en aproximadamente 
-30 s con un sobrepico de $\approx 6$ rad/s en la velocidad angular. Ante un 
-perfil de viento turbulento con velocidades entre 9.8 y 16 m/s, el controlador 
+funcionamiento del controlador. Ante un escalón en la velocidad del viento de
+$v_w = 8$ [m/s] a $v_w = 12$ [m/s], el sistema siguió la referencia 
+$\omega_m^\star$ generada por el MPPT con un error de seguimiento reducido, 
+alcanzando el nuevo punto de operación ($\omega_m \approx 52$ [rad/s]) en 
+aproximadamente 40 [s] posteriores al escalón. Ante un 
+perfil de viento turbulento con velocidades entre 9.8 y 16 [m/s], el controlador 
 demostró capacidad de seguimiento de la referencia variable $\omega_m^\star$ 
 generada por el MPPT, manteniendo la corriente $i_d$ regulada en cero durante 
-toda la simulación. La eficiencia media de extracción de potencia obtenida fue 
-de $\eta_{\text{avg}} = 99.8$ \%, lo cual indica que el sistema opera de 
-manera consistente cerca del punto de máxima potencia.
+toda la simulación. Se evaluaron tres métricas complementarias de eficiencia de 
+extracción de potencia, obteniéndose $\eta_1 = 87.9\%$, $\eta_2 = 90.4\%$ y 
+$\eta_3 = 87.5\%$, cuya consistencia entre sí indica que el sistema opera de 
+manera confiable cerca del punto de máxima potencia.
 
 \section{Contribuciones y limitaciones}
 
